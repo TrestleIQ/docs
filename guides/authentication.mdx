@@ -1,0 +1,126 @@
+---
+title: "Authentication"
+description: "Learn how to authenticate your API requests"
+---
+
+## API Key Authentication
+
+Trestle controls access to the API and data via an API Key. The API key is the primary authentication method for your account. Your usage is recorded and reported via the API Key. You may use a single API key for multiple Trestle APIs.
+
+## Getting an API Key
+
+To get an API key:
+
+1. [Sign up for a Developer Portal account](https://portal.trestleiq.com/signup)
+2. Once approved, you can send a request to any of Trestle's APIs
+3. Your API key will be available in the Developer Portal
+
+## Using Your API Key
+
+All API requests require authentication via the `x-api-key` header.
+
+### Header Format
+
+Include your API key in the request header:
+
+```bash
+x-api-key: YOUR_API_KEY
+```
+
+### Example Request
+
+<CodeGroup>
+
+```bash cURL
+curl --request GET \
+  --url "https://api.trestleiq.com/3.2/phone?phone=2069735100" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.trestleiq.com/3.2/phone?phone=2069735100",
+  {
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+    },
+  }
+);
+```
+
+
+```python Python
+import requests
+
+headers = {
+    "x-api-key": "YOUR_API_KEY",
+}
+
+response = requests.get(
+    "https://api.trestleiq.com/3.2/phone",
+    params={"phone": "2069735100"},
+    headers=headers
+)
+data = response.json()
+```
+
+</CodeGroup>
+
+## HTTP Methods
+
+### GET (Recommended)
+
+We recommend using GET for simplicity. Include the API key in the header:
+
+```bash
+GET /3.2/phone?phone=2069735100
+Headers:
+  x-api-key: YOUR_API_KEY
+```
+
+### POST
+
+POST is also supported. In this case, `api_key` must be in the request body and not part of the URL:
+
+```bash
+POST /3.2/phone
+Headers:
+  Content-Type: application/json
+Body:
+{
+  "phone": "2069735100",
+  "api_key": "YOUR_API_KEY"
+}
+```
+
+## Security Best Practices
+
+<Warning>
+  Keep your API key secure and never expose it in client-side code or public repositories.
+</Warning>
+
+- Store API keys in environment variables
+- Use different API keys for different environments (development, staging, production)
+- Rotate API keys regularly
+- Never commit API keys to version control
+
+## Error Responses
+
+### 401 Unauthorized
+
+- **Bad Request**: If ';' used as parameter separator in request. Non-UTF-8-encoded request.
+- **Not Authorized**: No `x-api-key` header in the request.
+
+### 403 Forbidden
+
+- **Auth Error**: API Key is not authorized for that request or expired.
+- **Quota Exceeded Error**: API Key has exceeded its quota.
+
+### 429 Too Many Requests
+
+API Key has exceeded its rate limit.
+
+## Need Help?
+
+If you're having trouble with authentication, check our [FAQ](/guides/faq) or contact [support@trestleiq.com](mailto:support@trestleiq.com).

@@ -1,122 +1,182 @@
 {
-  "$schema": "https://mintlify.com/docs.json",
+  "$schema": "https://mintlify.com/schema.json",
+  "name": "Trestle Identity APIs",
   "theme": "mint",
-  "name": "Mint Starter Kit",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
-  },
   "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/assets/trestle_logo.png",
+    "dark": "/assets/trestle_logo.png",
+    "href": "https://trestleiq.com"
+  },
+  "colors": {
+    "primary": "#163545",
+    "light": "#0694B4",
+    "dark": "#1E3F51"
+  },
+  "appearance": {
+    "default": "system",
+    "strict": false
+  },
+  "fonts": {
+    "heading": {
+      "family": "Inter"
+    },
+    "body": {
+      "family": "Inter"
+    }
+  },
+  "styling": {
+    "codeblocks": {
+      "theme": {
+        "light": "github-light",
+        "dark": "github-dark"
+      }
+    }
+  },
+  "api": {
+    "mdx": {
+      "server": "https://api.trestleiq.com",
+      "auth": {
+        "method": "key",
+        "name": "x-api-key"
+      }
+    }
+  },
+  "settings": {
+    "customStyles": [
+      "/style.css"
+    ]
+  },
   "navigation": {
-    "tabs": [
+    "versions": [
       {
-        "tab": "Guides",
+        "version": "Current",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "guides/overview",
+              "guides/authentication"
             ]
           },
           {
-            "group": "Customization",
+            "group": "API Reference",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
-            ]
-          },
-          {
-            "group": "Writing content",
-            "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
-            ]
-          },
-          {
-            "group": "AI tools",
-            "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              {
+                "group": "Reverse Phone API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/reverse-phone-api"
+                ]
+              },
+              {
+                "group": "Caller Identification API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/caller-identification-api"
+                ]
+              },
+              {
+                "group": "Smart CNAM API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/smart-cnam-api"
+                ]
+              },
+              {
+                "group": "Phone Validation API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/phone-validation-api"
+                ]
+              },
+              {
+                "group": "Reverse Address API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/reverse-address-api"
+                ]
+              },
+              {
+                "group": "Real Contact API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/real-contact-api"
+                ]
+              }
             ]
           }
-        ]
+        ],
+        "default": true
       },
       {
-        "tab": "API reference",
+        "version": "Archived",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Get Started",
             "pages": [
-              "api-reference/introduction"
+              "intro",
+              "guides/overview",
+              "guides/authentication",
+              "guides/faq"
             ]
           },
           {
-            "group": "Endpoint examples",
+            "group": "API Reference",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              {
+                "group": "Reverse Phone API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/reverse-phone-api"
+                ]
+              },
+              {
+                "group": "Caller Identification API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/caller-identification-api"
+                ]
+              },
+              {
+                "group": "Smart CNAM API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/smart-cnam-api"
+                ]
+              },
+              {
+                "group": "Phone Validation API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/phone-validation-api"
+                ]
+              },
+              {
+                "group": "Reverse Address API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/reverse-address-api"
+                ]
+              },
+              {
+                "group": "Find Person API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/find-person-api"
+                ]
+              },
+              {
+                "group": "Real Contact API",
+                "expanded": false,
+                "pages": [
+                  "api-reference-archived/real-contact-api"
+                ]
+              }
             ]
           }
         ]
       }
-    ],
-    "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
-    }
-  },
-  "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
-  },
-  "navbar": {
-    "links": [
-      {
-        "label": "Support",
-        "href": "mailto:hi@mintlify.com"
-      }
-    ],
-    "primary": {
-      "type": "button",
-      "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
-    }
-  },
-  "contextual": {
-    "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
-  },
-  "footer": {
-    "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
-    }
+    ]
   }
 }
