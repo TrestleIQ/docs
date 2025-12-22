@@ -1,0 +1,36 @@
+/* ========== SIDEBAR STYLING ========== */
+/* Sidebar needs separate styling as Mintlify uses same background for sidebar and navbar */
+
+/* Light mode: Light teal sidebar */
+html.light #sidebar,
+html:not(.dark) #sidebar {
+  background-color: #E0F2F5 !important;
+}
+
+/* Dark mode: Dark teal sidebar */
+html.dark #sidebar {
+  background-color: #0D1E26 !important;
+}
+
+/* ========== NAVBAR STYLING ========== */
+/* Mintlify uses #navbar-transition with data-is-opaque for scroll state */
+
+/* Light mode navbar */
+html.light #navbar-transition,
+html:not(.dark) #navbar-transition {
+  background-color: #00485A !important;
+}
+
+/* Dark mode navbar */
+html.dark #navbar-transition {
+  background-color: #0D1E26 !important;
+}
+
+/* ========== SHARED STYLES ========== */
+
+#sidebar,
+#navbar,
+body,
+main {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}

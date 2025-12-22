@@ -1,0 +1,94 @@
+---
+title: "Phone Validation API"
+description: "Lightweight phone check to identify line type, carrier, validity, and more"
+api: "GET /3.0/phone_intel"
+---
+
+## Overview
+
+Trestle Phone Validation API validates the phone number and provides phone metadata, such as carrier name, line type (landline, mobile, non-fixed VoIP, etc.), and whether the phone is prepaid.
+
+## Endpoint
+
+<RequestExample>
+
+```bash
+GET https://api.trestleiq.com/3.0/phone_intel?phone={phone}
+```
+
+</RequestExample>
+
+## Parameters
+
+<ParamField path="phone" body="query" type="string" required>
+  The phone number in E.164 or local format. **Example:** `2069735100`
+</ParamField>
+
+<ParamField path="phone.country_hint" body="query" type="string">
+  The ISO-3166 alpha-2 country code of the phone number. **Example:** `US`
+</ParamField>
+
+## Headers
+
+<ParamField path="x-api-key" body="header" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+## Code Examples
+
+<CodeGroup>
+
+```bash cURL
+curl --request GET \
+  --url "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
+  {
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+    },
+  }
+);
+const data = await response.json();
+```
+
+</CodeGroup>
+
+## Response
+
+<ResponseField name="id" type="string">
+  The persistent ID of the phone number.
+</ResponseField>
+
+<ResponseField name="phone_number" type="string">
+  The phone number in E.164 or local format.
+</ResponseField>
+
+<ResponseField name="is_valid" type="boolean">
+  True if the phone number is valid.
+</ResponseField>
+
+<ResponseField name="activity_score" type="integer">
+  Trestle's activity scores range from 0 to 100. A score of 100 means consistent activity in the last 12 months, and a score of 0 means a disconnected number or no activity has been seen in the past year. - **70 or above**: High confidence that the phone is connected and active - **30 or below**: High confidence that the phone is disconnected or inactive - **50**: Not enough signals to predict connection status
+</ResponseField>
+
+<ResponseField name="line_type" type="string">
+  The line type of the phone number (Landline, Mobile, FixedVOIP, NonFixedVOIP, etc.).
+</ResponseField>
+
+<ResponseField name="carrier" type="string">
+  The company that provides voice and/or data services for the phone number.
+</ResponseField>
+
+<ResponseField name="is_prepaid" type="boolean">
+  True if the phone is associated with a prepaid account.
+</ResponseField>
+
+<ResponseField name="is_commercial" type="boolean">
+  True if the phone number is registered to a business.
+</ResponseField>
