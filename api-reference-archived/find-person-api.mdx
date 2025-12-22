@@ -1,0 +1,108 @@
+---
+title: "Find Person API (Archived)"
+description: "Find a person's details, including demographics, addresses, and phone numbers - Archived Version 3.1"
+api: "GET /3.1/person"
+---
+
+<Warning>
+  This is an archived version of the API. Please use the [Current Find Person
+  API](/api-reference/find-person-api) for new integrations.
+</Warning>
+
+## Overview
+
+Find Person API provides the person's details, including demographics, all current and historical addresses, phone numbers, and relatives and associates to this person.
+
+**Version:** 3.1 (Archived)
+
+## Endpoint
+
+<RequestExample>
+
+```bash
+GET https://api.trestleiq.com/3.1/person?name={name}&address.city={city}&address.state_code={state}
+```
+
+</RequestExample>
+
+## Parameters
+
+<ParamField query="name" type="string" required>
+  The name of the person to search. **Example:** `John Doe`
+</ParamField>
+
+<ParamField query="address.street_line_1" type="string">
+  The first line of the street part in the structured address.
+</ParamField>
+
+<ParamField query="address.street_line_2" type="string">
+  The second line of the street part in the structured address.
+</ParamField>
+
+<ParamField query="address.city" type="string">
+  The name of the city in the structured address. **Example:** `Seattle`
+</ParamField>
+
+<ParamField query="address.postal_code" type="string">
+  The postal code of the structured address. **Example:** `98101`
+</ParamField>
+
+<ParamField query="address.state_code" type="string">
+  The state code of the structured address. **Example:** `WA`
+</ParamField>
+
+<ParamField query="address.country_code" type="string">
+  The ISO-3166 alpha-2 country code of the address. **Example:** `US`
+</ParamField>
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication.
+</ParamField>
+
+## Code Examples
+
+<CodeGroup>
+
+```bash cURL
+curl --request GET \
+  --url "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA",
+  {
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+    },
+  }
+);
+const data = await response.json();
+```
+
+</CodeGroup>
+
+## Response
+
+<ResponseField name="count_person" type="integer">
+  The number of people returned.
+</ResponseField>
+
+<ResponseField name="person" type="array">
+  An array of people associated with the address provided. Each person object
+  includes: - Demographics - All current and historical addresses - Phone
+  numbers - Relatives and associates
+</ResponseField>
+
+<ResponseField name="error" type="object">
+  Error information if the request failed.
+</ResponseField>
+
+<ResponseField name="warnings" type="array">
+  Warnings returned as part of the response. Possible values include: `Missing
+  Input`, `Invalid Input Address`, `Invalid house/building number`, `Missing
+  unit/apt/suite number`, or `Invalid unit/apt/suite number`.
+</ResponseField>
