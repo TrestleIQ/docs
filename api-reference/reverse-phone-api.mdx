@@ -1,14 +1,8 @@
 ---
 title: "Reverse Phone API"
-description: "Find the current resident or business associated with a phone number"
+description: "Reverse Phone API offers comprehensive verification and enrichment of phone numbers. It includes phone validity, line type, carrier data, and all owners associated with the phone and their details, like demographics, current addresses, alternate phones, and email addresses."
 api: "GET /3.2/phone"
 ---
-
-## Overview
-
-Reverse Phone API validates a phone number and provides phone metadata, owner name and demographics, current and historical addresses, relatives and associated people, and additional phone numbers.
-
-## Endpoint
 
 <RequestExample>
 
@@ -21,7 +15,8 @@ GET https://api.trestleiq.com/3.2/phone?phone={phone}
 ## Parameters
 
 <ParamField query="phone" type="string" required>
-  The phone number in E.164 or local format. The default country calling code is +1 (USA). **Example:** `2069735100`
+  The phone number in E.164 or local format. The default country calling code is
+  +1 (USA). **Example:** `2069735100`
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string">
@@ -29,11 +24,16 @@ GET https://api.trestleiq.com/3.2/phone?phone={phone}
 </ParamField>
 
 <ParamField query="phone.name_hint" type="string">
-  Person or Business name associated with the phone number. If multiple names are associated with the phone in Trestle database, this name will be ranked higher. **Example:** `John Doe`
+  Person or Business name associated with the phone number. If multiple names
+  are associated with the phone in Trestle database, this name will be ranked
+  higher. **Example:** `John Doe`
 </ParamField>
 
 <ParamField query="phone.postal_code_hint" type="string">
-  The postal code of the subscriber address associated with the phone number. If multiple names or addresses are associated with the phone in Trestle database, this postal code hint will be used to rank name/address higher. **Example:** `98264`
+  The postal code of the subscriber address associated with the phone number. If
+  multiple names or addresses are associated with the phone in Trestle database,
+  this postal code hint will be used to rank name/address higher. **Example:**
+  `98264`
 </ParamField>
 
 ## Headers
@@ -192,11 +192,17 @@ public class ReversePhoneExample {
 </ResponseField>
 
 <ResponseField name="line_type" type="string">
-  The line type of the phone number. Possible values: - `Landline` - Traditional wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address - `Premium` - Caller pays a premium for the call - `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service - `Other` - Line type is unclear
+  The line type of the phone number. Possible values: - `Landline` - Traditional
+  wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
+  connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
+  a fixed physical address - `Premium` - Caller pays a premium for the call -
+  `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
+  `Other` - Line type is unclear
 </ResponseField>
 
 <ResponseField name="carrier" type="string">
-  The company that provides voice and/or data services for the phone number. Carriers are returned at the MVNO level.
+  The company that provides voice and/or data services for the phone number.
+  Carriers are returned at the MVNO level.
 </ResponseField>
 
 <ResponseField name="is_prepaid" type="boolean">
@@ -207,24 +213,154 @@ public class ReversePhoneExample {
   True if the phone number is registered to a business.
 </ResponseField>
 
-<ResponseField name="belongs_to" type="object">
-  The primary owner of the phone number. Can be a Person or Business object.
+<ResponseField name="owners" type="object">
+  The owner(s) associated to the phone.
+  <Expandable title="owner object">
+    <ResponseField name="id" type="string">
+      The persistent ID of the address.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The full name of the person.
+    </ResponseField>
+
+    <ResponseField name="firstname" type="string">
+      The first name of the person.
+    </ResponseField>
+
+    <ResponseField name="middlename" type="string">
+      The middle name (or middle initial) of the person.
+    </ResponseField>
+
+    <ResponseField name="lastname" type="string">
+      The last name of the person.
+    </ResponseField>
+
+    <ResponseField name="alternate_names" type="string">
+      Alternate names of the person associated with the phone.
+    </ResponseField>
+
+    <ResponseField name="age_range" type="string">
+      The age of the person in a 5-year range.
+    </ResponseField>
+
+    <ResponseField name="gender" type="string">
+      The gender of the person.
+    </ResponseField>
+
+    <ResponseField name="type" type="string">
+      The type of the legal entity.
+        - Person: The legal entity is a person.
+        - Company: The legal entity is a company.
+    </ResponseField>
+
+    <ResponseField name="link_to_phone_start_date" type="string">
+      The date when the person was first linked to the phone number.
+    </ResponseField>
+
+    <ResponseField name="industry" type="array">
+      Not applicable.
+    </ResponseField>
+
+    <ResponseField name="current_addresses" type="object">
+      A list of unique current locations associated with Person or Business in belongs_to array.
+      <Expandable title="address object">
+        <ResponseField name="id" type="string">
+          The persistent ID of the address.
+        </ResponseField>
+
+        <ResponseField name="location_type" type="string">
+          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        </ResponseField>
+
+        <ResponseField name="street_line_1" type="string">
+          The first line of the street part in the structured address.
+        </ResponseField>
+
+        <ResponseField name="street_line_2" type="string">
+          The second line of the street part in the structured address.
+        </ResponseField>
+
+        <ResponseField name="city" type="string">
+          The city associated with the address.
+        </ResponseField>
+
+        <ResponseField name="postal_code" type="string">
+          The postal code of the structured address.
+        </ResponseField>
+
+        <ResponseField name="zip4" type="string">
+          The ZIP+4 code of the structured address (USA).
+        </ResponseField>
+
+        <ResponseField name="state_code" type="string">
+          The state code of the structured address.
+        </ResponseField>
+
+        <ResponseField name="country_code" type="string">
+          The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+        </ResponseField>
+
+        <ResponseField name="lat_long" type="object">
+          The coordinates of the geographical location of the address.
+          <Expandable title="lat_long object">
+            <ResponseField name="latitude" type="number">
+              The latitude coordinate of the location.
+            </ResponseField>
+
+            <ResponseField name="longitude" type="number">
+              The longer coordinate of the location.
+            </ResponseField>
+
+            <ResponseField name="accuracy" type="string">
+              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="delivery_point" type="string">
+          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        </ResponseField>
+
+        <ResponseField name="link_to_person_start_date" type="string">
+          The date when the address was first linked to the person.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="alternate_phones" type="array">
+      The list of alternate phone numbers of the primary owner of the phone number.
+      <Expandable title="alternate_phone object">
+        <ResponseField name="phone_number" type="string">
+          The phone number in E.164 or local format. The default country calling code is +1 (USA).
+        </ResponseField>
+
+        <ResponseField name="line_type" type="string">
+          The line type of the phone number. Possible values: - `Landline` - Traditional
+          wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
+          connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
+          a fixed physical address - `Premium` - Caller pays a premium for the call -
+          `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
+          `Other` - Line type is unclear
+        </ResponseField>
+    </Expandable>
+    </ResponseField>
+
+    <ResponseField name="emails" type="string">
+      The list of emails associated to the primary owner of the phone.
+    </ResponseField>
+
+  </Expandable>
 </ResponseField>
 
-<ResponseField name="current_addresses" type="array">
-  A list of unique current locations associated with Person or Business.
+<ResponseField name="error" type="object">
+  Error details in case of an error.
 </ResponseField>
 
-<ResponseField name="historical_addresses" type="array">
-  Returns a list of unique historical locations associated with the phone.
-</ResponseField>
-
-<ResponseField name="associated_people" type="array">
-  The list of related and associated people to person or business.
-</ResponseField>
-
-<ResponseField name="alternate_phones" type="array">
-  The list of alternate phone numbers of the primary owner.
+<ResponseField name="warnings" type="array">
+  Warnings returned as part of the response, if applicable. The possible values
+  include - Invalid Input, International number. Not authorized, or Missing
+  Input.
 </ResponseField>
 
 ## Example Response
@@ -264,11 +400,12 @@ public class ReversePhoneExample {
 </ResponseField>
 
 <ResponseField name="401" type="object">
-  **Unauthorized** - Missing or invalid API key
-</ResponseField>
+**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
 
-<ResponseField name="403" type="object">
-  **Forbidden** - API key not authorized or quota exceeded
+**API Key Missing** - Indicates that your request did not include an API key.
+
+**API Key Expired** - Indicates that the API key has expired.
+
 </ResponseField>
 
 <ResponseField name="429" type="object">
