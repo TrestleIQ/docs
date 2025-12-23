@@ -1,6 +1,6 @@
 ---
 title: "Phone Validation API (Archived)"
-description: "Lightweight phone check to identify line type, carrier, validity - Archived Version 3.0"
+description: "Trestle Phone Validation API validates the phone number and provides phone metadata, such as carrier name, line type (landline, mobile, non-fixed VoIP, etc.), is the phone prepaid, etc."
 api: "GET /3.0/phone_intel"
 ---
 
@@ -8,14 +8,6 @@ api: "GET /3.0/phone_intel"
   This is an archived version of the API. Please use the [Current Phone
   Validation API](/api-reference/phone-validation-api) for new integrations.
 </Warning>
-
-## Overview
-
-Trestle Phone Validation API validates the phone number and provides phone metadata, such as carrier name, line type (landline, mobile, non-fixed VoIP, etc.), and whether the phone is prepaid.
-
-**Version:** 3.0 (Archived)
-
-## Endpoint
 
 <RequestExample>
 
@@ -179,7 +171,8 @@ public class PhoneIntelArchivedExample {
 </ResponseField>
 
 <ResponseField name="phone_number" type="string">
-  The phone number in E.164 or local format.
+  The phone number in E.164 or local format. The default country calling code is
+  +1 (USA).
 </ResponseField>
 
 <ResponseField name="is_valid" type="boolean">
@@ -189,15 +182,37 @@ public class PhoneIntelArchivedExample {
 <ResponseField name="activity_score" type="integer">
   Trestle's activity scores range from 0 to 100. A score of 100 means consistent
   activity in the last 12 months, and a score of 0 means a disconnected number
-  or no activity has been seen in the past year. - **70 or above**: High
-  confidence that the phone is connected and active - **30 or below**: High
-  confidence that the phone is disconnected or inactive - **50**: Not enough
-  signals to predict connection status
+  or no activity has been seen in the past year.
+
+An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
+
+If you want to filter leads based on the activity score, the following rules can be recommended:
+
+- Prioritize dialing good numbers with consistent activity: Scores 70 or above.
+- Weed out leads with disconnected/inactive numbers: Scores of 30 or below.
+
+</ResponseField>
+
+<ResponseField name="country_calling_code" type="string">
+  The country code of the phone number.
+</ResponseField>
+
+<ResponseField name="country_code" type="string">
+  The ISO-3166 alpha-2 country code of the phone number. See:
+  [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+</ResponseField>
+
+<ResponseField name="country_name" type="string">
+  The country name of the location associated with the phone number.
 </ResponseField>
 
 <ResponseField name="line_type" type="string">
-  The line type of the phone number (Landline, Mobile, FixedVOIP, NonFixedVOIP,
-  etc.).
+  The line type of the phone number. Possible values: - `Landline` - Traditional
+  wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
+  connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
+  a fixed physical address - `Premium` - Caller pays a premium for the call -
+  `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
+  `Other` - Line type is unclear
 </ResponseField>
 
 <ResponseField name="carrier" type="string">
@@ -208,6 +223,35 @@ public class PhoneIntelArchivedExample {
   True if the phone is associated with a prepaid account.
 </ResponseField>
 
-<ResponseField name="is_commercial" type="boolean">
-  True if the phone number is registered to a business.
+<ResponseField name="error" type="object">
+  Error information if the request failed.
+</ResponseField>
+
+<ResponseField name="warnings" type="array">
+  Warnings returned as part of the response, if applicable. Possible values
+  include: `Invalid Input`, `International number. Not authorized`, or `Missing
+  Input`.
+</ResponseField>
+
+## Error Responses
+
+<ResponseField name="400" type="object">
+  **Bad Request** - Invalid parameters or input error
+</ResponseField>
+
+<ResponseField name="401" type="object">
+**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+
+**API Key Missing** - Indicates that your request did not include an API key.
+
+**API Key Expired** - Indicates that the API key has expired.
+
+</ResponseField>
+
+<ResponseField name="429" type="object">
+  **Too Many Requests** - Rate limit exceeded
+</ResponseField>
+
+<ResponseField name="500" type="object">
+  **Server Error** - Internal server error
 </ResponseField>
