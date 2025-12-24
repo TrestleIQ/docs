@@ -302,7 +302,15 @@ If you want to filter leads based on the activity score, the following rules can
 </ResponseField>
 
 <ResponseField name="error" type="object">
-  Error information if the request failed.
+  Error details in case of an error.
+  <Expandable title="error object">
+    <ResponseField name="name" type="string">
+      TIncomplete response due to external timeouts. **value:** "InternalError"
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      The error message. **value:** "Could not retrieve entire response"
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="warnings" type="array">
@@ -313,23 +321,20 @@ If you want to filter leads based on the activity score, the following rules can
 
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400 Bad Request
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- Indicates that the server cannot process the request due to client-side errors.
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 403
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
 
-</ResponseField>
+### 429 Too Many Requests
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- API Key has exceeded its rate limit.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.
