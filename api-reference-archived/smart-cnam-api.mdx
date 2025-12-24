@@ -1,6 +1,6 @@
 ---
 title: "Smart CNAM API (Archived)"
-description: "Validates a phone number and provides person or business name - Archived Version 3.1"
+description: "Validates a phone number and provides person or business name associated to the phone."
 api: "GET /3.1/cnam"
 ---
 
@@ -8,14 +8,6 @@ api: "GET /3.1/cnam"
   This is an archived version of the API. Please use the [Current Smart CNAM
   API](/api-reference/smart-cnam-api) for new integrations.
 </Warning>
-
-## Overview
-
-Smart CNAM API validates a phone number and provides person or business name associated to the phone. This is a lightweight API perfect for caller ID applications.
-
-**Version:** 3.1 (Archived)
-
-## Endpoint
 
 <RequestExample>
 
@@ -198,15 +190,68 @@ public class SmartCnamArchivedExample {
 </ResponseField>
 
 <ResponseField name="belongs_to" type="object">
-  The primary owner of the phone number with name information.
+  The primary owner of the phone number.
+  <Expandable title="owner object">
+    <ResponseField name="id" type="string">
+      The persistent ID of the address.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The full name of the person.
+    </ResponseField>
+
+    <ResponseField name="firstname" type="string">
+      The first name of the person.
+    </ResponseField>
+
+    <ResponseField name="middlename" type="string">
+      The middle name (or middle initial) of the person.
+    </ResponseField>
+
+    <ResponseField name="lastname" type="string">
+      The last name of the person.
+    </ResponseField>
+
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="error" type="object">
-  Error information if the request failed.
+  Error details in case of an error.
+  <Expandable title="error object">
+    <ResponseField name="name" type="string">
+      TIncomplete response due to external timeouts. **value:** "InternalError"
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      The error message. **value:** "Could not retrieve entire response"
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="warnings" type="array">
   Warnings returned as part of the response, if applicable. Possible values
   include: `Invalid Input`, `International number. Not authorized`, or `Missing
   Input`.
+</ResponseField>
+
+## Error Responses
+
+<ResponseField name="400" type="object">
+  **Bad Request** - Invalid parameters or input error
+</ResponseField>
+
+<ResponseField name="401" type="object">
+**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+
+**API Key Missing** - Indicates that your request did not include an API key.
+
+**API Key Expired** - Indicates that the API key has expired.
+
+</ResponseField>
+
+<ResponseField name="429" type="object">
+  **Too Many Requests** - Rate limit exceeded
+</ResponseField>
+
+<ResponseField name="500" type="object">
+  **Server Error** - Internal server error
 </ResponseField>
