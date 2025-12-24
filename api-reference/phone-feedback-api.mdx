@@ -1,14 +1,8 @@
 ---
 title: "Phone Feedback API"
-description: "Submit phone feedback to report call outcomes and right party contact"
+description: "Phone Feedback API offers a method of providing feedback to Trestle about dialed numbers for their connected/disconnected status and confirmation of right party contact."
 api: "POST /1.0/phone_feedback"
 ---
-
-## Overview
-
-Use the Phone Feedback API to submit the outcome of a phone call, including whether the call connected and if the number belonged to the right party. This helps improve data quality and enriches Trestle records.
-
-## Endpoint
 
 <RequestExample>
 
@@ -277,8 +271,15 @@ public class PhoneFeedbackExample {
 </ResponseField>
 
 <ResponseField name="error" type="object">
-  Returned when the request encounters a partial error due to external timeouts.
-  Includes `name` and `message` fields.
+  Error details in case of an error.
+  <Expandable title="error object">
+    <ResponseField name="name" type="string">
+      TIncomplete response due to external timeouts. **value:** "InternalError"
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      The error message. **value:** "Could not retrieve entire response"
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 ## Example Response
@@ -293,17 +294,22 @@ public class PhoneFeedbackExample {
 ## Error Responses
 
 <ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error.
+  **Bad Request** - Invalid parameters or input error
 </ResponseField>
 
-<ResponseField name="403" type="object">
-  **Forbidden** - Invalid API key or access denied.
+<ResponseField name="401" type="object">
+**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+
+**API Key Missing** - Indicates that your request did not include an API key.
+
+**API Key Expired** - Indicates that the API key has expired.
+
 </ResponseField>
 
 <ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded.
+  **Too Many Requests** - Rate limit exceeded
 </ResponseField>
 
 <ResponseField name="500" type="object">
-  **Server Error** - Internal server error.
+  **Server Error** - Internal server error
 </ResponseField>

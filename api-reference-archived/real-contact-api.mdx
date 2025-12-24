@@ -1,6 +1,6 @@
 ---
 title: "Real Contact API (Archived)"
-description: "Validates whether a lead is real and grades the contactability - Archived Version 1.0"
+description: "Real Contact API validates whether a lead is real, confirms the person is who he/she says they are, and grades the contactability of the lead."
 api: "GET /1.0/real_contact"
 ---
 
@@ -8,14 +8,6 @@ api: "GET /1.0/real_contact"
   This is an archived version of the API. Please use the [Current Real Contact
   API](/api-reference/real-contact-api) for new integrations.
 </Warning>
-
-## Overview
-
-Real Contact API validates whether a lead is real, confirms the person is who he/she says they are, and grades the contactability of the lead.
-
-**Version:** 1.0 (Archived)
-
-## Endpoint
 
 <RequestExample>
 
@@ -61,8 +53,10 @@ GET https://api.trestleiq.com/1.0/real_contact?name={name}&phone={phone}&email={
   The postal code of the structured address.
 </ParamField>
 
-<ParamField query="address.country_code" type="string">
+<ParamField query="country_code" type="string">
   The ISO-3166 alpha-2 country code of the address.
+  See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+  Cannot be longer than 100 characters. **Example:** `US`
 </ParamField>
 
 ## Headers
@@ -219,32 +213,70 @@ public class RealContactArchivedExample {
   True if the phone number is valid.
 </ResponseField>
 
-<ResponseField name="phone.activity_score" type="integer">
-  Trestle's activity scores range from 0 to 100. A score of 70 or above means
-  high confidence the phone is connected and active.
+<ResponseField name="activity_score" type="integer">
+  Trestle's activity scores range from 0 to 100. A score of 100 means consistent
+  activity in the last 12 months, and a score of 0 means a disconnected number
+  or no activity has been seen in the past year.
+
+An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
+
+If you want to filter leads based on the activity score, the following rules can be recommended:
+
+- Prioritize dialing good numbers with consistent activity: Scores 70 or above.
+- Weed out leads with disconnected/inactive numbers: Scores of 30 or below.
+
 </ResponseField>
 
-<ResponseField name="phone.line_type" type="string">
-  The line type of the phone number.
+<ResponseField name="line_type" type="string">
+  The line type of the phone number. Possible values: - `Landline` - Traditional
+  wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
+  connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
+  a fixed physical address - `Premium` - Caller pays a premium for the call -
+  `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
+  `Other` - Line type is unclear
 </ResponseField>
 
 <ResponseField name="person.match_score" type="integer">
-  The match score indicating how well the provided information matches Trestle's
-  database.
+  A match/no match indicator whether the name provided on the lead form matches
+  to the input phone number according to our database. A match is a positive
+  indicator that verifies the lead is real and is who he/she says they are.
 </ResponseField>
 
 <ResponseField name="person.contactability_grade" type="string">
-  The contactability grade of the lead (A, B, C, D, F).
+  An A-F grade determining the quality of the lead and whether it is
+  contactable. A Grade-F lead is a bad lead and should be deprioritized while a
+  Grade-A lead is real and contactable and should be prioritized.
 </ResponseField>
 
-<ResponseField name="address.is_valid" type="boolean">
-  True if the address is valid.
+<ResponseField name="error" type="object">
+  Error information if the request failed.
 </ResponseField>
 
-<ResponseField name="email.is_valid" type="boolean">
-  True if the email is valid.
+<ResponseField name="warnings" type="array">
+  Warnings returned as part of the response, if applicable. Possible values
+  include: `Invalid Input`, `International number. Not authorized`, or `Missing
+  Input`.
 </ResponseField>
 
-<ResponseField name="ip_address.risk_score" type="integer">
-  Risk score associated with the IP address.
+## Error Responses
+
+<ResponseField name="400" type="object">
+  **Bad Request** - Invalid parameters or input error
+</ResponseField>
+
+<ResponseField name="401" type="object">
+**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+
+**API Key Missing** - Indicates that your request did not include an API key.
+
+**API Key Expired** - Indicates that the API key has expired.
+
+</ResponseField>
+
+<ResponseField name="429" type="object">
+  **Too Many Requests** - Rate limit exceeded
+</ResponseField>
+
+<ResponseField name="500" type="object">
+  **Server Error** - Internal server error
 </ResponseField>

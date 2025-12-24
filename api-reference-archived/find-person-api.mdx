@@ -1,6 +1,6 @@
 ---
 title: "Find Person API (Archived)"
-description: "Find a person's details, including demographics, addresses, and phone numbers - Archived Version 3.1"
+description: "Find Person API provides the person's details, including demographics, all current and historical addresses, phone numbers, and relatives and associates to this person."
 api: "GET /3.1/person"
 ---
 
@@ -8,14 +8,6 @@ api: "GET /3.1/person"
   This is an archived version of the API. Please use the [Current Find Person
   API](/api-reference/find-person-api) for new integrations.
 </Warning>
-
-## Overview
-
-Find Person API provides the person's details, including demographics, all current and historical addresses, phone numbers, and relatives and associates to this person.
-
-**Version:** 3.1 (Archived)
-
-## Endpoint
 
 <RequestExample>
 
@@ -210,17 +202,350 @@ public class FindPersonArchivedExample {
 </ResponseField>
 
 <ResponseField name="person" type="array">
-  An array of people associated with the address provided. Each person object
-  includes: - Demographics - All current and historical addresses - Phone
-  numbers - Relatives and associates
+  An array of people associate with the address provided.
+  <Expandable title="person object">
+    <ResponseField name="id" type="string">
+      The persistent ID of the address.
+    </ResponseField>
+
+    <ResponseField name="name" type="string">
+      The full name of the person.
+    </ResponseField>
+
+    <ResponseField name="firstname" type="string">
+      The first name of the person.
+    </ResponseField>
+
+    <ResponseField name="middlename" type="string">
+      The middle name (or middle initial) of the person.
+    </ResponseField>
+
+    <ResponseField name="lastname" type="string">
+      The last name of the person.
+    </ResponseField>
+
+    <ResponseField name="alternate_names" type="string">
+      Alternate names of the person associated with the phone.
+    </ResponseField>
+
+    <ResponseField name="age_range" type="string">
+      The age of the person in a 5-year range.
+    </ResponseField>
+
+    <ResponseField name="gender" type="string">
+      The gender of the person.
+    </ResponseField>
+
+    <ResponseField name="found_at_address" type="object">
+      Address location of this person.
+      <Expandable title="address object">
+        <ResponseField name="id" type="string">
+          The persistent ID of the address.
+        </ResponseField>
+
+        <ResponseField name="location_type" type="string">
+          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        </ResponseField>
+
+        <ResponseField name="street_line_1" type="string">
+          The first line of the street part in the structured address.
+        </ResponseField>
+
+        <ResponseField name="street_line_2" type="string">
+          The second line of the street part in the structured address.
+        </ResponseField>
+
+        <ResponseField name="city" type="string">
+          The city associated with the address.
+        </ResponseField>
+
+        <ResponseField name="postal_code" type="string">
+          The postal code of the structured address.
+        </ResponseField>
+
+        <ResponseField name="zip4" type="string">
+          The ZIP+4 code of the structured address (USA).
+        </ResponseField>
+
+        <ResponseField name="state_code" type="string">
+          The state code of the structured address.
+        </ResponseField>
+
+        <ResponseField name="country_code" type="string">
+          The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+        </ResponseField>
+
+        <ResponseField name="lat_long" type="object">
+          The coordinates of the geographical location of the address.
+          <Expandable title="lat_long object">
+            <ResponseField name="latitude" type="number">
+              The latitude coordinate of the location.
+            </ResponseField>
+
+            <ResponseField name="longitude" type="number">
+              The longer coordinate of the location.
+            </ResponseField>
+
+            <ResponseField name="accuracy" type="string">
+              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="is_active" type="boolean">
+          True if the address is currently receiving mail.
+        </ResponseField>
+
+        <ResponseField name="delivery_point" type="string">
+          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        </ResponseField>
+
+        <ResponseField name="link_to_person_start_date" type="string">
+          The date when the address was first linked to the person.
+        </ResponseField>
+      </Expandable>
+
+    </ResponseField>
+
+    <ResponseField name="current_addresses" type="object">
+      Address location of this person.
+      <Expandable title="address object">
+        <ResponseField name="id" type="string">
+          The persistent ID of the address.
+        </ResponseField>
+
+        <ResponseField name="location_type" type="string">
+          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        </ResponseField>
+
+        <ResponseField name="street_line_1" type="string">
+          The first line of the street part in the structured address.
+        </ResponseField>
+
+        <ResponseField name="street_line_2" type="string">
+          The second line of the street part in the structured address.
+        </ResponseField>
+
+        <ResponseField name="city" type="string">
+          The city associated with the address.
+        </ResponseField>
+
+        <ResponseField name="postal_code" type="string">
+          The postal code of the structured address.
+        </ResponseField>
+
+        <ResponseField name="zip4" type="string">
+          The ZIP+4 code of the structured address (USA).
+        </ResponseField>
+
+        <ResponseField name="state_code" type="string">
+          The state code of the structured address.
+        </ResponseField>
+
+        <ResponseField name="country_code" type="string">
+          The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+        </ResponseField>
+
+        <ResponseField name="lat_long" type="object">
+          The coordinates of the geographical location of the address.
+          <Expandable title="lat_long object">
+            <ResponseField name="latitude" type="number">
+              The latitude coordinate of the location.
+            </ResponseField>
+
+            <ResponseField name="longitude" type="number">
+              The longer coordinate of the location.
+            </ResponseField>
+
+            <ResponseField name="accuracy" type="string">
+              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="is_active" type="boolean">
+          True if the address is currently receiving mail.
+        </ResponseField>
+
+        <ResponseField name="delivery_point" type="string">
+          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        </ResponseField>
+
+        <ResponseField name="link_to_person_start_date" type="string">
+          The date when the address was first linked to the person.
+        </ResponseField>
+      </Expandable>
+
+    </ResponseField>
+
+    <ResponseField name="historical_addresses" type="object">
+      Returns a list of unique historical locations associated with the phone.
+        <Expandable title="address object">
+          <ResponseField name="id" type="string">
+            The persistent ID of the address.
+          </ResponseField>
+
+          <ResponseField name="location_type" type="string">
+            The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+          </ResponseField>
+
+          <ResponseField name="street_line_1" type="string">
+            The first line of the street part in the structured address.
+          </ResponseField>
+
+          <ResponseField name="street_line_2" type="string">
+            The second line of the street part in the structured address.
+          </ResponseField>
+
+          <ResponseField name="city" type="string">
+            The city associated with the address.
+          </ResponseField>
+
+          <ResponseField name="postal_code" type="string">
+            The postal code of the structured address.
+          </ResponseField>
+
+          <ResponseField name="zip4" type="string">
+            The ZIP+4 code of the structured address (USA).
+          </ResponseField>
+
+          <ResponseField name="state_code" type="string">
+            The state code of the structured address.
+          </ResponseField>
+
+          <ResponseField name="country_code" type="string">
+            The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+          </ResponseField>
+
+          <ResponseField name="lat_long" type="object">
+            The coordinates of the geographical location of the address.
+            <Expandable title="lat_long object">
+              <ResponseField name="latitude" type="number">
+                The latitude coordinate of the location.
+              </ResponseField>
+
+              <ResponseField name="longitude" type="number">
+                The longer coordinate of the location.
+              </ResponseField>
+
+              <ResponseField name="accuracy" type="string">
+                The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+              </ResponseField>
+            </Expandable>
+          </ResponseField>
+
+          <ResponseField name="is_active" type="boolean">
+            True if the address is currently receiving mail.
+          </ResponseField>
+
+          <ResponseField name="delivery_point" type="string">
+            The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+          </ResponseField>
+
+          <ResponseField name="link_to_person_start_date" type="string">
+            The date when the address was first linked to the person.
+          </ResponseField>
+
+          <ResponseField name="link_to_person_end_date" type="string">
+            The date when the link between the address and the person ended.
+          </ResponseField>
+
+        </Expandable>
+      </ResponseField>
+
+      <ResponseField name="associated_people" type="object">
+        TThe list of related and associated people to person or business in belongs_to array.
+        <Expandable title="belongs_to object">
+        <ResponseField name="id" type="string">
+            The persistent ID of the address.
+          </ResponseField>
+
+          <ResponseField name="name" type="string">
+            The full name of the person.
+          </ResponseField>
+
+          <ResponseField name="firstname" type="string">
+            The first name of the person.
+          </ResponseField>
+
+          <ResponseField name="middlename" type="string">
+            The middle name (or middle initial) of the person.
+          </ResponseField>
+
+          <ResponseField name="lastname" type="string">
+            The last name of the person.
+          </ResponseField>
+
+          <ResponseField name="relation" type="string">
+            Relation of the associated person. Enum: "Household", "PotentialOwner"
+          </ResponseField>
+
+        </Expandable>
+      </ResponseField>
+
+      <ResponseField name="phones" type="array">
+        The list of alternate phone numbers of the primary owner of the phone number.
+        <Expandable title="alternate_phone object">
+          <ResponseField name="id" type="string">
+            The persistent ID of the phone number.
+          </ResponseField>
+
+          <ResponseField name="phone_number" type="string">
+            The phone number in E.164 or local format. The default country calling code is +1 (USA).
+          </ResponseField>
+
+          <ResponseField name="line_type" type="string">
+            The line type of the phone number. Possible values: - `Landline` - Traditional
+            wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
+            connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
+            a fixed physical address - `Premium` - Caller pays a premium for the call -
+            `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
+            `Other` - Line type is unclear
+          </ResponseField>
+
+        </Expandable>
+      </ResponseField>
+
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="error" type="object">
-  Error information if the request failed.
+  Error details in case of an error.
+  <Expandable title="error object">
+    <ResponseField name="name" type="string">
+      TIncomplete response due to external timeouts. **value:** "InternalError"
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      The error message. **value:** "Could not retrieve entire response"
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="warnings" type="array">
-  Warnings returned as part of the response. Possible values include: `Missing
-  Input`, `Invalid Input Address`, `Invalid house/building number`, `Missing
-  unit/apt/suite number`, or `Invalid unit/apt/suite number`.
+  Warnings returned as part of the response, if applicable. Possible values
+  include: `Invalid Input`, `International number. Not authorized`, or `Missing
+  Input`.
+</ResponseField>
+
+## Error Responses
+
+<ResponseField name="400" type="object">
+  **Bad Request** - Invalid parameters or input error
+</ResponseField>
+
+<ResponseField name="401" type="object">
+**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+
+**API Key Missing** - Indicates that your request did not include an API key.
+
+**API Key Expired** - Indicates that the API key has expired.
+
+</ResponseField>
+
+<ResponseField name="429" type="object">
+  **Too Many Requests** - Rate limit exceeded
+</ResponseField>
+
+<ResponseField name="500" type="object">
+  **Server Error** - Internal server error
 </ResponseField>
