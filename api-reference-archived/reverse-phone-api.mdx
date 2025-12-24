@@ -179,11 +179,12 @@ public class ReversePhoneArchivedExample {
 ## Response
 
 <ResponseField name="id" type="string">
-  The persistent ID of the phone number. Format: `Phone.<uuid>`
+  The persistent ID of the phone number.
 </ResponseField>
 
 <ResponseField name="phone_number" type="string">
-  The phone number in E.164 or local format.
+  The phone number in E.164 or local format. The default country calling code is
+  +1 (USA).
 </ResponseField>
 
 <ResponseField name="is_valid" type="boolean">
@@ -487,23 +488,27 @@ public class ReversePhoneArchivedExample {
 
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- **Invalid Parameters Error**: Parameter called incorrectly.
+- **Input Field Error**: Incorrect parameter information, such as non-existent area code on a phone number.
+- **Input Error**: No parameters given.
+- **Internal Error**: If there is an internal error while performing the checks
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 401
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Bad Request**: If ';' used as parameter separator in request. Non-UTF-8-encoded request.
+- **Not Authorized**: No api_key parameter in the request.
 
-</ResponseField>
+### 403
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- **Auth Error**: API Key is not authorized for that request or expired.
+- **Quota Exceeded Error**: API Key has exceeded its quota.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 429 Too Many Requests
+
+- API Key has exceeded its rate limit.
+
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.

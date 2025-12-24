@@ -14,32 +14,32 @@ GET https://api.trestleiq.com/3.1/location?address.street_line_1={street}&addres
 
 ## Parameters
 
-<ParamField query="address.street_line_1" type="string">
+<ParamField query="street_line_1" type="string">
   The first line of the street part in the structured address. Cannot be longer
   than 1000 characters. **Example:** `100 Main St`
 </ParamField>
 
-<ParamField query="address.street_line_2" type="string">
+<ParamField query="street_line_2" type="string">
   The second line of the street part in the structured address. Cannot be longer
   than 1000 characters. **Example:** `Ste 1`
 </ParamField>
 
-<ParamField query="address.city" type="string">
+<ParamField query="city" type="string">
   The name of the city in the structured address. Cannot be longer than 500
   characters. **Example:** `Seattle`
 </ParamField>
 
-<ParamField query="address.state_code" type="string">
+<ParamField query="state_code" type="string">
   The state code of the structured address. Cannot be longer than 100
   characters. **Example:** `WA`
 </ParamField>
 
-<ParamField query="address.postal_code" type="string">
+<ParamField query="postal_code" type="string">
   The postal code of the structured address. Cannot be longer than 100
   characters. **Example:** `98101`
 </ParamField>
 
-<ParamField query="address.country_code" type="string">
+<ParamField query="country_code" type="string">
   The ISO-3166 alpha-2 country code of the address. Cannot be longer than 100
   characters. **Example:** `US`
 </ParamField>
@@ -197,7 +197,7 @@ public class ReverseAddressExample {
 ## Response
 
 <ResponseField name="id" type="string">
-  The persistent ID of the address. Format: `Location.<uuid>`
+  The persistent ID of the address.
 </ResponseField>
 
 <ResponseField name="is_valid" type="boolean">
@@ -317,7 +317,7 @@ public class ReverseAddressExample {
 
     <ResponseField name="phones" type="array">
       The phone numbers associated with the person.
-      <Expandable title="alternate_phone object">
+      <Expandable title="phone object">
         <ResponseField name="id" type="string">
           The persistent ID of the phone number.
         </ResponseField>
@@ -336,7 +336,7 @@ public class ReverseAddressExample {
       </Expandable>
     </ResponseField>
 
-    <ResponseField name="emails" type="string">
+    <ResponseField name="emails" type="string[]">
       The list of emails associated to the primary owner of the phone.
     </ResponseField>
 
@@ -463,23 +463,20 @@ public class ReverseAddressExample {
 
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400 Bad Request
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- Indicates that the server cannot process the request due to client-side errors.
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 403
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
 
-</ResponseField>
+### 429 Too Many Requests
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- API Key has exceeded its rate limit.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.
