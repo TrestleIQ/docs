@@ -20,7 +20,9 @@ GET https://api.trestleiq.com/3.2/phone?phone={phone}
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string">
-  The ISO-3166 alpha-2 country code of the phone number. **Example:** `US`
+  The ISO-3166 alpha-2 country code of the phone number. See:
+  [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+  **Example:** `US`
 </ParamField>
 
 <ParamField query="phone.name_hint" type="string">
@@ -180,7 +182,8 @@ public class ReversePhoneExample {
 </ResponseField>
 
 <ResponseField name="phone_number" type="string">
-  The phone number in E.164 or local format.
+  The phone number in E.164 or local format. The default country calling code is
+  +1 (USA).
 </ResponseField>
 
 <ResponseField name="is_valid" type="boolean">
@@ -188,7 +191,7 @@ public class ReversePhoneExample {
 </ResponseField>
 
 <ResponseField name="country_calling_code" type="string">
-  The country code of the phone number (E.164 format).
+  The country code of the phone number.
 </ResponseField>
 
 <ResponseField name="line_type" type="string">
@@ -217,7 +220,7 @@ public class ReversePhoneExample {
   The owner(s) associated to the phone.
   <Expandable title="owner object">
     <ResponseField name="id" type="string">
-      The persistent ID of the address.
+      The persistent ID of the person.
     </ResponseField>
 
     <ResponseField name="name" type="string">
@@ -282,7 +285,7 @@ public class ReversePhoneExample {
         </ResponseField>
 
         <ResponseField name="city" type="string">
-          The city associated with the address.
+          TThe name of the city in the structured address.
         </ResponseField>
 
         <ResponseField name="postal_code" type="string">
@@ -298,7 +301,7 @@ public class ReversePhoneExample {
         </ResponseField>
 
         <ResponseField name="country_code" type="string">
-          The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+          The ISO-3166 alpha-2 country code of the phone number. See: [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
 
         <ResponseField name="lat_long" type="object">
@@ -346,7 +349,7 @@ public class ReversePhoneExample {
     </Expandable>
     </ResponseField>
 
-    <ResponseField name="emails" type="string">
+    <ResponseField name="emails" type="string[]">
       The list of emails associated to the primary owner of the phone.
     </ResponseField>
 
@@ -355,6 +358,14 @@ public class ReversePhoneExample {
 
 <ResponseField name="error" type="object">
   Error details in case of an error.
+  <Expandable title="error object">
+    <ResponseField name="name" type="string">
+      TIncomplete response due to external timeouts. **value:** "InternalError"
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      The error message. **value:** "Could not retrieve entire response"
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="warnings" type="array">
@@ -363,55 +374,22 @@ public class ReversePhoneExample {
   Input.
 </ResponseField>
 
-## Example Response
-
-```json
-{
-  "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
-  "phone_number": "2069735100",
-  "is_valid": true,
-  "country_calling_code": "1",
-  "line_type": "NonFixedVOIP",
-  "carrier": "Trestle Telco",
-  "is_prepaid": false,
-  "is_commercial": true,
-  "belongs_to": {
-    "name": "John Doe",
-    "firstname": "John",
-    "lastname": "Doe"
-  },
-  "current_addresses": [
-    {
-      "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
-      "street_line_1": "100 Main St",
-      "city": "Seattle",
-      "state_code": "WA",
-      "postal_code": "98101",
-      "country_code": "US"
-    }
-  ]
-}
-```
-
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400 Bad Request
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- Indicates that the server cannot process the request due to client-side errors.
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 403
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
 
-</ResponseField>
+### 429 Too Many Requests
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- API Key has exceeded its rate limit.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.
