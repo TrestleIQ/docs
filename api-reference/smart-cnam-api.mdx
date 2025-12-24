@@ -19,7 +19,9 @@ GET https://api.trestleiq.com/3.1/cnam?phone={phone}
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string">
-  The ISO-3166 alpha-2 country code of the phone number. **Example:** `US`
+  The ISO-3166 alpha-2 country code of the phone number. See:
+  [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+  **Example:** `US`
 </ParamField>
 
 ## Headers
@@ -185,7 +187,7 @@ public class SmartCnamExample {
 </ResponseField>
 
 <ResponseField name="belongs_to" type="object">
-  The primary owner of the phone number (Person or Business).
+  The primary owner of the phone number.
   <Expandable title="belongs_to object">
    <ResponseField name="id" type="string">
       The persistent ID of the address.
@@ -230,23 +232,20 @@ public class SmartCnamExample {
 
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400 Bad Request
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- Indicates that the server cannot process the request due to client-side errors.
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 403
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
 
-</ResponseField>
+### 429 Too Many Requests
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- API Key has exceeded its rate limit.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.

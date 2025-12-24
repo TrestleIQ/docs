@@ -38,22 +38,31 @@ GET https://api.trestleiq.com/1.0/real_contact?name={name}&phone={phone}&email={
 </ParamField>
 
 <ParamField query="address.street_line_1" type="string">
-  The first line of the street part in the structured address.
+  The first line of the street part in the structured address. (Cannot be longer
+  than 1000 characters.) **Example:** `100 Syrws St`
+</ParamField>
+
+<ParamField query="address.street_line_2" type="string">
+  The second line of the street part in the structured address. (Cannot be
+  longer than 1000 characters.) **Example:** `Ste 1`
 </ParamField>
 
 <ParamField query="address.city" type="string">
-  The name of the city in the structured address.
-</ParamField>
-
-<ParamField query="address.state_code" type="string">
-  The state code of the structured address.
+  The name of the city in the structured address. (Cannot be longer than 500
+  characters.) **Example:** `Seattle`
 </ParamField>
 
 <ParamField query="address.postal_code" type="string">
-  The postal code of the structured address.
+  The postal code of the structured address. (Cannot be longer than 100
+  characters.) **Example:** `98101`
 </ParamField>
 
-<ParamField query="country_code" type="string">
+<ParamField query="address.state_code" type="string">
+  The state code of the structured address. (Cannot be longer than 100
+  characters.) **Example:** `WA`
+</ParamField>
+
+<ParamField query="address.country_code" type="string">
   The ISO-3166 alpha-2 country code of the address.
   See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   Cannot be longer than 100 characters. **Example:** `US`
@@ -227,7 +236,7 @@ If you want to filter leads based on the activity score, the following rules can
 
 </ResponseField>
 
-<ResponseField name="line_type" type="string">
+<ResponseField name="phone.line_type" type="string">
   The line type of the phone number. Possible values: - `Landline` - Traditional
   wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
@@ -236,20 +245,28 @@ If you want to filter leads based on the activity score, the following rules can
   `Other` - Line type is unclear
 </ResponseField>
 
-<ResponseField name="person.match_score" type="integer">
+<ResponseField name="person.name_match" type="integer">
   A match/no match indicator whether the name provided on the lead form matches
   to the input phone number according to our database. A match is a positive
   indicator that verifies the lead is real and is who he/she says they are.
 </ResponseField>
 
-<ResponseField name="person.contactability_grade" type="string">
-  An A-F grade determining the quality of the lead and whether it is
+<ResponseField name="contact_grade" type="string">
+  string An A-F grade determining the quality of the lead and whether it is
   contactable. A Grade-F lead is a bad lead and should be deprioritized while a
   Grade-A lead is real and contactable and should be prioritized.
 </ResponseField>
 
 <ResponseField name="error" type="object">
-  Error information if the request failed.
+  Error details in case of an error.
+  <Expandable title="error object">
+    <ResponseField name="name" type="string">
+      TIncomplete response due to external timeouts. **value:** "InternalError"
+    </ResponseField>
+    <ResponseField name="message" type="string">
+      The error message. **value:** "Could not retrieve entire response"
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="warnings" type="array">
@@ -260,23 +277,27 @@ If you want to filter leads based on the activity score, the following rules can
 
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- **Invalid Parameters Error**: Parameter called incorrectly.
+- **Input Field Error**: Incorrect parameter information, such as non-existent area code on a phone number.
+- **Input Error**: No parameters given.
+- **Internal Error**: If there is an internal error while performing the checks
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 401
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Bad Request**: If ';' used as parameter separator in request. Non-UTF-8-encoded request.
+- **Not Authorized**: No api_key parameter in the request.
 
-</ResponseField>
+### 403
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- **Auth Error**: API Key is not authorized for that request or expired.
+- **Quota Exceeded Error**: API Key has exceeded its quota.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 429 Too Many Requests
+
+- API Key has exceeded its rate limit.
+
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.

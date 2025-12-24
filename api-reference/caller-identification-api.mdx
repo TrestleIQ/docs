@@ -180,7 +180,8 @@ public class CallerIdExample {
 </ResponseField>
 
 <ResponseField name="phone_number" type="string">
-  The phone number in E.164 or local format.
+  The phone number in E.164 or local format. The default country calling code is
+  +1 (USA).
 </ResponseField>
 
 <ResponseField name="is_valid" type="boolean">
@@ -214,7 +215,7 @@ public class CallerIdExample {
 </ResponseField>
 
 <ResponseField name="belongs_to" type="object">
-  The primary owner of the phone number (Person or Business).
+  The primary owner of the phone number.
   <Expandable title="belongs_to object">
    <ResponseField name="id" type="string">
       The persistent ID of the address.
@@ -301,7 +302,7 @@ public class CallerIdExample {
     </ResponseField>
 
     <ResponseField name="country_code" type="string">
-      The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+      The ISO-3166 alpha-2 country code of the phone number. See: [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
     </ResponseField>
 
     <ResponseField name="lat_long" type="object">
@@ -321,6 +322,10 @@ public class CallerIdExample {
       </Expandable>
     </ResponseField>
 
+    <ResponseField name="is_active" type="boolean">
+      True if the address is currently receiving mail.
+    </ResponseField>
+
     <ResponseField name="delivery_point" type="string">
       The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
     </ResponseField>
@@ -332,8 +337,8 @@ public class CallerIdExample {
   </Expandable>
 </ResponseField>
 
-<ResponseField name="emails" type="array">
-  Current email addresses associated with the caller.
+<ResponseField name="emails" type="string[]">
+  The list of emails associated to the primary owner of the phone.
 </ResponseField>
 
 <ResponseField name="error" type="object">
@@ -356,23 +361,20 @@ public class CallerIdExample {
 
 ## Error Responses
 
-<ResponseField name="400" type="object">
-  **Bad Request** - Invalid parameters or input error
-</ResponseField>
+### 400 Bad Request
 
-<ResponseField name="401" type="object">
-**Invalid API Key** - Indicates that the API key is either incorrect or has been deactivat
+- Indicates that the server cannot process the request due to client-side errors.
 
-**API Key Missing** - Indicates that your request did not include an API key.
+### 403
 
-**API Key Expired** - Indicates that the API key has expired.
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
 
-</ResponseField>
+### 429 Too Many Requests
 
-<ResponseField name="429" type="object">
-  **Too Many Requests** - Rate limit exceeded
-</ResponseField>
+- API Key has exceeded its rate limit.
 
-<ResponseField name="500" type="object">
-  **Server Error** - Internal server error
-</ResponseField>
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.
