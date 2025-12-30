@@ -15,11 +15,11 @@ GET https://api.trestleiq.com/3.0/phone_intel?phone={phone}
 ## Parameters
 
 <ParamField query="phone" type="string" required>
-  The phone number in E.164 or local format. **Example:** `2069735100`
+  The phone number in E.164 or local format. **Example:** `phone=2069735100`
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string">
-  The ISO-3166 alpha-2 country code of the phone number. **Example:** `US`
+  The ISO-3166 alpha-2 country code of the phone number. **Example:** `phone.country_hint=US`
 </ParamField>
 
 <ParamField query="add_ons" type="string">
@@ -32,7 +32,7 @@ GET https://api.trestleiq.com/3.0/phone_intel?phone={phone}
 ## Headers
 
 <ParamField query="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -155,16 +155,6 @@ public class PhoneIntelExample {
 
 </CodeGroup>
 
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/3.0/phone_intel",
-  "query": { "phone": "2069735100" },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
 
 ## Response
 
@@ -255,22 +245,23 @@ If you want to filter leads based on the activity score, the following rules can
   Input`.
 </ResponseField>
 
-## Error Responses
+<Danger>
+  ## Error Responses
 
-### 400 Bad Request
 
-- Indicates that the server cannot process the request due to client-side errors.
+  ### 400 Bad Request: 
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests
+  ### 429 Too Many Requests: 
+  - API Key has exceeded its rate limit.
 
-- API Key has exceeded its rate limit.
+  ### 500 Internal Server Error: 
+  - An unexpected error occurred on the server.
 
-### 500 Internal Server Error
-
-- An unexpected error occurred on the server.
+</Danger>

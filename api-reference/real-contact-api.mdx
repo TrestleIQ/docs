@@ -23,7 +23,7 @@ GET https://api.trestleiq.com/1.1/real_contact?name={name}&phone={phone}&email={
 </ParamField>
 
 <ParamField query="phone" type="string" required>
-  The phone provided by the lead on the web form. **Example:** `4259853735`
+  The phone provided by the lead on the web form. **Example:** `phone=4259853735`
 </ParamField>
 
 <ParamField query="email" type="string">
@@ -73,7 +73,7 @@ GET https://api.trestleiq.com/1.1/real_contact?name={name}&phone={phone}&email={
 ## Headers
 
 <ParamField query="x-api-key" body="header" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -203,20 +203,6 @@ public class RealContactExample {
 
 </CodeGroup>
 
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/1.0/real_contact",
-  "query": {
-    "name": "John Doe",
-    "phone": "4259853735",
-    "email": "john.doe@example.com"
-  },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
 
 ## Response
 
@@ -319,22 +305,23 @@ If you want to filter leads based on the activity score, the following rules can
   Input`.
 </ResponseField>
 
-## Error Responses
+<Danger>
+  ## Error Responses
 
-### 400 Bad Request
 
-- Indicates that the server cannot process the request due to client-side errors.
+  ### 400 Bad Request: 
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests
+  ### 429 Too Many Requests: 
+  - API Key has exceeded its rate limit.
 
-- API Key has exceeded its rate limit.
+  ### 500 Internal Server Error: 
+  - An unexpected error occurred on the server.
 
-### 500 Internal Server Error
-
-- An unexpected error occurred on the server.
+</Danger>

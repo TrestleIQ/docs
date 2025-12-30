@@ -15,7 +15,7 @@ POST https://api.trestleiq.com/1.0/phone_feedback
 ## Headers
 
 <ParamField path="x-api-key" body="header" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Request Body
@@ -243,26 +243,6 @@ public class PhoneFeedbackExample {
 
 </CodeGroup>
 
-**Postman payload**
-
-```json
-{
-  "method": "POST",
-  "url": "https://api.trestleiq.com/1.0/phone_feedback",
-  "headers": {
-    "x-api-key": "YOUR_API_KEY",
-    "Content-Type": "application/json"
-  },
-  "data": {
-    "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-    "phone": "2069735100",
-    "name": "Waidong Syrws",
-    "phone_status": "Connected",
-    "phone_right_party_contact": true
-  }
-}
-```
-
 ## Response
 
 <ResponseField name="status" type="string">
@@ -282,22 +262,23 @@ public class PhoneFeedbackExample {
   </Expandable>
 </ResponseField>
 
-## Error Responses
+<Danger>
+  ## Error Responses
 
-### 400 Bad Request
 
-- Indicates that the server cannot process the request due to client-side errors.
+  ### 400 Bad Request: 
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests
+  ### 429 Too Many Requests: 
+  - API Key has exceeded its rate limit.
 
-- API Key has exceeded its rate limit.
+  ### 500 Internal Server Error: 
+  - An unexpected error occurred on the server.
 
-### 500 Internal Server Error
-
-- An unexpected error occurred on the server.
+</Danger>

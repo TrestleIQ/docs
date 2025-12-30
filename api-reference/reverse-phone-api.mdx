@@ -12,36 +12,36 @@ GET https://api.trestleiq.com/3.2/phone?phone={phone}
 
 </RequestExample>
 
-## Parameters
+## Query Parameters
 
 <ParamField query="phone" type="string" required>
   The phone number in E.164 or local format. The default country calling code is
-  +1 (USA). **Example:** `2069735100`
+  +1 (USA). **Example:** `phone=2069735100`
 </ParamField>
 
-<ParamField query="phone.country_hint" type="string">
+<ParamField query="phone.country_hint" type="string <ISO-3166-2>">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
-  **Example:** `US`
+  **Example:** `phone.country_hint=US`
 </ParamField>
 
 <ParamField query="phone.name_hint" type="string">
   Person or Business name associated with the phone number. If multiple names
   are associated with the phone in Trestle database, this name will be ranked
-  higher. **Example:** `John Doe`
+  higher. **Example:** `phone.name_hint=John Doe`
 </ParamField>
 
 <ParamField query="phone.postal_code_hint" type="string">
   The postal code of the subscriber address associated with the phone number. If
   multiple names or addresses are associated with the phone in Trestle database,
   this postal code hint will be used to rank name/address higher. **Example:**
-  `98264`
+  `phone.postal_code_hint=98264`
 </ParamField>
 
-## Headers
+## Header Parameters
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -164,37 +164,26 @@ public class ReversePhoneExample {
 
 </CodeGroup>
 
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/3.2/phone",
-  "query": { "phone": "2069735100" },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
-
 ## Response
 
-<ResponseField name="id" type="string">
+<ResponseField name="id" type="string or null">
   The persistent ID of the phone number. Format: `Phone.<uuid>`
 </ResponseField>
 
-<ResponseField name="phone_number" type="string">
+<ResponseField name="phone_number" type="string or null">
   The phone number in E.164 or local format. The default country calling code is
   +1 (USA).
 </ResponseField>
 
-<ResponseField name="is_valid" type="boolean">
+<ResponseField name="is_valid" type="boolean or null">
   True if the phone number is valid.
 </ResponseField>
 
-<ResponseField name="country_calling_code" type="string">
+<ResponseField name="country_calling_code" type="string or null">
   The country code of the phone number.
 </ResponseField>
 
-<ResponseField name="line_type" type="string">
+<ResponseField name="line_type" type="string or null">
   The line type of the phone number. Possible values: - `Landline` - Traditional
   wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
@@ -203,51 +192,51 @@ public class ReversePhoneExample {
   `Other` - Line type is unclear
 </ResponseField>
 
-<ResponseField name="carrier" type="string">
+<ResponseField name="carrier" type="string or null">
   The company that provides voice and/or data services for the phone number.
   Carriers are returned at the MVNO level.
 </ResponseField>
 
-<ResponseField name="is_prepaid" type="boolean">
+<ResponseField name="is_prepaid" type="boolean or null">
   True if the phone is associated with a prepaid account.
 </ResponseField>
 
-<ResponseField name="is_commercial" type="boolean">
+<ResponseField name="is_commercial" type="boolean or null">
   True if the phone number is registered to a business.
 </ResponseField>
 
-<ResponseField name="owners" type="object">
+<ResponseField name="owners" type="Array of ReversePhoneOwnerPerson (object) or ReversePhoneOwnerBusiness (object) or null">
   The owner(s) associated to the phone.
   <Expandable title="owner object">
-    <ResponseField name="id" type="string">
+    <ResponseField name="id" type="string or null <Person.<uuid>>">
       The persistent ID of the person.
     </ResponseField>
 
-    <ResponseField name="name" type="string">
+    <ResponseField name="name" type="string or null">
       The full name of the person.
     </ResponseField>
 
-    <ResponseField name="firstname" type="string">
+    <ResponseField name="firstname" type="string or null (Firstname)">
       The first name of the person.
     </ResponseField>
 
-    <ResponseField name="middlename" type="string">
+    <ResponseField name="middlename" type="string or null (Middlename)">
       The middle name (or middle initial) of the person.
     </ResponseField>
 
-    <ResponseField name="lastname" type="string">
+    <ResponseField name="lastname" type="string or null (Lastname)">
       The last name of the person.
     </ResponseField>
 
-    <ResponseField name="alternate_names" type="string">
+    <ResponseField name="alternate_names" type="string or null (AlternateNamesPerson)">
       Alternate names of the person associated with the phone.
     </ResponseField>
 
-    <ResponseField name="age_range" type="string">
+    <ResponseField name="age_range" type="string or null (AgeRange)">
       The age of the person in a 5-year range.
     </ResponseField>
 
-    <ResponseField name="gender" type="string">
+    <ResponseField name="gender" type="string or null (Gender)">
       The gender of the person.
     </ResponseField>
 
@@ -255,96 +244,98 @@ public class ReversePhoneExample {
       The type of the legal entity.
         - Person: The legal entity is a person.
         - Company: The legal entity is a company.
+      Enum: <Badge color="gray">Business</Badge>, <Badge color="gray">Person</Badge>
     </ResponseField>
 
-    <ResponseField name="link_to_phone_start_date" type="string">
+    <ResponseField name="link_to_phone_start_date" type="string or null">
       The date when the person was first linked to the phone number.
     </ResponseField>
 
-    <ResponseField name="industry" type="array">
+    <ResponseField name="industry" type="Array of strings or null">
       Not applicable.
     </ResponseField>
 
-    <ResponseField name="current_addresses" type="object">
+    <ResponseField name="current_addresses" type="Array of objects">
       A list of unique current locations associated with Person or Business in belongs_to array.
       <Expandable title="address object">
-        <ResponseField name="id" type="string">
+        <ResponseField name="id" type="string or null <Location.<uuid>>">
           The persistent ID of the address.
         </ResponseField>
 
-        <ResponseField name="location_type" type="string">
-          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        <ResponseField name="location_type" type="string or null">
+          The type of the location. Enum: <Badge color="gray">Address</Badge>, <Badge color="gray">Neighborhood</Badge>, <Badge color="gray">Country</Badge>, <Badge color="gray">ZipPlus4</Badge>, <Badge color="gray">PostalCode</Badge>, <Badge color="gray">City</Badge>, <Badge color="gray">State</Badge>
         </ResponseField>
 
-        <ResponseField name="street_line_1" type="string">
+        <ResponseField name="street_line_1" type="string or null">
           The first line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="street_line_2" type="string">
+        <ResponseField name="street_line_2" type="string or null">
           The second line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="city" type="string">
+        <ResponseField name="city" type="string or null">
           TThe name of the city in the structured address.
         </ResponseField>
 
-        <ResponseField name="postal_code" type="string">
+        <ResponseField name="postal_code" type="string or null">
           The postal code of the structured address.
         </ResponseField>
 
-        <ResponseField name="zip4" type="string">
+        <ResponseField name="zip4" type="string or null ^\d+-\d{4}$">
           The ZIP+4 code of the structured address (USA).
         </ResponseField>
 
-        <ResponseField name="state_code" type="string">
+        <ResponseField name="state_code" type="string or null">
           The state code of the structured address.
         </ResponseField>
 
-        <ResponseField name="country_code" type="string">
+        <ResponseField name="country_code" type="string or null <ISO-3166-2>">
           The ISO-3166 alpha-2 country code of the phone number. See: [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
 
         <ResponseField name="lat_long" type="object">
           The coordinates of the geographical location of the address.
           <Expandable title="lat_long object">
-            <ResponseField name="latitude" type="number">
+            <ResponseField name="latitude" type="number or null <double>">
               The latitude coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="longitude" type="number">
+            <ResponseField name="longitude" type="number or null <double>">
               The longer coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="accuracy" type="string">
-              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            <ResponseField name="accuracy" type="string or null">
+              The accuracy of the geographical location. Enum: <Badge color="gray">Neighborhood</Badge>, <Badge color="gray">Country</Badge>, <Badge color="gray">PostalCode</Badge>, <Badge color="gray">Street</Badge>, <Badge color="gray">City</Badge>, <Badge color="gray">State</Badge>, <Badge color="gray">RoofTop</Badge>
             </ResponseField>
           </Expandable>
         </ResponseField>
 
-        <ResponseField name="delivery_point" type="string">
-          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        <ResponseField name="delivery_point" type="string or null (DeliveryPoint)"> 
+          The type of the delivery point of the address. Enum: <Badge color="gray">SingleUnit</Badge>, <Badge color="gray">MultiUnit</Badge>, <Badge color="gray">POBox</Badge>, <Badge color="gray">PartialAddress</Badge>
         </ResponseField>
 
-        <ResponseField name="link_to_person_start_date" type="string">
+        <ResponseField name="link_to_person_start_date" type="string or null (LinkToPersonStartDate)">
           The date when the address was first linked to the person.
         </ResponseField>
       </Expandable>
     </ResponseField>
 
-    <ResponseField name="alternate_phones" type="array">
+    <ResponseField name="alternate_phones" type="object[]">
       The list of alternate phone numbers of the primary owner of the phone number.
       <Expandable title="alternate_phone object">
-        <ResponseField name="phone_number" type="string">
+        <ResponseField name="phone_number" type="string or null">
           The phone number in E.164 or local format. The default country calling code is +1 (USA).
         </ResponseField>
 
-        <ResponseField name="line_type" type="string">
+        <ResponseField name="line_type" type="string or null">
           The line type of the phone number. Possible values: - `Landline` - Traditional
           wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
           connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
           a fixed physical address - `Premium` - Caller pays a premium for the call -
           `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
           `Other` - Line type is unclear
+          Enum: <Badge color="gray">Landline</Badge>, <Badge color="gray">Premium</Badge>, <Badge color="gray">NonFixedVOIP</Badge>, <Badge color="gray">Mobile</Badge>, <Badge color="gray">FixedVOIP</Badge>, <Badge color="gray">TollFree</Badge>, <Badge color="gray">Other</Badge>, <Badge color="gray">Voicemail</Badge>
         </ResponseField>
     </Expandable>
     </ResponseField>
@@ -356,7 +347,7 @@ public class ReversePhoneExample {
   </Expandable>
 </ResponseField>
 
-<ResponseField name="error" type="object">
+<ResponseField name="error" type="object (PartialError)">
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
@@ -368,28 +359,29 @@ public class ReversePhoneExample {
   </Expandable>
 </ResponseField>
 
-<ResponseField name="warnings" type="array">
+<ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable. The possible values
   include - Invalid Input, International number. Not authorized, or Missing
   Input.
 </ResponseField>
 
-## Error Responses
+<Danger>
+  ## Error Responses
 
-### 400 Bad Request
 
-- Indicates that the server cannot process the request due to client-side errors.
+  ### 400 Bad Request: 
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests
+  ### 429 Too Many Requests: 
+  - API Key has exceeded its rate limit.
 
-- API Key has exceeded its rate limit.
+  ### 500 Internal Server Error: 
+  - An unexpected error occurred on the server.
 
-### 500 Internal Server Error
-
-- An unexpected error occurred on the server.
+</Danger>

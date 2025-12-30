@@ -24,7 +24,7 @@ GET https://api.trestleiq.com/1.0/real_contact?name={name}&phone={phone}&email={
 </ParamField>
 
 <ParamField query="phone" type="string" required>
-  The phone provided by the lead on the web form. **Example:** `4259853735`
+  The phone provided by the lead on the web form. **Example:** `phone=2069735100`
 </ParamField>
 
 <ParamField query="email" type="string">
@@ -71,7 +71,7 @@ GET https://api.trestleiq.com/1.0/real_contact?name={name}&phone={phone}&email={
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -200,21 +200,6 @@ public class RealContactArchivedExample {
 ```
 
 </CodeGroup>
-
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/1.0/real_contact",
-  "query": {
-    "name": "John Doe",
-    "phone": "4259853735",
-    "email": "john.doe@example.com"
-  },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
 
 ## Response
 

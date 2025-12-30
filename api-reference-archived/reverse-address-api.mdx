@@ -53,7 +53,7 @@ GET https://api.trestleiq.com/3.0/location?address.street_line_1={street}&addres
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -183,22 +183,6 @@ public class ReverseAddressArchivedExample {
 ```
 
 </CodeGroup>
-
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/3.0/location",
-  "query": {
-    "address.street_line_1": "100 Main St",
-    "address.city": "Seattle",
-    "address.state_code": "WA",
-    "address.postal_code": "98101"
-  },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
 
 ## Response
 

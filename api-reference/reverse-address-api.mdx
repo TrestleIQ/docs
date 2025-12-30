@@ -47,7 +47,7 @@ GET https://api.trestleiq.com/3.1/location?address.street_line_1={street}&addres
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -177,22 +177,6 @@ public class ReverseAddressExample {
 ```
 
 </CodeGroup>
-
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/3.0/location",
-  "query": {
-    "address.street_line_1": "100 Main St",
-    "address.city": "Seattle",
-    "address.state_code": "WA",
-    "address.postal_code": "98101"
-  },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
 
 ## Response
 
@@ -461,22 +445,23 @@ public class ReverseAddressExample {
   Input`.
 </ResponseField>
 
-## Error Responses
+<Danger>
+  ## Error Responses
 
-### 400 Bad Request
 
-- Indicates that the server cannot process the request due to client-side errors.
+  ### 400 Bad Request: 
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests
+  ### 429 Too Many Requests: 
+  - API Key has exceeded its rate limit.
 
-- API Key has exceeded its rate limit.
+  ### 500 Internal Server Error: 
+  - An unexpected error occurred on the server.
 
-### 500 Internal Server Error
-
-- An unexpected error occurred on the server.
+</Danger>
