@@ -4,13 +4,212 @@ description: "Phone Feedback API offers a method of providing feedback to Trestl
 api: "POST /1.0/phone_feedback"
 ---
 
-<RequestExample>
+<Panel>
+  <RequestExample>
+    ```bash cURL
+    curl --location --request POST "https://api.trestleiq.com/1.0/phone_feedback" \
+      --header "x-api-key: YOUR_API_KEY" \
+      --header "Content-Type: application/json" \
+      --data '{
+        "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+        "phone": "2069735100",
+        "name": "Waidong Syrws",
+        "phone_status": "Connected",
+        "phone_right_party_contact": true
+      }'
+    ```
 
-```bash
-POST https://api.trestleiq.com/1.0/phone_feedback
-```
+    ```javascript JavaScript
+    const response = await fetch("https://api.trestleiq.com/1.0/phone_feedback", {
+      method: "POST",
+      headers: {
+        "x-api-key": "YOUR_API_KEY",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        response_id: "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+        phone: "2069735100",
+        name: "Waidong Syrws",
+        phone_status: "Connected",
+        phone_right_party_contact: true,
+      }),
+    });
+    const data = await response.json();
+    ```
 
-</RequestExample>
+    ```javascript Node.js
+    import axios from "axios";
+
+    const { data } = await axios.post(
+      "https://api.trestleiq.com/1.0/phone_feedback",
+      {
+        response_id: "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+        phone: "2069735100",
+        name: "Waidong Syrws",
+        phone_status: "Connected",
+        phone_right_party_contact: true,
+      },
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    console.log(data);
+    ```
+
+    ```python Python
+    import requests
+
+    headers = {
+        "x-api-key": "YOUR_API_KEY",
+        "Content-Type": "application/json",
+    }
+
+    payload = {
+        "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+        "phone": "2069735100",
+        "name": "Waidong Syrws",
+        "phone_status": "Connected",
+        "phone_right_party_contact": True,
+    }
+
+    response = requests.post(
+        "https://api.trestleiq.com/1.0/phone_feedback",
+        json=payload,
+        headers=headers,
+        timeout=30,
+    )
+    data = response.json()
+    print(data)
+    ```
+
+    ```csharp C#
+    using var client = new HttpClient();
+    client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
+
+    var payload = new
+    {
+      response_id = "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+      phone = "2069735100",
+      name = "Waidong Syrws",
+      phone_status = "Connected",
+      phone_right_party_contact = true
+    };
+
+    var response = await client.PostAsJsonAsync("https://api.trestleiq.com/1.0/phone_feedback", payload);
+    var body = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(body);
+    ```
+
+    ```go Go
+    package main
+
+    import (
+    	"bytes"
+    	"fmt"
+    	"net/http"
+    )
+
+    func main() {
+    	jsonBody := []byte(`{
+        "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+        "phone": "2069735100",
+        "name": "Waidong Syrws",
+        "phone_status": "Connected",
+        "phone_right_party_contact": true
+      }`)
+
+    	req, _ := http.NewRequest("POST", "https://api.trestleiq.com/1.0/phone_feedback", bytes.NewBuffer(jsonBody))
+    	req.Header.Set("x-api-key", "YOUR_API_KEY")
+    	req.Header.Set("Content-Type", "application/json")
+
+    	resp, err := http.DefaultClient.Do(req)
+    	if err != nil {
+    		panic(err)
+    	}
+    	defer resp.Body.Close()
+
+    	fmt.Println(resp.StatusCode)
+    }
+    ```
+
+    ```php PHP
+    <?php
+    $payload = [
+      "response_id" => "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+      "phone" => "2069735100",
+      "name" => "Waidong Syrws",
+      "phone_status" => "Connected",
+      "phone_right_party_contact" => true
+    ];
+
+    $curl = curl_init("https://api.trestleiq.com/1.0/phone_feedback");
+    curl_setopt($curl, CURLOPT_HTTPHEADER, [
+      "x-api-key: YOUR_API_KEY",
+      "Content-Type: application/json"
+    ]);
+    curl_setopt($curl, CURLOPT_POST, true);
+    curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    echo $response;
+    ```
+
+    ```java Java
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    public class PhoneFeedbackExample {
+      public static void main(String[] args) throws Exception {
+        String body =
+            """
+            {
+              "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
+              "phone": "2069735100",
+              "name": "Waidong Syrws",
+              "phone_status": "Connected",
+              "phone_right_party_contact": true
+            }
+            """;
+
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(URI.create("https://api.trestleiq.com/1.0/phone_feedback"))
+                .header("x-api-key", "YOUR_API_KEY")
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body))
+                .build();
+
+        HttpResponse<String> response =
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+      }
+    }
+    ```
+  </RequestExample>
+
+  <ResponseExample>
+    ```json
+    {
+      "status": "success",
+      "error": {
+        "name": "InternalError",
+        "message": "Could not retrieve entire response"
+      }
+    }
+    ```
+  </ResponseExample>
+</Panel>
+
+## Phone Feedback 1.0
+
+Phone Feedback API allows you to submit phone feedback, including phone status and whether the phone number belongs to the right party based on a live call.
 
 ## Headers
 
@@ -38,6 +237,7 @@ POST https://api.trestleiq.com/1.0/phone_feedback
 <ParamField path="phone_status" body="json" type="string" required>
   Live-call status for the phone number. Possible values: `Connected` or
   `Disconnected`. **Example:** `Connected`
+  Enum: <Badge>Connected</Badge> <Badge>Disconnected</Badge>
 </ParamField>
 
 <ParamField
@@ -50,198 +250,6 @@ POST https://api.trestleiq.com/1.0/phone_feedback
   **Example:** `true`
 </ParamField>
 
-## Code Examples
-
-<CodeGroup>
-
-```bash cURL
-curl --location --request POST "https://api.trestleiq.com/1.0/phone_feedback" \
-  --header "x-api-key: YOUR_API_KEY" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-    "phone": "2069735100",
-    "name": "Waidong Syrws",
-    "phone_status": "Connected",
-    "phone_right_party_contact": true
-  }'
-```
-
-```javascript JavaScript
-const response = await fetch("https://api.trestleiq.com/1.0/phone_feedback", {
-  method: "POST",
-  headers: {
-    "x-api-key": "YOUR_API_KEY",
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    response_id: "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-    phone: "2069735100",
-    name: "Waidong Syrws",
-    phone_status: "Connected",
-    phone_right_party_contact: true,
-  }),
-});
-const data = await response.json();
-```
-
-```javascript Node.js
-import axios from "axios";
-
-const { data } = await axios.post(
-  "https://api.trestleiq.com/1.0/phone_feedback",
-  {
-    response_id: "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-    phone: "2069735100",
-    name: "Waidong Syrws",
-    phone_status: "Connected",
-    phone_right_party_contact: true,
-  },
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-console.log(data);
-```
-
-```python Python
-import requests
-
-headers = {
-    "x-api-key": "YOUR_API_KEY",
-    "Content-Type": "application/json",
-}
-
-payload = {
-    "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-    "phone": "2069735100",
-    "name": "Waidong Syrws",
-    "phone_status": "Connected",
-    "phone_right_party_contact": True,
-}
-
-response = requests.post(
-    "https://api.trestleiq.com/1.0/phone_feedback",
-    json=payload,
-    headers=headers,
-    timeout=30,
-)
-data = response.json()
-print(data)
-```
-
-```csharp C#
-using var client = new HttpClient();
-client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
-
-var payload = new
-{
-  response_id = "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-  phone = "2069735100",
-  name = "Waidong Syrws",
-  phone_status = "Connected",
-  phone_right_party_contact = true
-};
-
-var response = await client.PostAsJsonAsync("https://api.trestleiq.com/1.0/phone_feedback", payload);
-var body = await response.Content.ReadAsStringAsync();
-Console.WriteLine(body);
-```
-
-```go Go
-package main
-
-import (
-	"bytes"
-	"fmt"
-	"net/http"
-)
-
-func main() {
-	jsonBody := []byte(`{
-    "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-    "phone": "2069735100",
-    "name": "Waidong Syrws",
-    "phone_status": "Connected",
-    "phone_right_party_contact": true
-  }`)
-
-	req, _ := http.NewRequest("POST", "https://api.trestleiq.com/1.0/phone_feedback", bytes.NewBuffer(jsonBody))
-	req.Header.Set("x-api-key", "YOUR_API_KEY")
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	fmt.Println(resp.StatusCode)
-}
-```
-
-```php PHP
-<?php
-$payload = [
-  "response_id" => "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-  "phone" => "2069735100",
-  "name" => "Waidong Syrws",
-  "phone_status" => "Connected",
-  "phone_right_party_contact" => true
-];
-
-$curl = curl_init("https://api.trestleiq.com/1.0/phone_feedback");
-curl_setopt($curl, CURLOPT_HTTPHEADER, [
-  "x-api-key: YOUR_API_KEY",
-  "Content-Type: application/json"
-]);
-curl_setopt($curl, CURLOPT_POST, true);
-curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($payload));
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($curl);
-curl_close($curl);
-
-echo $response;
-```
-
-```java Java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-public class PhoneFeedbackExample {
-  public static void main(String[] args) throws Exception {
-    String body =
-        """
-        {
-          "response_id": "T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f",
-          "phone": "2069735100",
-          "name": "Waidong Syrws",
-          "phone_status": "Connected",
-          "phone_right_party_contact": true
-        }
-        """;
-
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(URI.create("https://api.trestleiq.com/1.0/phone_feedback"))
-            .header("x-api-key", "YOUR_API_KEY")
-            .header("Content-Type", "application/json")
-            .POST(HttpRequest.BodyPublishers.ofString(body))
-            .build();
-
-    HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-    System.out.println(response.body());
-  }
-}
-```
-
-</CodeGroup>
 
 ## Response
 
@@ -250,7 +258,7 @@ public class PhoneFeedbackExample {
   `success`
 </ResponseField>
 
-<ResponseField name="error" type="object">
+<ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
