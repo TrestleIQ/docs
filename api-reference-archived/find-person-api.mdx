@@ -4,519 +4,471 @@ description: "Find Person API provides the person's details, including demograph
 api: "GET /3.1/person"
 ---
 
-<Warning>
-  This is an archived version of the API. Please use the [Current Find Person
-  API](/api-reference/find-person-api) for new integrations.
-</Warning>
+<Panel>
+  <RequestExample>
+    ```bash cURL
+    curl --request GET \
+      --url "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA" \
+      --header "x-api-key: YOUR_API_KEY"
+    ```
 
-<RequestExample>
+    ```javascript JavaScript
+    const response = await fetch(
+      "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA",
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    const data = await response.json();
+    ```
 
-```bash
-GET https://api.trestleiq.com/3.1/person?name={name}&address.city={city}&address.state_code={state}
-```
+    ```javascript Node.js
+    import axios from "axios";
 
-</RequestExample>
+    const { data } = await axios.get(
+      "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA",
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    console.log(data);
+    ```
 
-## Parameters
+    ```python Python
+    import requests
+
+    headers = {"x-api-key": "YOUR_API_KEY"}
+    params = {
+        "name": "John Doe",
+        "address.city": "Seattle",
+        "address.state_code": "WA",
+    }
+
+    response = requests.get(
+        "https://api.trestleiq.com/3.1/person",
+        params=params,
+        headers=headers,
+        timeout=30,
+    )
+    data = response.json()
+    print(data)
+    ```
+
+    ```csharp C#
+    using var client = new HttpClient();
+    client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
+
+    var response = await client.GetAsync("https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA");
+    var body = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(body);
+    ```
+
+    ```go Go
+    package main
+
+    import (
+    	"fmt"
+    	"io"
+    	"net/http"
+    )
+
+    func main() {
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA", nil)
+    	req.Header.Set("x-api-key", "YOUR_API_KEY")
+
+    	resp, err := http.DefaultClient.Do(req)
+    	if err != nil {
+    		panic(err)
+    	}
+    	defer resp.Body.Close()
+
+    	body, _ := io.ReadAll(resp.Body)
+    	fmt.Println(string(body))
+    }
+    ```
+
+    ```php PHP
+    <?php
+    $curl = curl_init("https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA");
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    echo $response;
+    ```
+
+    ```java Java
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    public class FindPersonArchivedExample {
+      public static void main(String[] args) throws Exception {
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(
+                    URI.create(
+                        "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA"))
+                .header("x-api-key", "YOUR_API_KEY")
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+      }
+    }
+    ```
+  </RequestExample>
+
+  <ResponseExample>
+    ```json
+    {
+      "count_person": 1,
+      "person": [
+        {
+          "id": "Person.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
+          "name": "Waidong L Syrws",
+          "firstname": "Waidong",
+          "middlename": "L",
+          "lastname": "Syrws",
+          "alternate_names": [
+            "Sryws W L"
+          ],
+          "age_range": "25-29",
+          "gender": null,
+          "found_at_address": {
+            "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
+            "location_type": "Address",
+            "street_line_1": "100 Syrws St",
+            "street_line_2": "Ste 1",
+            "city": "Lynden",
+            "postal_code": "98264",
+            "zip4": "98264-9999",
+            "state_code": "WA",
+            "country_code": "US",
+            "lat_long": {
+              "latitude": 0,
+              "longitude": 0,
+              "accuracy": "Neighborhood"
+            },
+            "is_active": true,
+            "delivery_point": "SingleUnit",
+            "link_to_person_start_date": "2011-10-05"
+          },
+          "current_addresses": [
+            {
+              "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
+              "location_type": "Address",
+              "street_line_1": "100 Syrws St",
+              "street_line_2": "Ste 1",
+              "city": "Lynden",
+              "postal_code": "98264",
+              "zip4": "98264-9999",
+              "state_code": "WA",
+              "country_code": "US",
+              "lat_long": {
+                "latitude": 0,
+                "longitude": 0,
+                "accuracy": "Neighborhood"
+              },
+              "is_active": true,
+              "delivery_point": "SingleUnit",
+              "link_to_person_start_date": "2011-10-05"
+            }
+          ],
+          "historical_addresses": [
+            {
+              "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
+              "location_type": "Address",
+              "street_line_1": "100 Syrws St",
+              "street_line_2": "Ste 1",
+              "city": "Lynden",
+              "postal_code": "98264",
+              "zip4": "98264-9999",
+              "state_code": "WA",
+              "country_code": "US",
+              "lat_long": {
+                "latitude": 0,
+                "longitude": 0,
+                "accuracy": "Neighborhood"
+              },
+              "is_active": true,
+              "delivery_point": "SingleUnit",
+              "link_to_person_start_date": "2011-10-05",
+              "link_to_person_end_date": null
+            }
+          ],
+          "phones": [
+            {
+              "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
+              "phone_number": "2069735100",
+              "line_type": "NonFixedVOIP"
+            }
+          ],
+          "associated_people": [
+            {
+              "id": "Person.fffdcf06-0929-4b5a-9921-ee49b101ca84",
+              "name": "Waidong L Syrws",
+              "firstname": "Waidong",
+              "middlename": "L",
+              "lastname": "Syrws",
+              "relation": "Household"
+            }
+          ]
+        }
+      ],
+      "error": {
+        "name": "InternalError",
+        "message": "Could not retrieve entire response"
+      },
+      "warnings": "Missing Input"
+    }
+    ```
+  </ResponseExample>
+</Panel>
+
+## Find Person 3.1
+
+<Card title="URL Structure:" horizontal>
+  https://api.trestleiq.com/3.1/person?name=[insert_name]&address.city=[insert_city]&address.state_code=[insert_state_code]
+</Card>
+
+## Query Parameters
 
 <ParamField query="name" type="string" required>
-  The name of the person to search. **Example:** `John Doe`
+  The name of the person to search. **Example:** `name=John Doe`
 </ParamField>
 
 <ParamField query="address.street_line_1" type="string">
   The first line of the street part in the structured address. (Cannot be longer
-  than 1000 characters.) **Example:** `100 Syrws St`
+  than 1000 characters.) **Example:** `address.street_line_1=100 Syrws St`
 </ParamField>
 
 <ParamField query="address.street_line_2" type="string">
   The second line of the street part in the structured address. (Cannot be
-  longer than 1000 characters.) **Example:** `Ste 1`
+  longer than 1000 characters.) **Example:** `address.street_line_2=Ste 1`
 </ParamField>
 
 <ParamField query="address.city" type="string">
   The name of the city in the structured address. (Cannot be longer than 500
-  characters.) **Example:** `Seattle`
+  characters.) **Example:** `address.city=Seattle`
 </ParamField>
 
 <ParamField query="address.postal_code" type="string">
   The postal code of the structured address. (Cannot be longer than 100
-  characters.) **Example:** `98101`
+  characters.) **Example:** `address.postal_code=98101`
 </ParamField>
 
 <ParamField query="address.state_code" type="string">
   The state code of the structured address. (Cannot be longer than 100
-  characters.) **Example:** `WA`
+  characters.) **Example:** `address.state_code=WA`
 </ParamField>
 
-<ParamField query="address.country_code" type="string">
+<ParamField query="address.country_code" type="string <ISO-3166-2>">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
-  **Example:** `US`
+  **Example:** `address.country_code=US`
 </ParamField>
 
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
-
-## Code Examples
-
-<CodeGroup>
-
-```bash cURL
-curl --request GET \
-  --url "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA" \
-  --header "x-api-key: YOUR_API_KEY"
-```
-
-```javascript JavaScript
-const response = await fetch(
-  "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA",
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-const data = await response.json();
-```
-
-```javascript Node.js
-import axios from "axios";
-
-const { data } = await axios.get(
-  "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA",
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-console.log(data);
-```
-
-```python Python
-import requests
-
-headers = {"x-api-key": "YOUR_API_KEY"}
-params = {
-    "name": "John Doe",
-    "address.city": "Seattle",
-    "address.state_code": "WA",
-}
-
-response = requests.get(
-    "https://api.trestleiq.com/3.1/person",
-    params=params,
-    headers=headers,
-    timeout=30,
-)
-data = response.json()
-print(data)
-```
-
-```csharp C#
-using var client = new HttpClient();
-client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
-
-var response = await client.GetAsync("https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA");
-var body = await response.Content.ReadAsStringAsync();
-Console.WriteLine(body);
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA", nil)
-	req.Header.Set("x-api-key", "YOUR_API_KEY")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
-}
-```
-
-```php PHP
-<?php
-$curl = curl_init("https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA");
-curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($curl);
-curl_close($curl);
-
-echo $response;
-```
-
-```java Java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-public class FindPersonArchivedExample {
-  public static void main(String[] args) throws Exception {
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(
-                URI.create(
-                    "https://api.trestleiq.com/3.1/person?name=John%20Doe&address.city=Seattle&address.state_code=WA"))
-            .header("x-api-key", "YOUR_API_KEY")
-            .GET()
-            .build();
-
-    HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-    System.out.println(response.body());
-  }
-}
-```
-
-</CodeGroup>
-
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/3.1/person",
-  "query": {
-    "name": "John Doe",
-    "address.city": "Seattle",
-    "address.state_code": "WA"
-  },
-  "headers": { "x-api-key": "YOUR_API_KEY" }
-}
-```
 
 ## Response
 
-<ResponseField name="count_person" type="integer">
+<ResponseField name="count_person" type="integer or null">
   The number of people returned.
 </ResponseField>
 
-<ResponseField name="person" type="array">
+<ResponseField name="person" type="object[]">
   An array of people associate with the address provided.
   <Expandable title="person object">
-    <ResponseField name="id" type="string">
+    <ResponseField name="id" type="string or null <Person.<uuid>>">
       The persistent ID of the address.
     </ResponseField>
 
-    <ResponseField name="name" type="string">
+    <ResponseField name="name" type="string or null">
       The full name of the person.
     </ResponseField>
 
-    <ResponseField name="firstname" type="string">
+    <ResponseField name="firstname" type="string or null (FirstName)">
       The first name of the person.
     </ResponseField>
 
-    <ResponseField name="middlename" type="string">
+    <ResponseField name="middlename" type="string or null (MiddleName)">
       The middle name (or middle initial) of the person.
     </ResponseField>
 
-    <ResponseField name="lastname" type="string">
+    <ResponseField name="lastname" type="string or null (LastName)">
       The last name of the person.
     </ResponseField>
 
-    <ResponseField name="alternate_names" type="string">
+    <ResponseField name="alternate_names" type="string or null (AlternateNamesPerson)">
       Alternate names of the person associated with the phone.
     </ResponseField>
 
-    <ResponseField name="age_range" type="string">
+    <ResponseField name="age_range" type="string or null (AgeRange)">
       The age of the person in a 5-year range.
     </ResponseField>
 
-    <ResponseField name="gender" type="string">
+    <ResponseField name="gender" type="string or null (Gender)">
       The gender of the person.
     </ResponseField>
 
-    <ResponseField name="found_at_address" type="object">
+    <ResponseField name="found_at_address" type="object or null">
       Address location of this person.
       <Expandable title="address object">
-        <ResponseField name="id" type="string">
+        <ResponseField name="id" type="string or null <Location.<uuid>>">
           The persistent ID of the address.
         </ResponseField>
 
-        <ResponseField name="location_type" type="string">
-          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        <ResponseField name="location_type" type="string or null">
+          The type of the location. Enum: <Badge>Address</Badge> <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>ZipPlus4</Badge> <Badge>PostalCode</Badge> <Badge>City</Badge> <Badge>State</Badge>
         </ResponseField>
 
-        <ResponseField name="street_line_1" type="string">
+        <ResponseField name="street_line_1" type="string or null">
           The first line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="street_line_2" type="string">
+        <ResponseField name="street_line_2" type="string or null">
           The second line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="city" type="string">
+        <ResponseField name="city" type="string or null">
           The city associated with the address.
         </ResponseField>
 
-        <ResponseField name="postal_code" type="string">
+        <ResponseField name="postal_code" type="string or null">
           The postal code of the structured address.
         </ResponseField>
 
-        <ResponseField name="zip4" type="string">
+        <ResponseField name="zip4" type="string or null ^\d+-\d{4}$">
           The ZIP+4 code of the structured address (USA).
         </ResponseField>
 
-        <ResponseField name="state_code" type="string">
+        <ResponseField name="state_code" type="string or null">
           The state code of the structured address.
         </ResponseField>
 
-        <ResponseField name="country_code" type="string">
+        <ResponseField name="country_code" type="string or null <ISO-3166-2>">
           The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
 
-        <ResponseField name="lat_long" type="object">
+        <ResponseField name="lat_long" type="object or null">
           The coordinates of the geographical location of the address.
           <Expandable title="lat_long object">
-            <ResponseField name="latitude" type="number">
+            <ResponseField name="latitude" type="number or null <double>">
               The latitude coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="longitude" type="number">
+            <ResponseField name="longitude" type="number or null <double>">
               The longer coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="accuracy" type="string">
-              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            <ResponseField name="accuracy" type="string or null">
+              The accuracy of the geographical location. Enum: <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>PostalCode</Badge> <Badge>Street</Badge> <Badge>City</Badge> <Badge>State</Badge> <Badge>RoofTop</Badge>
             </ResponseField>
           </Expandable>
         </ResponseField>
 
-        <ResponseField name="is_active" type="boolean">
+        <ResponseField name="is_active" type="boolean or null">
           True if the address is currently receiving mail.
         </ResponseField>
 
-        <ResponseField name="delivery_point" type="string">
-          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        <ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
+          The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
         </ResponseField>
 
-        <ResponseField name="link_to_person_start_date" type="string">
+        <ResponseField name="link_to_person_start_date" type="string or null (LinkToPersonStartDate)">
           The date when the address was first linked to the person.
         </ResponseField>
       </Expandable>
 
     </ResponseField>
 
-    <ResponseField name="current_addresses" type="object">
+    <ResponseField name="current_addresses" type="object[]">
       An array of current address locations associated with this person.
       <Expandable title="address object">
-        <ResponseField name="id" type="string">
+        <ResponseField name="id" type="string or null <Location.<uuid>>">
           The persistent ID of the address.
         </ResponseField>
 
-        <ResponseField name="location_type" type="string">
-          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        <ResponseField name="location_type" type="string or null">
+          The type of the location. Enum: <Badge>Address</Badge> <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>ZipPlus4</Badge> <Badge>PostalCode</Badge> <Badge>City</Badge> <Badge>State</Badge>
         </ResponseField>
 
-        <ResponseField name="street_line_1" type="string">
+        <ResponseField name="street_line_1" type="string or null">
           The first line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="street_line_2" type="string">
+        <ResponseField name="street_line_2" type="string or null">
           The second line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="city" type="string">
+        <ResponseField name="city" type="string or null">
           The city associated with the address.
         </ResponseField>
 
-        <ResponseField name="postal_code" type="string">
+        <ResponseField name="postal_code" type="string or null">
           The postal code of the structured address.
         </ResponseField>
 
-        <ResponseField name="zip4" type="string">
+        <ResponseField name="zip4" type="string or null ^\d+-\d{4}$">
           The ZIP+4 code of the structured address (USA).
         </ResponseField>
 
-        <ResponseField name="state_code" type="string">
+        <ResponseField name="state_code" type="string or null">
           The state code of the structured address.
         </ResponseField>
 
-        <ResponseField name="country_code" type="string">
+        <ResponseField name="country_code" type="string or null <ISO-3166-2>">
           The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
 
-        <ResponseField name="lat_long" type="object">
+        <ResponseField name="lat_long" type="object or null">
           The coordinates of the geographical location of the address.
           <Expandable title="lat_long object">
-            <ResponseField name="latitude" type="number">
+            <ResponseField name="latitude" type="number or null <double>">
               The latitude coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="longitude" type="number">
+            <ResponseField name="longitude" type="number or null <double>">
               The longer coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="accuracy" type="string">
-              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            <ResponseField name="accuracy" type="string or null">
+              The accuracy of the geographical location. Enum: <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>PostalCode</Badge> <Badge>Street</Badge> <Badge>City</Badge> <Badge>State</Badge> <Badge>RoofTop</Badge>
             </ResponseField>
           </Expandable>
         </ResponseField>
 
-        <ResponseField name="is_active" type="boolean">
+        <ResponseField name="is_active" type="boolean or null">
           True if the address is currently receiving mail.
         </ResponseField>
 
-        <ResponseField name="delivery_point" type="string">
-          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        <ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
+          The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
         </ResponseField>
 
-        <ResponseField name="link_to_person_start_date" type="string">
+        <ResponseField name="link_to_person_start_date" type="string or null (LinkToPersonStartDate)">
           The date when the address was first linked to the person.
         </ResponseField>
       </Expandable>
-
     </ResponseField>
-
-    <ResponseField name="historical_addresses" type="object">
-      Returns a list of unique historical locations associated with the phone.
-        <Expandable title="address object">
-          <ResponseField name="id" type="string">
-            The persistent ID of the address.
-          </ResponseField>
-
-          <ResponseField name="location_type" type="string">
-            The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
-          </ResponseField>
-
-          <ResponseField name="street_line_1" type="string">
-            The first line of the street part in the structured address.
-          </ResponseField>
-
-          <ResponseField name="street_line_2" type="string">
-            The second line of the street part in the structured address.
-          </ResponseField>
-
-          <ResponseField name="city" type="string">
-            The city associated with the address.
-          </ResponseField>
-
-          <ResponseField name="postal_code" type="string">
-            The postal code of the structured address.
-          </ResponseField>
-
-          <ResponseField name="zip4" type="string">
-            The ZIP+4 code of the structured address (USA).
-          </ResponseField>
-
-          <ResponseField name="state_code" type="string">
-            The state code of the structured address.
-          </ResponseField>
-
-          <ResponseField name="country_code" type="string">
-            The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
-          </ResponseField>
-
-          <ResponseField name="lat_long" type="object">
-            The coordinates of the geographical location of the address.
-            <Expandable title="lat_long object">
-              <ResponseField name="latitude" type="number">
-                The latitude coordinate of the location.
-              </ResponseField>
-
-              <ResponseField name="longitude" type="number">
-                The longer coordinate of the location.
-              </ResponseField>
-
-              <ResponseField name="accuracy" type="string">
-                The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
-              </ResponseField>
-            </Expandable>
-          </ResponseField>
-
-          <ResponseField name="is_active" type="boolean">
-            True if the address is currently receiving mail.
-          </ResponseField>
-
-          <ResponseField name="delivery_point" type="string">
-            The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
-          </ResponseField>
-
-          <ResponseField name="link_to_person_start_date" type="string">
-            The date when the address was first linked to the person.
-          </ResponseField>
-
-          <ResponseField name="link_to_person_end_date" type="string">
-            The date when the link between the address and the person ended.
-          </ResponseField>
-
-        </Expandable>
-      </ResponseField>
-
-      <ResponseField name="associated_people" type="object">
-        The people that are associated to the business.
-        <Expandable title="belongs_to object">
-        <ResponseField name="id" type="string">
-            The persistent ID of the address.
-          </ResponseField>
-
-          <ResponseField name="name" type="string">
-            The full name of the person.
-          </ResponseField>
-
-          <ResponseField name="firstname" type="string">
-            The first name of the person.
-          </ResponseField>
-
-          <ResponseField name="middlename" type="string">
-            The middle name (or middle initial) of the person.
-          </ResponseField>
-
-          <ResponseField name="lastname" type="string">
-            The last name of the person.
-          </ResponseField>
-
-          <ResponseField name="relation" type="string">
-            Relation of the associated person. Enum: "Household", "PotentialOwner"
-          </ResponseField>
-
-        </Expandable>
-      </ResponseField>
-
-      <ResponseField name="phones" type="array">
-        The list of phone numbers associated to the business.
-        <Expandable title="alternate_phone object">
-          <ResponseField name="id" type="string">
-            The persistent ID of the phone number.
-          </ResponseField>
-
-          <ResponseField name="phone_number" type="string">
-            The phone number in E.164 or local format. The default country calling code is +1 (USA).
-          </ResponseField>
-
-          <ResponseField name="line_type" type="string">
-            The line type of the phone number. Possible values: - `Landline` - Traditional
-            wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
-            connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
-            a fixed physical address - `Premium` - Caller pays a premium for the call -
-            `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-            `Other` - Line type is unclear
-          </ResponseField>
-
-        </Expandable>
-      </ResponseField>
-
   </Expandable>
 </ResponseField>
 
-<ResponseField name="error" type="object">
+<ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
@@ -528,11 +480,13 @@ public class FindPersonArchivedExample {
   </Expandable>
 </ResponseField>
 
-<ResponseField name="warnings" type="array">
+<ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable. Possible values
   include: `Invalid Input`, `International number. Not authorized`, or `Missing
   Input`.
 </ResponseField>
+
+<Danger>
 
 ## Error Responses
 
@@ -560,3 +514,4 @@ public class FindPersonArchivedExample {
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
+</Danger>

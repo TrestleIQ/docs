@@ -15,14 +15,14 @@
 - Use MDX with YAML front matter (`title`, `description`) at the top of each page.
 - Prefer sentence case titles and concise section headings.
 - Indentation: 2 spaces in JSON (`docs.json`) and consistent 2-space indentation in MDX components.
-- File naming: kebab-case paths that mirror navigation entries (example: `guides/authentication.mdx`).
+- File naming: kebab-case paths that mirror navigation entries (**Example:** `guides/authentication.mdx`).
 
 ## Testing Guidelines
 - No automated tests are configured. Validate changes by running `mint dev` and reviewing pages in the browser.
 - For API reference edits, sanity-check sample requests and response schemas in the rendered page.
 
 ## Commit & Pull Request Guidelines
-- Recent commit messages are short, imperative, and descriptive (example: "Solved logo not displaying issue"). Keep subject lines focused on one change.
+- Recent commit messages are short, imperative, and descriptive (**Example:** "Solved logo not displaying issue"). Keep subject lines focused on one change.
 - PRs should include a brief summary, linked issue (if any), and screenshots for visible layout or branding changes.
 
 ## Configuration & Content Tips
