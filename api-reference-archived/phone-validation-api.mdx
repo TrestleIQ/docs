@@ -4,26 +4,159 @@ description: "Trestle Phone Validation API validates the phone number and provid
 api: "GET /3.0/phone_intel"
 ---
 
-<Warning>
-  This is an archived version of the API. Please use the [Current Phone
-  Validation API](/api-reference/phone-validation-api) for new integrations.
-</Warning>
+<Panel>
+  <RequestExample>
+    ```bash cURL
+    curl --request GET \
+      --url "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100" \
+      --header "x-api-key: YOUR_API_KEY"
+    ```
 
-<RequestExample>
+    ```javascript JavaScript
+    const response = await fetch(
+      "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    const data = await response.json();
+    ```
 
-```bash
-GET https://api.trestleiq.com/3.0/phone_intel?phone={phone}
-```
+    ```javascript Node.js
+    import axios from "axios";
 
-</RequestExample>
+    const { data } = await axios.get(
+      "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    console.log(data);
+    ```
 
-## Parameters
+    ```python Python
+    import requests
+
+    headers = {"x-api-key": "YOUR_API_KEY"}
+
+    response = requests.get(
+        "https://api.trestleiq.com/3.0/phone_intel",
+        params={"phone": "2069735100"},
+        headers=headers,
+        timeout=30,
+    )
+    data = response.json()
+    print(data)
+    ```
+
+    ```csharp C#
+    using var client = new HttpClient();
+    client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
+
+    var response = await client.GetAsync("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100");
+    var body = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(body);
+    ```
+
+    ```go Go
+    package main
+
+    import (
+    	"fmt"
+    	"io"
+    	"net/http"
+    )
+
+    func main() {
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100", nil)
+    	req.Header.Set("x-api-key", "YOUR_API_KEY")
+
+    	resp, err := http.DefaultClient.Do(req)
+    	if err != nil {
+    		panic(err)
+    	}
+    	defer resp.Body.Close()
+
+    	body, _ := io.ReadAll(resp.Body)
+    	fmt.Println(string(body))
+    }
+    ```
+
+    ```php PHP
+    <?php
+    $curl = curl_init("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100");
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    echo $response;
+    ```
+
+    ```java Java
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    public class PhoneIntelArchivedExample {
+      public static void main(String[] args) throws Exception {
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(URI.create("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100"))
+                .header("x-api-key", "YOUR_API_KEY")
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+      }
+    }
+    ```
+  </RequestExample>
+
+  <ResponseExample>
+    ```json
+    {
+      "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
+      "phone_number": "2069735100",
+      "is_valid": true,
+      "activity_score": 57,
+      "country_calling_code": "1",
+      "country_code": "US",
+      "country_name": "United States",
+      "line_type": "NonFixedVOIP",
+      "carrier": "Level 3 Communications, LLC",
+      "is_prepaid": false,
+      "error": {
+        "name": "InternalError",
+        "message": "Could not retrieve entire response"
+      },
+      "warnings": "Missing Input"
+    }
+    ```
+  </ResponseExample>
+</Panel>
+
+## Phone Validation API 3.0
+
+<Card title="URL Structure:" horizontal>
+  https://api.trestleiq.com/3.0/phone_intel?phone=[insert_phone]
+</Card>
+
+## Query Parameters
 
 <ParamField query="phone" type="string" required>
   The phone number in E.164 or local format. **Example:** `phone=2069735100`
 </ParamField>
 
-<ParamField query="phone.country_hint" type="string">
+<ParamField query="phone.country_hint" type="string <ISO-3166-2>">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   **Example:** `phone.country_hint=US`
@@ -35,143 +168,22 @@ GET https://api.trestleiq.com/3.0/phone_intel?phone={phone}
   Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
-## Code Examples
-
-<CodeGroup>
-
-```bash cURL
-curl --request GET \
-  --url "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100" \
-  --header "x-api-key: YOUR_API_KEY"
-```
-
-```javascript JavaScript
-const response = await fetch(
-  "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-const data = await response.json();
-```
-
-```javascript Node.js
-import axios from "axios";
-
-const { data } = await axios.get(
-  "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-console.log(data);
-```
-
-```python Python
-import requests
-
-headers = {"x-api-key": "YOUR_API_KEY"}
-
-response = requests.get(
-    "https://api.trestleiq.com/3.0/phone_intel",
-    params={"phone": "2069735100"},
-    headers=headers,
-    timeout=30,
-)
-data = response.json()
-print(data)
-```
-
-```csharp C#
-using var client = new HttpClient();
-client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
-
-var response = await client.GetAsync("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100");
-var body = await response.Content.ReadAsStringAsync();
-Console.WriteLine(body);
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100", nil)
-	req.Header.Set("x-api-key", "YOUR_API_KEY")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
-}
-```
-
-```php PHP
-<?php
-$curl = curl_init("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100");
-curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($curl);
-curl_close($curl);
-
-echo $response;
-```
-
-```java Java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-public class PhoneIntelArchivedExample {
-  public static void main(String[] args) throws Exception {
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(URI.create("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100"))
-            .header("x-api-key", "YOUR_API_KEY")
-            .GET()
-            .build();
-
-    HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-    System.out.println(response.body());
-  }
-}
-```
-
-</CodeGroup>
-
-
 ## Response
 
-<ResponseField name="id" type="string">
+<ResponseField name="id" type="string or null <Phone.<uuid>>">
   The persistent ID of the phone number.
 </ResponseField>
 
-<ResponseField name="phone_number" type="string">
+<ResponseField name="phone_number" type="string or null (PhoneNumber)">
   The phone number in E.164 or local format. The default country calling code is
   +1 (USA).
 </ResponseField>
 
-<ResponseField name="is_valid" type="boolean">
+<ResponseField name="is_valid" type="boolean or null">
   True if the phone number is valid.
 </ResponseField>
 
-<ResponseField name="activity_score" type="integer">
+<ResponseField name="activity_score" type="integer or null">
   Trestle's activity scores range from 0 to 100. A score of 100 means consistent
   activity in the last 12 months, and a score of 0 means a disconnected number
   or no activity has been seen in the past year.
@@ -185,37 +197,38 @@ If you want to filter leads based on the activity score, the following rules can
 
 </ResponseField>
 
-<ResponseField name="country_calling_code" type="string">
+<ResponseField name="country_calling_code" type="string or null <E.164>">
   The country code of the phone number.
 </ResponseField>
 
-<ResponseField name="country_code" type="string">
+<ResponseField name="country_code" type="string or null <ISO-3166-2>">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
 </ResponseField>
 
-<ResponseField name="country_name" type="string">
+<ResponseField name="country_name" type="string or null">
   The country name of the location associated with the phone number.
 </ResponseField>
 
-<ResponseField name="line_type" type="string">
+<ResponseField name="line_type" type="string or null">
   The line type of the phone number. Possible values: - `Landline` - Traditional
   wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
   a fixed physical address - `Premium` - Caller pays a premium for the call -
   `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
   `Other` - Line type is unclear
+  Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
 </ResponseField>
 
-<ResponseField name="carrier" type="string">
+<ResponseField name="carrier" type="string or null">
   The company that provides voice and/or data services for the phone number.
 </ResponseField>
 
-<ResponseField name="is_prepaid" type="boolean">
+<ResponseField name="is_prepaid" type="boolean or null">
   True if the phone is associated with a prepaid account.
 </ResponseField>
 
-<ResponseField name="error" type="object">
+<ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
@@ -227,11 +240,13 @@ If you want to filter leads based on the activity score, the following rules can
   </Expandable>
 </ResponseField>
 
-<ResponseField name="warnings" type="array">
+<ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable. Possible values
   include: `Invalid Input`, `International number. Not authorized`, or `Missing
   Input`.
 </ResponseField>
+
+<Danger>
 
 ## Error Responses
 
@@ -259,3 +274,4 @@ If you want to filter leads based on the activity score, the following rules can
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
+</Danger>

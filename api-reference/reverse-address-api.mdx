@@ -4,44 +4,258 @@ description: "Reverse Address API validates and normalizes input addresses while
 api: "GET /3.1/location"
 ---
 
-<RequestExample>
+<Panel>
+  <RequestExample>
+    ```bash cURL
+    curl --request GET \
+      --url "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101" \
+      --header "x-api-key: YOUR_API_KEY"
+    ```
 
-```bash
-GET https://api.trestleiq.com/3.1/location?address.street_line_1={street}&address.city={city}&address.state_code={state}&address.postal_code={postal_code}
-```
+    ```javascript JavaScript
+    const response = await fetch(
+      "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101",
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    const data = await response.json();
+    ```
 
-</RequestExample>
+    ```javascript Node.js
+    import axios from "axios";
 
-## Parameters
+    const { data } = await axios.get(
+      "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101",
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    console.log(data);
+    ```
+
+    ```python Python
+    import requests
+
+    headers = {"x-api-key": "YOUR_API_KEY"}
+    params = {
+        "address.street_line_1": "100 Main St",
+        "address.city": "Seattle",
+        "address.state_code": "WA",
+        "address.postal_code": "98101",
+    }
+
+    response = requests.get(
+        "https://api.trestleiq.com/3.1/location",
+        params=params,
+        headers=headers,
+        timeout=30,
+    )
+    data = response.json()
+    print(data)
+    ```
+
+    ```csharp C#
+    using var client = new HttpClient();
+    client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
+
+    var response = await client.GetAsync("https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101");
+    var body = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(body);
+    ```
+
+    ```go Go
+    package main
+
+    import (
+    	"fmt"
+    	"io"
+    	"net/http"
+    )
+
+    func main() {
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101", nil)
+    	req.Header.Set("x-api-key", "YOUR_API_KEY")
+
+    	resp, err := http.DefaultClient.Do(req)
+    	if err != nil {
+    		panic(err)
+    	}
+    	defer resp.Body.Close()
+
+    	body, _ := io.ReadAll(resp.Body)
+    	fmt.Println(string(body))
+    }
+    ```
+
+    ```php PHP
+    <?php
+    $curl = curl_init("https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101");
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    echo $response;
+    ```
+
+    ```java Java
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    public class ReverseAddressExample {
+      public static void main(String[] args) throws Exception {
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(
+                    URI.create(
+                        "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101"))
+                .header("x-api-key", "YOUR_API_KEY")
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+      }
+    }
+    ```
+  </RequestExample>
+
+  <ResponseExample>
+    ```json
+    {
+      "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
+      "is_valid": true,
+      "street_line_1": "100 Syrws St",
+      "street_line_2": "Ste 1",
+      "city": "Lynden",
+      "postal_code": "98264",
+      "zip4": "98264-9999",
+      "state_code": "WA",
+      "country_code": "US",
+      "lat_long": {
+        "latitude": 0,
+        "longitude": 0,
+        "accuracy": "Neighborhood"
+      },
+      "is_active": true,
+      "is_commercial": true,
+      "delivery_point": "SingleUnit",
+      "current_residents": [
+        {
+          "id": "Person.fffdcf06-0929-4b5a-9921-ee49b101ca84",
+          "name": "Waidong L Syrws",
+          "firstname": "Waidong",
+          "middlename": "L",
+          "lastname": "Syrws",
+          "alternate_names": [
+            "Sryws W L"
+          ],
+          "age_range": "25-29",
+          "gender": null,
+          "type": "Person",
+          "industry": [
+            "Service Provider"
+          ],
+          "link_to_address_start_date": "2023-01-02",
+          "phones": [
+            {
+              "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
+              "phone_number": "2069735100",
+              "line_type": "NonFixedVOIP"
+            }
+          ],
+          "emails": "waidong.syrws@email.com",
+          "historical_addresses": [
+            {
+              "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
+              "location_type": "Address",
+              "street_line_1": "10 Main St",
+              "street_line_2": "Ste 1",
+              "city": "Lynden",
+              "postal_code": "98264",
+              "zip4": "98264-9999",
+              "state_code": "WA",
+              "country_code": "US",
+              "lat_long": {
+                "latitude": 0,
+                "longitude": 0,
+                "accuracy": "Neighborhood"
+              },
+              "is_active": true,
+              "delivery_point": "SingleUnit",
+              "link_to_person_start_date": "2011-10-05",
+              "link_to_person_end_date": null
+            }
+          ],
+          "associated_people": [
+            {
+              "id": "Person.fffdcf06-0929-4b5a-9921-ee49b101ca84",
+              "name": "Waidong L Syrws",
+              "firstname": "Waidong",
+              "middlename": "L",
+              "lastname": "Syrws",
+              "relation": "Household"
+            }
+          ]
+        }
+      ],
+      "error": {
+        "name": "InternalError",
+        "message": "Could not retrieve entire response"
+      },
+      "warnings": [
+        "Missing Input"
+      ]
+    }
+    ```
+  </ResponseExample>
+</Panel>
+
+## Reverse Address 3.1
+
+<Card title="URL Structure:" horizontal>
+  https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_city]&postal_code=[insert_postal_code]&state_code=[insert_state_code]&street_line_1=[insert_street_line_1]
+</Card>
+
+## Query Parameters
 
 <ParamField query="street_line_1" type="string">
   The first line of the street part in the structured address. Cannot be longer
-  than 1000 characters. **Example:** `100 Main St`
+  than 1000 characters. **Example:** `street_line_1=100 Syrws St`
 </ParamField>
 
 <ParamField query="street_line_2" type="string">
   The second line of the street part in the structured address. Cannot be longer
-  than 1000 characters. **Example:** `Ste 1`
+  than 1000 characters. **Example:** `street_line_2=Ste 1`
 </ParamField>
 
 <ParamField query="city" type="string">
   The name of the city in the structured address. Cannot be longer than 500
-  characters. **Example:** `Seattle`
+  characters. **Example:** `city=Seattle`
 </ParamField>
 
 <ParamField query="state_code" type="string">
   The state code of the structured address. Cannot be longer than 100
-  characters. **Example:** `WA`
+  characters. **Example:** `state_code=WA`
 </ParamField>
 
 <ParamField query="postal_code" type="string">
   The postal code of the structured address. Cannot be longer than 100
-  characters. **Example:** `98101`
+  characters. **Example:** `postal_code=98101`
 </ParamField>
 
-<ParamField query="country_code" type="string">
+<ParamField query="country_code" type="string <ISO-3166-2>">
   The ISO-3166 alpha-2 country code of the address. Cannot be longer than 100
-  characters. **Example:** `US`
+  characters. **Example:** `country_code=US`
 </ParamField>
 
 ## Headers
@@ -50,238 +264,109 @@ GET https://api.trestleiq.com/3.1/location?address.street_line_1={street}&addres
   Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
-## Code Examples
-
-<CodeGroup>
-
-```bash cURL
-curl --request GET \
-  --url "https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101" \
-  --header "x-api-key: YOUR_API_KEY"
-```
-
-```javascript JavaScript
-const response = await fetch(
-  "https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101",
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-const data = await response.json();
-```
-
-```javascript Node.js
-import axios from "axios";
-
-const { data } = await axios.get(
-  "https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101",
-  {
-    headers: {
-      "x-api-key": "YOUR_API_KEY",
-    },
-  }
-);
-console.log(data);
-```
-
-```python Python
-import requests
-
-headers = {"x-api-key": "YOUR_API_KEY"}
-params = {
-    "address.street_line_1": "100 Main St",
-    "address.city": "Seattle",
-    "address.state_code": "WA",
-    "address.postal_code": "98101",
-}
-
-response = requests.get(
-    "https://api.trestleiq.com/3.0/location",
-    params=params,
-    headers=headers,
-    timeout=30,
-)
-data = response.json()
-print(data)
-```
-
-```csharp C#
-using var client = new HttpClient();
-client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
-
-var response = await client.GetAsync("https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101");
-var body = await response.Content.ReadAsStringAsync();
-Console.WriteLine(body);
-```
-
-```go Go
-package main
-
-import (
-	"fmt"
-	"io"
-	"net/http"
-)
-
-func main() {
-	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101", nil)
-	req.Header.Set("x-api-key", "YOUR_API_KEY")
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-
-	body, _ := io.ReadAll(resp.Body)
-	fmt.Println(string(body))
-}
-```
-
-```php PHP
-<?php
-$curl = curl_init("https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101");
-curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-$response = curl_exec($curl);
-curl_close($curl);
-
-echo $response;
-```
-
-```java Java
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-
-public class ReverseAddressExample {
-  public static void main(String[] args) throws Exception {
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(
-                URI.create(
-                    "https://api.trestleiq.com/3.0/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101"))
-            .header("x-api-key", "YOUR_API_KEY")
-            .GET()
-            .build();
-
-    HttpResponse<String> response =
-        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-    System.out.println(response.body());
-  }
-}
-```
-
-</CodeGroup>
-
 ## Response
 
-<ResponseField name="id" type="string">
+<ResponseField name="id" type="string or null <Location.<uuid>>">
   The persistent ID of the address.
 </ResponseField>
 
-<ResponseField name="is_valid" type="boolean">
+<ResponseField name="is_valid" type="boolean or null">
   True if the address is valid.
 </ResponseField>
 
-<ResponseField name="street_line_1" type="string">
+<ResponseField name="street_line_1" type="string or null">
   The first line of the street part in the structured address.
 </ResponseField>
 
-<ResponseField name="street_line_2" type="string">
+<ResponseField name="street_line_2" type="string or null">
   The second line of the street part in the structured address.
 </ResponseField>
 
-<ResponseField name="city" type="string">
+<ResponseField name="city" type="string or null">
   The name of the city in the structured address.
 </ResponseField>
 
-<ResponseField name="postal_code" type="string">
+<ResponseField name="postal_code" type="string or null">
   The postal code of the structured address.
 </ResponseField>
 
-<ResponseField name="state_code" type="string">
+<ResponseField name="state_code" type="string or null">
   The state code of the structured address.
 </ResponseField>
 
-<ResponseField name="zip4" type="string">
+<ResponseField name="zip4" type="string or null ^\d+-\d{4}$">
   The ZIP+4 code of the structured address (USA).
 </ResponseField>
 
-<ResponseField name="country_code" type="string">
+<ResponseField name="country_code" type="string or null <ISO-3166-2>">
   The ISO-3166 alpha-2 country code of the address.
 </ResponseField>
 
-<ResponseField name="lat_long" type="object">
+<ResponseField name="lat_long" type="object or null">
   The coordinates of the geographical location of the address.
   <Expandable title="lat_long object">
 
-    <ResponseField name="latitude" type="number">
+    <ResponseField name="latitude" type="number or null <double>">
       The latitude coordinate of the location.
     </ResponseField>
 
-    <ResponseField name="longitude" type="number">
+    <ResponseField name="longitude" type="number or null <double>">
       The longer coordinate of the location.
     </ResponseField>
 
-    <ResponseField name="accuracy" type="string">
-      The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+    <ResponseField name="accuracy" type="string or null">
+      The accuracy of the geographical location. Enum: <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>PostalCode</Badge> <Badge>Street</Badge> <Badge>City</Badge> <Badge>State</Badge> <Badge>RoofTop</Badge>
     </ResponseField>
 
   </Expandable>
 </ResponseField>
 
-<ResponseField name="is_active" type="boolean">
+<ResponseField name="is_active" type="boolean or null">
   True if the address is currently receiving mail.
 </ResponseField>
 
-<ResponseField name="is_commercial" type="array">
+<ResponseField name="is_commercial" type="boolean or null">
   True if the address is a business address. When shipping physical goods,
   commercial addresses are typically a positive signal and indicate that the
   order is not fraudulent.
 </ResponseField>
 
-<ResponseField name="delivery_point" type="array">
-  The type of the delivery point of the address. Enum: "SingleUnit",
-  "MultiUnit", "POBox", "PartialAddress"
+<ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
+  The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
 </ResponseField>
 
-<ResponseField name="current_residents" type="object">
+<ResponseField name="current_residents" type="object[]">
   The list of current person and business residents at the address.
   <Expandable title="owner object">
-    <ResponseField name="id" type="string">
+    <ResponseField name="id" type="string or null <Person.<uuid>>">
       The persistent ID of the address.
     </ResponseField>
 
-    <ResponseField name="name" type="string">
+    <ResponseField name="name" type="string or null">
       The full name of the person.
     </ResponseField>
 
-    <ResponseField name="firstname" type="string">
+    <ResponseField name="firstname" type="string or null (FirstName)">
       The first name of the person.
     </ResponseField>
 
-    <ResponseField name="middlename" type="string">
+    <ResponseField name="middlename" type="string or null (MiddleName)">
       The middle name (or middle initial) of the person.
     </ResponseField>
 
-    <ResponseField name="lastname" type="string">
+    <ResponseField name="lastname" type="string or null (LastName)">
       The last name of the person.
     </ResponseField>
 
-    <ResponseField name="alternate_names" type="string">
+    <ResponseField name="alternate_names" type="string or null (AlternateNamesPerson)">
       Alternate names of the person associated with the phone.
     </ResponseField>
 
-    <ResponseField name="age_range" type="string">
+    <ResponseField name="age_range" type="string or null (AgeRange)">
       The age of the person in a 5-year range.
     </ResponseField>
 
-    <ResponseField name="gender" type="string">
+    <ResponseField name="gender" type="string or null (Gender)">
       The gender of the person.
     </ResponseField>
 
@@ -289,33 +374,35 @@ public class ReverseAddressExample {
       The type of the legal entity.
         - Person: The legal entity is a person.
         - Company: The legal entity is a company.
+      Enum: <Badge>Person</Badge> <Badge>Company</Badge>
     </ResponseField>
 
-    <ResponseField name="link_to_phone_start_date" type="string">
+    <ResponseField name="link_to_phone_start_date" type="string or null">
       The date when the person was first linked to the phone number.
     </ResponseField>
 
-    <ResponseField name="industry" type="array">
+    <ResponseField name="industry" type="string or null">
       Not applicable.
     </ResponseField>
 
-    <ResponseField name="phones" type="array">
+    <ResponseField name="phones" type="object[]">
       The phone numbers associated with the person.
       <Expandable title="phone object">
-        <ResponseField name="id" type="string">
+        <ResponseField name="id" type="string or null <Phone.<uuid>>">
           The persistent ID of the phone number.
         </ResponseField>
-        <ResponseField name="phone_number" type="string">
+        <ResponseField name="phone_number" type="string or null (PhoneNumber)">
           The phone number in E.164 or local format. The default country calling code is +1 (USA).
         </ResponseField>
 
-        <ResponseField name="line_type" type="string">
+        <ResponseField name="line_type" type="string or null">
           The line type of the phone number. Possible values: - `Landline` - Traditional
           wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
           connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
           a fixed physical address - `Premium` - Caller pays a premium for the call -
           `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
           `Other` - Line type is unclear
+          Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -324,110 +411,83 @@ public class ReverseAddressExample {
       The list of emails associated to the primary owner of the phone.
     </ResponseField>
 
-    <ResponseField name="historical_addresses" type="object">
+    <ResponseField name="historical_addresses" type="object[]">
       A list of unique current locations associated with Person or Business in belongs_to array.
       <Expandable title="address object">
-        <ResponseField name="id" type="string">
+        <ResponseField name="id" type="string or null <Location.<uuid>>">
           The persistent ID of the address.
         </ResponseField>
 
-        <ResponseField name="location_type" type="string">
-          The type of the location. Enum: "Address","Neighborhood","Country","ZipPlus4","PostalCode","City","State"
+        <ResponseField name="location_type" type="string or null">
+          The type of the location. Enum: <Badge>Address</Badge> <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>ZipPlus4</Badge> <Badge>PostalCode</Badge> <Badge>City</Badge> <Badge>State</Badge>
         </ResponseField>
 
-        <ResponseField name="street_line_1" type="string">
+        <ResponseField name="street_line_1" type="string or null">
           The first line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="street_line_2" type="string">
+        <ResponseField name="street_line_2" type="string or null">
           The second line of the street part in the structured address.
         </ResponseField>
 
-        <ResponseField name="city" type="string">
+        <ResponseField name="city" type="string or null">
           The city associated with the address.
         </ResponseField>
 
-        <ResponseField name="postal_code" type="string">
+        <ResponseField name="postal_code" type="string or null">
           The postal code of the structured address.
         </ResponseField>
 
-        <ResponseField name="zip4" type="string">
+        <ResponseField name="zip4" type="string or null ^\d+-\d{4}$">
           The ZIP+4 code of the structured address (USA).
         </ResponseField>
 
-        <ResponseField name="state_code" type="string">
+        <ResponseField name="state_code" type="string or null">
           The state code of the structured address.
         </ResponseField>
 
-        <ResponseField name="country_code" type="string">
+        <ResponseField name="country_code" type="string or null <ISO-3166-2>">
           The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
 
-        <ResponseField name="lat_long" type="object">
+        <ResponseField name="lat_long" type="object or null">
           The coordinates of the geographical location of the address.
           <Expandable title="lat_long object">
-            <ResponseField name="latitude" type="number">
+            <ResponseField name="latitude" type="number or null <double>">
               The latitude coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="longitude" type="number">
+            <ResponseField name="longitude" type="number or null <double>">
               The longer coordinate of the location.
             </ResponseField>
 
-            <ResponseField name="accuracy" type="string">
-              The accuracy of the geographical location. Enum: "Neighborhood","Country","PostalCode","Street","City","State","RoofTop"
+            <ResponseField name="accuracy" type="string or null">
+              The accuracy of the geographical location. Enum: <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>PostalCode</Badge> <Badge>Street</Badge> <Badge>City</Badge> <Badge>State</Badge> <Badge>RoofTop</Badge>
             </ResponseField>
           </Expandable>
         </ResponseField>
 
-        <ResponseField name="is_active" type="boolean">
+        <ResponseField name="is_active" type="boolean or null">
           True if the address is currently receiving mail.
         </ResponseField>
 
-        <ResponseField name="delivery_point" type="string">
-          The type of the delivery point of the address. Enum: "SingleUnit","MultiUnit","POBox","PartialAddress"
+        <ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
+          The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
         </ResponseField>
 
-        <ResponseField name="link_to_person_start_date" type="string">
+        <ResponseField name="link_to_person_start_date" type="string or null (LinkToPersonStartDate)">
           The date when the address was first linked to the person.
         </ResponseField>
 
-        <ResponseField name="link_to_person_end_date" type="string">
+        <ResponseField name="link_to_person_end_date" type="string or null">
           The date when the address was first linked to the person.
         </ResponseField>
       </Expandable>
     </ResponseField>
-
-    <ResponseField name="associated_people" type="object">
-      The people that are associated to the person.
-      <Expandable title="belongs_to object">
-      <ResponseField name="id" type="string">
-          The persistent ID of the address.
-        </ResponseField>
-
-        <ResponseField name="name" type="string">
-          The full name of the person.
-        </ResponseField>
-
-        <ResponseField name="firstname" type="string">
-          The first name of the person.
-        </ResponseField>
-
-        <ResponseField name="middlename" type="string">
-          The middle name (or middle initial) of the person.
-        </ResponseField>
-
-        <ResponseField name="lastname" type="string">
-          The last name of the person.
-        </ResponseField>
-
-      </Expandable>
-    </ResponseField>
-
   </Expandable>
 </ResponseField>
 
-<ResponseField name="error" type="object">
+<ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
@@ -439,7 +499,7 @@ public class ReverseAddressExample {
   </Expandable>
 </ResponseField>
 
-<ResponseField name="warnings" type="array">
+<ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable. Possible values
   include: `Invalid Input`, `International number. Not authorized`, or `Missing
   Input`.
