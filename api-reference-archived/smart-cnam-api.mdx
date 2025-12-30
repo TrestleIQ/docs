@@ -20,19 +20,19 @@ GET https://api.trestleiq.com/3.1/cnam?phone={phone}
 ## Parameters
 
 <ParamField query="phone" type="string" required>
-  The phone number in E.164 or local format. **Example:** `2069735100`
+  The phone number in E.164 or local format. **Example:** `phone=2069735100`
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
-  **Example:** `US`
+  **Example:** `phone.country_hint=US`
 </ParamField>
 
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples
@@ -166,20 +166,6 @@ public class SmartCnamArchivedExample {
 ```
 
 </CodeGroup>
-
-**Postman payload**
-
-```json
-{
-  "method": "GET",
-  "url": "https://api.trestleiq.com/3.1/cnam",
-  "query": { "phone": "2069735100", "phone.country_hint": "US" },
-  "headers": {
-    "x-api-key": "YOUR_API_KEY",
-    "Accept": "application/json"
-  }
-}
-```
 
 ## Response
 

@@ -22,32 +22,32 @@ GET https://api.trestleiq.com/3.0/caller_id?phone={phone}
 
 <ParamField query="phone" type="string" required>
   The phone number in E.164 or local format. The default country calling code is
-  +1 (USA). **Example:** `2069735100`
+  +1 (USA). **Example:** `phone=2069735100`
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
-  **Example:** `US`
+  **Example:** `phone.country_hint=US`
 </ParamField>
 
 <ParamField query="phone.name_hint" type="string">
   Person or Business name associated with the phone number. If multiple names
   are associated with the phone in Trestle database, this name will be ranked
-  higher. **Example:** `Waidong Syrws`
+  higher. **Example:** `phone.name_hint=Waidong Syrws`
 </ParamField>
 
 <ParamField query="phone.postal_code_hint" type="string">
   The postal code of the subscriber address associated with the phone number. If
   multiple names or addresses are associated with the phone in Trestle database,
   this postal code hint will be used to rank name/address higher. **Example:**
-  `98264`
+  `phone.postal_code_hint=98264`
 </ParamField>
 
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication.
+  Your API key for authentication. **Example:** `{{apiKey}}`
 </ParamField>
 
 ## Code Examples

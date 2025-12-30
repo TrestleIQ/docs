@@ -47,143 +47,137 @@
       "/style.css"
     ]
   },
-  "navigation": {
-    "versions": [
-      {
-        "version": "Current",
-        "groups": [
-          {
-            "group": "Get Started",
-            "pages": [
-              "guides/overview",
-              "guides/authentication"
-            ]
-          },
-          {
-            "group": "API Reference",
-            "pages": [
-              {
-                "group": "Reverse Phone API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/reverse-phone-api"
-                ]
-              },
-              {
-                "group": "Caller Identification API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/caller-identification-api"
-                ]
-              },
-              {
-                "group": "Smart CNAM API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/smart-cnam-api"
-                ]
-              },
-              {
-                "group": "Phone Validation API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/phone-validation-api"
-                ]
-              },
-              {
-                "group": "Reverse Address API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/reverse-address-api"
-                ]
-              },
-              {
-                "group": "Real Contact API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/real-contact-api"
-                ]
-              },
-              {
-                "group": "Phone Feedback API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/phone-feedback-api"
-                ]
-              }
-            ]
-          }
-        ],
-        "default": true
-      },
-      {
-        "version": "Archived",
-        "groups": [
-          {
-            "group": "Get Started",
-            "pages": [
-              
-              "guides/overview",
-              "guides/authentication"
-              
-            ]
-          },
-          {
-            "group": "API Reference",
-            "pages": [
-              {
-                "group": "Reverse Phone API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/reverse-phone-api"
-                ]
-              },
-              {
-                "group": "Caller Identification API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/caller-identification-api"
-                ]
-              },
-              {
-                "group": "Smart CNAM API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/smart-cnam-api"
-                ]
-              },
-              {
-                "group": "Phone Validation API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/phone-validation-api"
-                ]
-              },
-              {
-                "group": "Reverse Address API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/reverse-address-api"
-                ]
-              },
-              {
-                "group": "Find Person API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/find-person-api"
-                ]
-              },
-              {
-                "group": "Real Contact API",
-                "expanded": false,
-                "pages": [
-                  "api-reference-archived/real-contact-api"
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  "navigation": [
+    {
+      "version": "Current",
+      "default": true,
+      "pages": [
+        {
+          "group": "Get Started",
+          "pages": [
+            "guides/overview"
+          ]
+        },
+        {
+          "group": "API Reference",
+          "pages": [
+            {
+              "group": "Reverse Phone API",
+              "expanded": false,
+              "pages": [
+                "api-reference/reverse-phone-api"
+              ]
+            },
+            {
+              "group": "Caller Identification API",
+              "expanded": false,
+              "pages": [
+                "api-reference/caller-identification-api"
+              ]
+            },
+            {
+              "group": "Smart CNAM API",
+              "expanded": false,
+              "pages": [
+                "api-reference/smart-cnam-api"
+              ]
+            },
+            {
+              "group": "Phone Validation API",
+              "expanded": false,
+              "pages": [
+                "api-reference/phone-validation-api"
+              ]
+            },
+            {
+              "group": "Reverse Address API",
+              "expanded": false,
+              "pages": [
+                "api-reference/reverse-address-api"
+              ]
+            },
+            {
+              "group": "Real Contact API",
+              "expanded": false,
+              "pages": [
+                "api-reference/real-contact-api"
+              ]
+            },
+            {
+              "group": "Phone Feedback API",
+              "expanded": false,
+              "pages": [
+                "api-reference/phone-feedback-api"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "version": "Archived",
+      "pages": [
+        {
+          "group": "Get Started",
+          "pages": [
+            "guides/overview"
+          ]
+        },
+        {
+          "group": "API Reference",
+          "pages": [
+            {
+              "group": "Reverse Phone API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/reverse-phone-api"
+              ]
+            },
+            {
+              "group": "Caller Identification API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/caller-identification-api"
+              ]
+            },
+            {
+              "group": "Smart CNAM API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/smart-cnam-api"
+              ]
+            },
+            {
+              "group": "Phone Validation API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/phone-validation-api"
+              ]
+            },
+            {
+              "group": "Reverse Address API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/reverse-address-api"
+              ]
+            },
+            {
+              "group": "Find Person API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/find-person-api"
+              ]
+            },
+            {
+              "group": "Real Contact API",
+              "expanded": false,
+              "pages": [
+                "api-reference-archived/real-contact-api"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
