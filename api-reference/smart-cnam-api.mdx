@@ -191,7 +191,8 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
   True if the phone number is valid.
 </ResponseField>
 
-<ResponseField name="belongs_to" type="(PhoneOwnerPerson (object or null)) or (PhoneOwnerBusiness (object or null))">
+<ResponseField name="belongs_to" type="	
+(PhoneOwnerPersonSmartCNAM (object or null))">
   The primary owner of the phone number.
   <Expandable title="belongs_to object">
    <ResponseField name="id" type="string or null <Person.<uuid>>">
