@@ -304,19 +304,24 @@ If you want to filter leads based on the activity score, the following rules can
 
 <ResponseField name="add_ons" type="object or null">
   <Expandable title="Add Ons Object">
-    <Expandable title="litigator_checks">
-      <ResponseField name="phone.is_litigator_risk" type="boolean or null">
-        True if the phone subscriber is a TCPA litigator.
-      </ResponseField>
-    </Expandable>
-    <Expandable title="email_checks">
-      <ResponseField name="email.is_deliverable" type="boolean or null">
-        True if the email is valid and deliverable.
-      </ResponseField>
-      <ResponseField name="email.age_score" type="integer or null">
-        	A 0-100 score indicating the longevity and activity-level of an email address.
-      </ResponseField>
-    </Expandable>
+    <ResponseField name="litigator_checks" type="object">
+      <Expandable title="litigator_checks" type="object">
+        <ResponseField name="phone.is_litigator_risk" type="boolean or null">
+          True if the phone subscriber is a TCPA litigator.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="email_checks" type="object">
+      <Expandable title="email_checks Object">
+        <ResponseField name="email.is_deliverable" type="boolean or null">
+          True if the email is valid and deliverable.
+        </ResponseField>
+        <ResponseField name="email.age_score" type="integer or null">
+            A 0-100 score indicating the longevity and activity-level of an email address.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 
 </ResponseField>
