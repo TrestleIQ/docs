@@ -47,6 +47,14 @@
       "/style.css"
     ]
   },
+  "headTags": [
+    {
+      "tag": "script",
+      "attributes": {
+        "src": "/leadfeeder.js"
+      }
+    }
+  ],
   "navigation": {
     "versions": [
       {
