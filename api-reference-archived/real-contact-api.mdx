@@ -126,6 +126,7 @@ api: "GET /1.0/real_contact"
       }
     }
     ```
+
   </RequestExample>
 
   <ResponseExample>
@@ -156,7 +157,8 @@ GET https://api.trestleiq.com/1.0/real_contact?api_key=[insert_key]&name=[insert
 </ParamField>
 
 <ParamField query="phone" type="string" required>
-  The phone provided by the lead on the web form. **Example:** `phone=2069735100`
+  The phone provided by the lead on the web form. **Example:**
+  `phone=2069735100`
 </ParamField>
 
 <ParamField query="email" type="string">
@@ -203,7 +205,7 @@ GET https://api.trestleiq.com/1.0/real_contact?api_key=[insert_key]&name=[insert
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication. **Example:** `{{apiKey}}`
+  Your API key for authentication. **Example:** `{{ apiKey }}`
 </ParamField>
 
 ## Response
@@ -232,8 +234,10 @@ If you want to filter leads based on the activity score, the following rules can
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
   a fixed physical address - `Premium` - Caller pays a premium for the call -
   `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-  `Other` - Line type is unclear
-  Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
+  `Other` - Line type is unclear Enum: <Badge>Landline</Badge>{" "}
+  <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>{" "}
+  <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>{" "}
+  <Badge>Other</Badge>
 </ResponseField>
 
 <ResponseField name="person.name_match" type="integer or null">
@@ -252,7 +256,7 @@ If you want to filter leads based on the activity score, the following rules can
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
-      TIncomplete response due to external timeouts. **value:** "InternalError"
+      Incomplete response due to external timeouts. **value:** "InternalError"
     </ResponseField>
     <ResponseField name="message" type="string">
       The error message. **value:** "Could not retrieve entire response"
@@ -261,9 +265,10 @@ If you want to filter leads based on the activity score, the following rules can
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. Possible values
-  include: `Invalid Input`, `International number. Not authorized`, or `Missing
-  Input`.
+  Warnings returned as part of the response, if applicable. The possible values
+  include - <Badge>Invalid Input</Badge>,{" "}
+  <Badge>International number. Not authorized</Badge>, or{" "}
+  <Badge>Missing Input</Badge>.
 </ResponseField>
 
 <Danger>
@@ -294,4 +299,4 @@ If you want to filter leads based on the activity score, the following rules can
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
-</Danger>
+  </Danger>
