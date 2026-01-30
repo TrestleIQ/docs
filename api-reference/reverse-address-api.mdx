@@ -127,6 +127,7 @@ api: "GET /3.1/location"
       }
     }
     ```
+
   </RequestExample>
 
   <ResponseExample>
@@ -261,7 +262,7 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication. **Example:** `{{apiKey}}`
+  Your API key for authentication. **Example:** `{{ apiKey }}`
 </ParamField>
 
 ## Response
@@ -332,7 +333,8 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 </ResponseField>
 
 <ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
-  The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
+  The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge>{" "}
+  <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
 </ResponseField>
 
 <ResponseField name="current_residents" type="object[]">
@@ -484,6 +486,7 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
         </ResponseField>
       </Expandable>
     </ResponseField>
+
   </Expandable>
 </ResponseField>
 
@@ -491,7 +494,7 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
-      TIncomplete response due to external timeouts. **value:** "InternalError"
+      Incomplete response due to external timeouts. **value:** "InternalError"
     </ResponseField>
     <ResponseField name="message" type="string">
       The error message. **value:** "Could not retrieve entire response"
@@ -500,28 +503,31 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. Possible values
-  include: `Invalid Input`, `International number. Not authorized`, or `Missing
-  Input`.
+  Warnings returned as part of the response, if applicable. The possible values
+  include - <Badge>Invalid Input</Badge>,{" "}
+  <Badge>International number. Not authorized</Badge>, or{" "}
+  <Badge>Missing Input</Badge>.
 </ResponseField>
 
 <Danger>
   ## Error Responses
 
+### 400 Bad Request:
 
-  ### 400 Bad Request: 
-  - Indicates that the server cannot process the request due to client-side errors.
+- Indicates that the server cannot process the request due to client-side errors.
 
-  ### 403
+### 403
 
-  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-  - **API Key Missing**: Indicates that your request did not include an API key.
-  - **API Key Expired**: Indicates that the API key has expired.
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
 
-  ### 429 Too Many Requests: 
-  - API Key has exceeded its rate limit.
+### 429 Too Many Requests:
 
-  ### 500 Internal Server Error: 
-  - An unexpected error occurred on the server.
+- API Key has exceeded its rate limit.
+
+### 500 Internal Server Error:
+
+- An unexpected error occurred on the server.
 
 </Danger>

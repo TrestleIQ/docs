@@ -131,6 +131,7 @@ api: "GET /3.1/cnam"
       }
     }
     ```
+
   </RequestExample>
   <ResponseExample>
     ```json Response Example
@@ -175,7 +176,7 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
-  Your API key for authentication. **Example:** `{{apiKey}}`
+  Your API key for authentication. **Example:** `{{ apiKey }}`
 </ParamField>
 
 ## Response
@@ -219,7 +220,7 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
   Error details in case of an error.
   <Expandable title="error object">
     <ResponseField name="name" type="string">
-      TIncomplete response due to external timeouts. **value:** "InternalError"
+      Incomplete response due to external timeouts. **value:** "InternalError"
     </ResponseField>
     <ResponseField name="message" type="string">
       The error message. **value:** "Could not retrieve entire response"
@@ -228,9 +229,10 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. Possible values
-  include: `Invalid Input`, `International number. Not authorized`, or `Missing
-  Input`.
+  Warnings returned as part of the response, if applicable. The possible values
+  include - <Badge>Invalid Input</Badge>,{" "}
+  <Badge>International number. Not authorized</Badge>, or{" "}
+  <Badge>Missing Input</Badge>.
 </ResponseField>
 
 <Danger>
@@ -260,4 +262,4 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
-</Danger>
+  </Danger>
