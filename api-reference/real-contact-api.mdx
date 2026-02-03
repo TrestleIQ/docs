@@ -126,7 +126,6 @@ api: "GET /1.1/real_contact"
       }
     }
     ```
-
   </RequestExample>
 
   <ResponseExample>
@@ -180,28 +179,23 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 </ParamField>
 
 <ParamField query="phone" type="string" required>
-  The phone provided by the lead on the web form. **Example:**
-  `phone=4259853735`
+  The phone provided by the lead on the web form. **Example:** `phone=4259853735`
 </ParamField>
 
 <ParamField query="email" type="string">
-  The email provided by the lead on the web form. **Example:**
-  `email=john.doe@example.com`
+  The email provided by the lead on the web form. **Example:** `email=john.doe@example.com`
 </ParamField>
 
 <ParamField query="ip_address" type="string">
-  The IP address from which the lead signed up on the web form. **Example:**
-  `ip_address=192.0.0.1`
+  The IP address from which the lead signed up on the web form. **Example:** `ip_address=192.0.0.1`
 </ParamField>
 
 <ParamField query="address.street_line_1" type="string">
-  The first line of the street part in the structured address. **Example:**
-  `address.street_line_1=100 Syrws St`
+  The first line of the street part in the structured address. **Example:** `address.street_line_1=100 Syrws St`
 </ParamField>
 
 <ParamField query="address.city" type="string">
-  The name of the city in the structured address. **Example:**
-  `address.city=Lynden`
+  The name of the city in the structured address. **Example:** `address.city=Lynden`
 </ParamField>
 
 <ParamField query="address.state_code" type="string">
@@ -209,27 +203,21 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 </ParamField>
 
 <ParamField query="address.postal_code" type="string">
-  The postal code of the structured address. **Example:**
-  `address.postal_code=98229`
+  The postal code of the structured address. **Example:** `address.postal_code=98229`
 </ParamField>
 
 <ParamField query="address.country_code" type="string <ISO-3166-2>">
-  The ISO-3166 alpha-2 country code of the address. **Example:**
-  `address.country_code=US`
+  The ISO-3166 alpha-2 country code of the address. **Example:** `address.country_code=US`
 </ParamField>
 
 <ParamField query="add_ons" type="string">
-  Request parameter to enable specific add-ons available for this endpoint.
-  Add-ons incur additional charges. Please see
-  [here](https://trestleiq.com/pricing/) for more details.
+  Request parameter to enable specific add-ons available for this endpoint. Add-ons incur additional charges. Please see [here](https://trestleiq.com/pricing/) for more details.
 
-    - email_checks_deliverability: to enable email deliverability checks in the response
-    - email_checks_age: to enable email age score in the response
-    - litigator_checks: to enable litigator checks in the response
+  - email_checks_deliverability: to enable email deliverability checks in the response
+  - email_checks_age: to enable email age score in the response
+  - litigator_checks: to enable litigator checks in the response
 
-**Example:**
-`add_ons=litigator_checks,email_checks_deliverability`
-
+  **Example:** `add_ons=litigator_checks,email_checks_deliverability`
 </ParamField>
 
 ## Headers
@@ -245,41 +233,26 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 </ResponseField>
 
 <ResponseField name="phone.activity_score" type="integer or null">
-  Trestle's activity scores range from 0 to 100. A score of 100 means consistent
-  activity in the last 12 months, and a score of 0 means a disconnected number
-  or no activity has been seen in the past year.
+  Trestle's activity scores range from 0 to 100. A score of 100 means consistent activity in the last 12 months, and a score of 0 means a disconnected number or no activity has been seen in the past year.
 
-An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
+  An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
 
-If you want to filter leads based on the activity score, the following rules can be recommended:
+  If you want to filter leads based on the activity score, the following rules can be recommended:
 
-- Prioritize dialing good numbers with consistent activity: Scores 70 or above.
-- Weed out leads with disconnected/inactive numbers: Scores of 30 or below.
-
+  - Prioritize dialing good numbers with consistent activity: Scores 70 or above.
+  - Weed out leads with disconnected/inactive numbers: Scores of 30 or below.
 </ResponseField>
 
 <ResponseField name="phone.line_type" type="string or null">
-  The line type of the phone number. Possible values: - `Landline` - Traditional
-  wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
-  connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
-  a fixed physical address - `Premium` - Caller pays a premium for the call -
-  `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-  `Other` - Line type is unclear Enum: <Badge>Landline</Badge>{" "}
-  <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>{" "}
-  <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>{" "}
-  <Badge>Other</Badge>
+  The line type of the phone number. Possible values: - `Landline` - Traditional wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address - `Premium` - Caller pays a premium for the call - `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service - `Other` - Line type is unclear Enum: <Badge>Landline</Badge>" " <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>" " <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>" " <Badge>Other</Badge>
 </ResponseField>
 
 <ResponseField name="phone.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches
-  to the input phone number according to our database. A match is a positive
-  indicator that verifies the lead is real and is who he/she says they are.
+  A match/no match indicator whether the name provided on the lead form matches to the input phone number according to our database. A match is a positive indicator that verifies the lead is real and is who he/she says they are.
 </ResponseField>
 
 <ResponseField name="phone.contact_grade" type="string or null">
-  An A-F grade determining the quality of the lead and whether it is
-  contactable. A Grade-F lead is a bad lead and should be deprioritized while a
-  Grade-A lead is real and contactable and should be prioritized.
+  An A-F grade determining the quality of the lead and whether it is contactable. A Grade-F lead is a bad lead and should be deprioritized while a Grade-A lead is real and contactable and should be prioritized.
 </ResponseField>
 
 <ResponseField name="email.is_valid" type="boolean or null">
@@ -287,13 +260,11 @@ If you want to filter leads based on the activity score, the following rules can
 </ResponseField>
 
 <ResponseField name="email.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches
-  to the input email address according to our database.
+  A match/no match indicator whether the name provided on the lead form matches to the input email address according to our database.
 </ResponseField>
 
 <ResponseField name="email.contact_grade" type="string or null">
-  An A-F grade determining the quality of the lead and whether it is contactable
-  via the email provided.
+  An A-F grade determining the quality of the lead and whether it is contactable via the email provided.
 </ResponseField>
 
 <ResponseField name="address.is_valid" type="boolean or null">
@@ -301,37 +272,34 @@ If you want to filter leads based on the activity score, the following rules can
 </ResponseField>
 
 <ResponseField name="address.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches
-  to the input address according to our database.
+  A match/no match indicator whether the name provided on the lead form matches to the input address according to our database.
 </ResponseField>
 
 <ResponseField name="add_ons" type="object or null">
   <Expandable title="Add Ons Object">
     <ResponseField name="litigator_checks" type="object">
-      <Expandable title="litigator_checks" type="object">
+      <Expandable title="litigator_checks">
         <ResponseField name="phone.is_litigator_risk" type="boolean or null">
           True if the phone subscriber is a TCPA litigator.
         </ResponseField>
       </Expandable>
     </ResponseField>
-
     <ResponseField name="email_checks" type="object">
       <Expandable title="email_checks Object">
         <ResponseField name="email.is_deliverable" type="boolean or null">
           True if the email is valid and deliverable.
         </ResponseField>
         <ResponseField name="email.age_score" type="integer or null">
-            A 0-100 score indicating the longevity and activity-level of an email address.
+          A 0-100 score indicating the longevity and activity-level of an email address.
         </ResponseField>
       </Expandable>
     </ResponseField>
-
   </Expandable>
-
 </ResponseField>
 
 <ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
+
   <Expandable title="error object">
     <ResponseField name="name" type="string">
       Incomplete response due to external timeouts. **value:** "InternalError"
@@ -343,31 +311,28 @@ If you want to filter leads based on the activity score, the following rules can
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. The possible values
-  include - <Badge>Invalid Input</Badge>,{" "}
-  <Badge>International number. Not authorized</Badge>, or{" "}
-  <Badge>Missing Input</Badge>.
+  Warnings returned as part of the response, if applicable. The possible values include - <Badge>Missing Input</Badge>,\
+  <Badge>Missing Unit/Apt/Suite Number</Badge>, <Badge>Invalid Address</Badge>, <Badge>Invalid House/Building Number</Badge>, <Badge>Invalid Unit/Apt/Suite Number</Badge>, <Badge>Invalid Phone</Badge>, <Badge>Lead is a Litigator. Must not be contacted.</Badge>, <Badge>TimeoutError: Timeout getting response for litigator check. Partial response returned.</Badge>, <Badge>Invalid Email</Badge>, <Badge>Free Email Service Provider</Badge>, <Badge>Tumbled Email</Badge>, <Badge>Disposible Email</Badge>, <Badge>Privacy Email</Badge>, <Badge>Email is a spam trap</Badge>, <Badge>Potential Junk Email</Badge>, <Badge>Role Based Email</Badge>, <Badge>Undeliverable Email</Badge>, <Badge>Domain is a catch all and does not support validation</Badge>, <Badge>Could not validate email</Badge>, or <Badge>TimeoutError: Timeout getting a response from the email server for email deliverability check</Badge>
 </ResponseField>
 
 <Danger>
   ## Error Responses
 
-### 400 Bad Request:
+  ### 400 Bad Request:
 
-- Indicates that the server cannot process the request due to client-side errors.
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests:
+  ### 429 Too Many Requests:
 
-- API Key has exceeded its rate limit.
+  - API Key has exceeded its rate limit.
 
-### 500 Internal Server Error:
+  ### 500 Internal Server Error:
 
-- An unexpected error occurred on the server.
-
+  - An unexpected error occurred on the server.
 </Danger>
