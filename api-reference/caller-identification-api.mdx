@@ -232,17 +232,24 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
 </ResponseField>
 
 <ResponseField name="line_type" type="string or null">
-  The line type of the phone number. Possible values: \
-  - `Landline` - Traditional wired phone line \
-  - `Mobile` - Wireless phone line \
-  - `FixedVOIP` - VOIP number connected to a physical address \
-  - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \
-  - `Premium` - Caller pays a premium for the call \
-  - `TollFree` - Callee pays for call \
-  - `Voicemail` - Voicemail-only service \
+  The line type of the phone number. Possible values:
+
+  - `Landline` - Traditional wired phone line
+  - `Mobile` - Wireless phone line
+  - `FixedVOIP` - VOIP number connected to a physical address
+  - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address
+  - `Premium` - Caller pays a premium for the call
+  - `TollFree` - Callee pays for call
+  - `Voicemail` - Voicemail-only service
   - `Other` - Line type is unclear \
-  Enum:<Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail </Badge> <Badge>Other</Badge>\<Badge\>NonFixedVOIP\</Badge\>
+    Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail </Badge> <Badge>Other</Badge>
 </ResponseField>
+
+<Badge />
+
+<Badge />
+
+<Badge />
 
 <ResponseField name="carrier" type="string or null">
   The company that provides voice and/or data services for the phone number. Carriers are returned at the MVNO level.
