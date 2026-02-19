@@ -242,14 +242,8 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
   - `TollFree` - Callee pays for call
   - `Voicemail` - Voicemail-only service
   - `Other` - Line type is unclear \
-    Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail </Badge> <Badge>Other</Badge>
+    Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail </Badge> <Badge>Other</Badge>
 </ResponseField>
-
-<Badge />
-
-<Badge />
-
-<Badge />
 
 <ResponseField name="carrier" type="string or null">
   The company that provides voice and/or data services for the phone number. Carriers are returned at the MVNO level.
