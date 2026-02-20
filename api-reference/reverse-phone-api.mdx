@@ -239,17 +239,18 @@ GET https://api.trestleiq.com/3.2/phone?phone=[insert_phone_number]
 </ResponseField>
 
 <ResponseField name="line_type" type="string or null">
-  The line type of the phone number. Possible values: \
-  - `Landline` - Traditional wired phone line \
-  - `Mobile` - Wireless phone line \
-  - `FixedVOIP` - VOIP number connected to a physical address \
-  - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \
-  - `Premium` - Caller pays a premium for the call \
-  - `TollFree` - Callee pays for call \
-  - `Voicemail` - Voicemail-only service \
+  The line type of the phone number. Possible values: \\
+
+  - `Landline` - Traditional wired phone line \\
+  - `Mobile` - Wireless phone line \\
+  - `FixedVOIP` - VOIP number connected to a physical address \\
+  - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \\
+  - `Premium` - Caller pays a premium for the call \\
+  - `TollFree` - Callee pays for call \\
+  - `Voicemail` - Voicemail-only service \\
   - `Other` - Line type is unclear \
-  Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>\
-  <Badge>Other</Badge>
+    Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>\
+    <Badge>Other</Badge>
 </ResponseField>
 
 <ResponseField name="carrier" type="string or null">
@@ -283,7 +284,7 @@ GET https://api.trestleiq.com/3.2/phone?phone=[insert_phone_number]
     <ResponseField name="lastname" type="string or null (Lastname)">
       The last name of the person.
     </ResponseField>
-    <ResponseField name="alternate_names" type="string or null (AlternateNamesPerson)">
+    <ResponseField name="alternate_names" type="string[]">
       Alternate names of the person associated with the phone.
     </ResponseField>
     <ResponseField name="age_range" type="string or null (AgeRange)">
@@ -366,16 +367,17 @@ GET https://api.trestleiq.com/3.2/phone?phone=[insert_phone_number]
           The phone number in E.164 or local format. The default country calling code is +1 (USA).
         </ResponseField>
         <ResponseField name="line_type" type="string or null">
-          The line type of the phone number. Possible values: \
-          - `Landline` - Traditional wired phone line \
-          - `Mobile` - Wireless phone line \
-          - `FixedVOIP` - VOIP number connected to a physical address \
-          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \
-          - `Premium` - Caller pays a premium for the call \
-          - `TollFree` - Callee pays for call \
-          - `Voicemail` - Voicemail-only service \
+          The line type of the phone number. Possible values: \\
+
+          - `Landline` - Traditional wired phone line \\
+          - `Mobile` - Wireless phone line \\
+          - `FixedVOIP` - VOIP number connected to a physical address \\
+          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \\
+          - `Premium` - Caller pays a premium for the call \\
+          - `TollFree` - Callee pays for call \\
+          - `Voicemail` - Voicemail-only service \\
           - `Other` - Line type is unclear \
-          Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
+            Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
         </ResponseField>
       </Expandable>
     </ResponseField>
