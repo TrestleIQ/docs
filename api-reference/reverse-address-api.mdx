@@ -360,7 +360,7 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
       - Person: The legal entity is a person.
       - Business: The legal entity is a company. \
         \
-        Enum: <Badge>Person</Badge> <Badge>Company</Badge>
+        Enum: <Badge>Person</Badge> <Badge>Business</Badge>
     </ResponseField>
     <ResponseField name="link_to_phone_start_date" type="string or null">
       The date when the person was first linked to the phone number.
@@ -379,17 +379,18 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
           The phone number in E.164 or local format. The default country calling code is +1 (USA).
         </ResponseField>
         <ResponseField name="line_type" type="string or null">
-          The line type of the phone number. Possible values: \
-          - `Landline` - Traditional wired phone line \
-          - `Mobile` - Wireless phone line \
-          - `FixedVOIP` - VOIP number connected to a physical address \
-          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \
-          - `Premium` - Caller pays a premium for the call \
-          - `TollFree` - Callee pays for call \
-          - `Voicemail` - Voicemail-only service \
+          The line type of the phone number. Possible values: \\
+
+          - `Landline` - Traditional wired phone line \\
+          - `Mobile` - Wireless phone line \\
+          - `FixedVOIP` - VOIP number connected to a physical address \\
+          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \\
+          - `Premium` - Caller pays a premium for the call \\
+          - `TollFree` - Callee pays for call \\
+          - `Voicemail` - Voicemail-only service \\
           - `Other` - Line type is unclear \
-          \
-          Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
+            \
+            Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
         </ResponseField>
       </Expandable>
     </ResponseField>
@@ -453,6 +454,30 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
         </ResponseField>
         <ResponseField name="link_to_person_end_date" type="string or null">
           The date when the address was last linked to the person.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="associated_people" type="object[]">
+      A list of people associated to the current home owner.
+
+      <Expandable title="people object">
+        <ResponseField name="id" type="string or null <Person.<uuid>>">
+          The persistent ID of the person.
+        </ResponseField>
+        <ResponseField name="name" type="string or null">
+          The full name of the associated person.
+        </ResponseField>
+        <ResponseField name="firstname" type="string or null">
+          The first name of the associated person.
+        </ResponseField>
+        <ResponseField name="middlename" type="string or null">
+          The middle name of the associated person.
+        </ResponseField>
+        <ResponseField name="lastname" type="string or null">
+          The last name of the associated person.
+        </ResponseField>
+        <ResponseField name="relation" type="string or null">
+          The relationship between the address owner and the associated person.
         </ResponseField>
       </Expandable>
     </ResponseField>
