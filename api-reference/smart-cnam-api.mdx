@@ -131,7 +131,6 @@ api: "GET /3.1/cnam"
       }
     }
     ```
-
   </RequestExample>
 
   <ResponseExample>
@@ -171,16 +170,16 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 </ParamField>
 
 <ParamField query="phone.country_hint" type="string <ISO-3166-2>">
-  The ISO-3166 alpha-2 country code of the phone number. See:
-  [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
-  **Example:** `phone.country_hint=US`
+  The ISO-3166 alpha-2 country code of the phone number. See: [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm). **Example:** `phone.country_hint=US`
 </ParamField>
 
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
   Your API key for authentication. **Example:** `{{ apiKey }}`
-</ParamField>{" "}
+</ParamField>
+
+{" "}
 
 ## Response
 
@@ -195,32 +194,29 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 <ResponseField name="belongs_to" type="	
 (PhoneOwnerPersonSmartCNAM (object or null))">
   The primary owner of the phone number.
+
   <Expandable title="belongs_to object">
-   <ResponseField name="id" type="string or null <Person.<uuid>>">
+    <ResponseField name="id" type="string or null <Person.<uuid>>">
       The persistent ID of the address.
     </ResponseField>
-
     <ResponseField name="name" type="string or null">
       The full name of the person.
     </ResponseField>
-
     <ResponseField name="firstname" type="string or null (FirstName)">
       The first name of the person.
     </ResponseField>
-
     <ResponseField name="middlename" type="string or null (MiddleName)">
       The middle name (or middle initial) of the person.
     </ResponseField>
-
     <ResponseField name="lastname" type="string or null (LastName)">
       The last name of the person.
     </ResponseField>
-
   </Expandable>
 </ResponseField>
 
 <ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
+
   <Expandable title="error object">
     <ResponseField name="name" type="string">
       Incomplete response due to external timeouts. **value:** "InternalError"
@@ -232,31 +228,29 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. The possible values
-  include - <Badge>Invalid Input</Badge>,{" "}
-  <Badge>International number. Not authorized</Badge>, or{" "}
-  <Badge>Missing Input</Badge>.
+  Warnings returned as part of the response, if applicable.\
+  \
+  Enum: <Badge>Invalid Input</Badge> <Badge>International number. Not authorized</Badge> <Badge>Missing Input</Badge>
 </ResponseField>
 
 <Danger>
   ## Error Responses
 
-### 400 Bad Request:
+  ### 400 Bad Request:
 
-- Indicates that the server cannot process the request due to client-side errors.
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests:
+  ### 429 Too Many Requests:
 
-- API Key has exceeded its rate limit.
+  - API Key has exceeded its rate limit.
 
-### 500 Internal Server Error:
+  ### 500 Internal Server Error:
 
-- An unexpected error occurred on the server.
-
+  - An unexpected error occurred on the server.
 </Danger>

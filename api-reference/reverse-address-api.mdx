@@ -498,7 +498,9 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. The possible values include - <Badge>Invalid Input</Badge>," " <Badge>International number. Not authorized</Badge>, or" " <Badge>Missing Input</Badge>.
+  Warnings returned as part of the response, if applicable.\
+  \
+  Enum: <Badge>Invalid Address</Badge> <Badge>Missing Input</Badge> <Badge>Invalid house/building number</Badge> <Badge>Missing unit/apt/suite number</Badge> <Badge>Invalid unit/apt/suite number</Badge>
 </ResponseField>
 
 <Danger>
