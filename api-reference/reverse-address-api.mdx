@@ -127,7 +127,6 @@ api: "GET /3.1/location"
       }
     }
     ```
-
   </RequestExample>
 
   <ResponseExample>
@@ -174,7 +173,9 @@ api: "GET /3.1/location"
               "line_type": "NonFixedVOIP"
             }
           ],
-          "emails": "waidong.syrws@email.com",
+          "emails": [
+            "waidong.syrws@email.com"
+          ],
           "historical_addresses": [
             {
               "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
@@ -230,33 +231,27 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 ## Query Parameters
 
 <ParamField query="street_line_1" type="string">
-  The first line of the street part in the structured address. Cannot be longer
-  than 1000 characters. **Example:** `street_line_1=100 Syrws St`
+  The first line of the street part in the structured address. Cannot be longer than 1000 characters. **Example:** `street_line_1=100 Syrws St`
 </ParamField>
 
 <ParamField query="street_line_2" type="string">
-  The second line of the street part in the structured address. Cannot be longer
-  than 1000 characters. **Example:** `street_line_2=Ste 1`
+  The second line of the street part in the structured address. Cannot be longer than 1000 characters. **Example:** `street_line_2=Ste 1`
 </ParamField>
 
 <ParamField query="city" type="string">
-  The name of the city in the structured address. Cannot be longer than 500
-  characters. **Example:** `city=Seattle`
+  The name of the city in the structured address. Cannot be longer than 500 characters. **Example:** `city=Seattle`
 </ParamField>
 
 <ParamField query="state_code" type="string">
-  The state code of the structured address. Cannot be longer than 100
-  characters. **Example:** `state_code=WA`
+  The state code of the structured address. Cannot be longer than 100 characters. **Example:** `state_code=WA`
 </ParamField>
 
 <ParamField query="postal_code" type="string">
-  The postal code of the structured address. Cannot be longer than 100
-  characters. **Example:** `postal_code=98101`
+  The postal code of the structured address. Cannot be longer than 100 characters. **Example:** `postal_code=98101`
 </ParamField>
 
 <ParamField query="country_code" type="string <ISO-3166-2>">
-  The ISO-3166 alpha-2 country code of the address. Cannot be longer than 100
-  characters. **Example:** `country_code=US`
+  The ISO-3166 alpha-2 country code of the address. Cannot be longer than 100 characters. **Example:** `country_code=US`
 </ParamField>
 
 ## Headers
@@ -305,20 +300,17 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 
 <ResponseField name="lat_long" type="object or null">
   The coordinates of the geographical location of the address.
-  <Expandable title="lat_long object">
 
+  <Expandable title="lat_long object">
     <ResponseField name="latitude" type="number or null <double>">
       The latitude coordinate of the location.
     </ResponseField>
-
     <ResponseField name="longitude" type="number or null <double>">
-      The longer coordinate of the location.
+      The longitude coordinate of the location.
     </ResponseField>
-
     <ResponseField name="accuracy" type="string or null">
-      The accuracy of the geographical location. Enum: <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>PostalCode</Badge> <Badge>Street</Badge> <Badge>City</Badge> <Badge>State</Badge> <Badge>RoofTop</Badge>
+      The accuracy of the geographical location. Enum: <Badge>Country</Badge> <Badge>State</Badge> <Badge>City</Badge> <Badge>PostalCode</Badge> <Badge>Neighborhood</Badge> <Badge>Street</Badge> <Badge>RoofTop</Badge>
     </ResponseField>
-
   </Expandable>
 </ResponseField>
 
@@ -327,68 +319,58 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 </ResponseField>
 
 <ResponseField name="is_commercial" type="boolean or null">
-  True if the address is a business address. When shipping physical goods,
-  commercial addresses are typically a positive signal and indicate that the
-  order is not fraudulent.
+  True if the address is a business address.
 </ResponseField>
 
 <ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
-  The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge>{" "}
-  <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
+  The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
 </ResponseField>
 
 <ResponseField name="current_residents" type="object[]">
   The list of current person and business residents at the address.
+
   <Expandable title="owner object">
     <ResponseField name="id" type="string or null <Person.<uuid>>">
       The persistent ID of the address.
     </ResponseField>
-
     <ResponseField name="name" type="string or null">
       The full name of the person.
     </ResponseField>
-
     <ResponseField name="firstname" type="string or null (FirstName)">
       The first name of the person.
     </ResponseField>
-
     <ResponseField name="middlename" type="string or null (MiddleName)">
       The middle name (or middle initial) of the person.
     </ResponseField>
-
     <ResponseField name="lastname" type="string or null (LastName)">
       The last name of the person.
     </ResponseField>
-
-    <ResponseField name="alternate_names" type="string or null (AlternateNamesPerson)">
+    <ResponseField name="alternate_names" type="string[]">
       Alternate names of the person associated with the phone.
     </ResponseField>
-
     <ResponseField name="age_range" type="string or null (AgeRange)">
       The age of the person in a 5-year range.
     </ResponseField>
-
     <ResponseField name="gender" type="string or null (Gender)">
       The gender of the person.
     </ResponseField>
-
     <ResponseField name="type" type="string">
       The type of the legal entity.
-        - Person: The legal entity is a person.
-        - Company: The legal entity is a company.
-      Enum: <Badge>Person</Badge> <Badge>Company</Badge>
-    </ResponseField>
 
+      - Person: The legal entity is a person.
+      - Business: The legal entity is a company. \
+        \
+        Enum: <Badge>Person</Badge> <Badge>Business</Badge>
+    </ResponseField>
     <ResponseField name="link_to_phone_start_date" type="string or null">
       The date when the person was first linked to the phone number.
     </ResponseField>
-
     <ResponseField name="industry" type="string or null">
       Not applicable.
     </ResponseField>
-
     <ResponseField name="phones" type="object[]">
       The phone numbers associated with the person.
+
       <Expandable title="phone object">
         <ResponseField name="id" type="string or null <Phone.<uuid>>">
           The persistent ID of the phone number.
@@ -396,102 +378,115 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
         <ResponseField name="phone_number" type="string or null (PhoneNumber)">
           The phone number in E.164 or local format. The default country calling code is +1 (USA).
         </ResponseField>
-
         <ResponseField name="line_type" type="string or null">
-          The line type of the phone number. Possible values: - `Landline` - Traditional
-          wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
-          connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
-          a fixed physical address - `Premium` - Caller pays a premium for the call -
-          `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-          `Other` - Line type is unclear
-          Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
+          The line type of the phone number. Possible values: \\
+
+          - `Landline` - Traditional wired phone line \\
+          - `Mobile` - Wireless phone line \\
+          - `FixedVOIP` - VOIP number connected to a physical address \\
+          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address \\
+          - `Premium` - Caller pays a premium for the call \\
+          - `TollFree` - Callee pays for call \\
+          - `Voicemail` - Voicemail-only service \\
+          - `Other` - Line type is unclear \
+            \
+            Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
         </ResponseField>
       </Expandable>
     </ResponseField>
-
     <ResponseField name="emails" type="string[]">
       The list of emails associated to the primary owner of the phone.
     </ResponseField>
-
     <ResponseField name="historical_addresses" type="object[]">
-      A list of unique current locations associated with Person or Business in belongs_to array.
+      A list of historical addresses associated with the current resident of the input address.
+
       <Expandable title="address object">
         <ResponseField name="id" type="string or null <Location.<uuid>>">
           The persistent ID of the address.
         </ResponseField>
-
         <ResponseField name="location_type" type="string or null">
-          The type of the location. Enum: <Badge>Address</Badge> <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>ZipPlus4</Badge> <Badge>PostalCode</Badge> <Badge>City</Badge> <Badge>State</Badge>
+          The type of the location. Enum: <Badge>Country</Badge> <Badge>State</Badge> <Badge>City</Badge> <Badge>PostalCode</Badge> <Badge>ZipPlus4</Badge> <Badge>C</Badge> <Badge>Address</Badge>
         </ResponseField>
-
         <ResponseField name="street_line_1" type="string or null">
           The first line of the street part in the structured address.
         </ResponseField>
-
         <ResponseField name="street_line_2" type="string or null">
           The second line of the street part in the structured address.
         </ResponseField>
-
         <ResponseField name="city" type="string or null">
           The city associated with the address.
         </ResponseField>
-
         <ResponseField name="postal_code" type="string or null">
           The postal code of the structured address.
         </ResponseField>
-
         <ResponseField name="zip4" type="string or null ^\d+-\d{4}$">
           The ZIP+4 code of the structured address (USA).
         </ResponseField>
-
         <ResponseField name="state_code" type="string or null">
           The state code of the structured address.
         </ResponseField>
-
         <ResponseField name="country_code" type="string or null <ISO-3166-2>">
           The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
-
         <ResponseField name="lat_long" type="object or null">
           The coordinates of the geographical location of the address.
+
           <Expandable title="lat_long object">
             <ResponseField name="latitude" type="number or null <double>">
               The latitude coordinate of the location.
             </ResponseField>
-
             <ResponseField name="longitude" type="number or null <double>">
-              The longer coordinate of the location.
+              The longitude coordinate of the location.
             </ResponseField>
-
             <ResponseField name="accuracy" type="string or null">
-              The accuracy of the geographical location. Enum: <Badge>Neighborhood</Badge> <Badge>Country</Badge> <Badge>PostalCode</Badge> <Badge>Street</Badge> <Badge>City</Badge> <Badge>State</Badge> <Badge>RoofTop</Badge>
+              The accuracy of the geographical location. Enum: <Badge>Country</Badge> <Badge>State</Badge> <Badge>City</Badge> <Badge>PostalCode</Badge> <Badge>Neighborhood</Badge> <Badge>Street</Badge> <Badge>RoofTop</Badge>
             </ResponseField>
           </Expandable>
         </ResponseField>
-
         <ResponseField name="is_active" type="boolean or null">
           True if the address is currently receiving mail.
         </ResponseField>
-
         <ResponseField name="delivery_point" type="string or null (DeliveryPoint)">
           The type of the delivery point of the address. Enum: <Badge>SingleUnit</Badge> <Badge>MultiUnit</Badge> <Badge>POBox</Badge> <Badge>PartialAddress</Badge>
         </ResponseField>
-
         <ResponseField name="link_to_person_start_date" type="string or null (LinkToPersonStartDate)">
           The date when the address was first linked to the person.
         </ResponseField>
-
         <ResponseField name="link_to_person_end_date" type="string or null">
-          The date when the address was first linked to the person.
+          The date when the address was last linked to the person.
         </ResponseField>
       </Expandable>
     </ResponseField>
+    <ResponseField name="associated_people" type="object[]">
+      A list of people associated to the current home owner.
 
+      <Expandable title="people object">
+        <ResponseField name="id" type="string or null <Person.<uuid>>">
+          The persistent ID of the person.
+        </ResponseField>
+        <ResponseField name="name" type="string or null">
+          The full name of the associated person.
+        </ResponseField>
+        <ResponseField name="firstname" type="string or null">
+          The first name of the associated person.
+        </ResponseField>
+        <ResponseField name="middlename" type="string or null">
+          The middle name of the associated person.
+        </ResponseField>
+        <ResponseField name="lastname" type="string or null">
+          The last name of the associated person.
+        </ResponseField>
+        <ResponseField name="relation" type="string or null">
+          The relationship between the address owner and the associated person.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
 <ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
+
   <Expandable title="error object">
     <ResponseField name="name" type="string">
       Incomplete response due to external timeouts. **value:** "InternalError"
@@ -503,31 +498,29 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
 </ResponseField>
 
 <ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable. The possible values
-  include - <Badge>Invalid Input</Badge>,{" "}
-  <Badge>International number. Not authorized</Badge>, or{" "}
-  <Badge>Missing Input</Badge>.
+  Warnings returned as part of the response, if applicable.\
+  \
+  Enum: <Badge>Invalid Address</Badge> <Badge>Missing Input</Badge> <Badge>Invalid house/building number</Badge> <Badge>Missing unit/apt/suite number</Badge> <Badge>Invalid unit/apt/suite number</Badge>
 </ResponseField>
 
 <Danger>
   ## Error Responses
 
-### 400 Bad Request:
+  ### 400 Bad Request:
 
-- Indicates that the server cannot process the request due to client-side errors.
+  - Indicates that the server cannot process the request due to client-side errors.
 
-### 403
+  ### 403
 
-- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-- **API Key Missing**: Indicates that your request did not include an API key.
-- **API Key Expired**: Indicates that the API key has expired.
+  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+  - **API Key Missing**: Indicates that your request did not include an API key.
+  - **API Key Expired**: Indicates that the API key has expired.
 
-### 429 Too Many Requests:
+  ### 429 Too Many Requests:
 
-- API Key has exceeded its rate limit.
+  - API Key has exceeded its rate limit.
 
-### 500 Internal Server Error:
+  ### 500 Internal Server Error:
 
-- An unexpected error occurred on the server.
-
+  - An unexpected error occurred on the server.
 </Danger>
