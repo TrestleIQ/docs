@@ -1,7 +1,7 @@
 ---
 title: "Real Contact API"
-description: "Real Contact API verifies and grades phone numbers, emails, and addresses and delivers essential insights, including a phone activity score, line types, name matches for phone, email, and address, and phone and email contact grades."
-api: "GET /1.1/real_contact"
+description: "A comprehensive lead verification solution that verifies and grades phone numbers, emails, and addresses, and uses IP signals to assess trust and consistency across identity data."
+api: "GET /2.0/real_contact"
 playground: "none"
 ---
 
@@ -9,13 +9,13 @@ playground: "none"
 <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com" \
+      --url "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
     ```javascript JavaScript
     const response = await fetch(
-      "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com",
+      "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -29,7 +29,7 @@ playground: "none"
     import axios from "axios";
 
     const { data } = await axios.get(
-      "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com",
+      "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -47,10 +47,11 @@ playground: "none"
         "name": "John Doe",
         "phone": "4259853735",
         "email": "john.doe@example.com",
+        "ip_address": "192.0.0.1",
     }
 
     response = requests.get(
-        "https://api.trestleiq.com/1.1/real_contact",
+        "https://api.trestleiq.com/2.0/real_contact",
         params=params,
         headers=headers,
         timeout=30,
@@ -63,7 +64,7 @@ playground: "none"
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com");
+    var response = await client.GetAsync("https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -78,7 +79,7 @@ playground: "none"
     )
 
     func main() {
-    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com", nil)
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1", nil)
     	req.Header.Set("x-api-key", "YOUR_API_KEY")
 
     	resp, err := http.DefaultClient.Do(req)
@@ -94,7 +95,7 @@ playground: "none"
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com");
+    $curl = curl_init("https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -116,7 +117,7 @@ playground: "none"
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com"))
+                        "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
@@ -127,45 +128,45 @@ playground: "none"
       }
     }
     ```
+
   </RequestExample>
   <ResponseExample>
     ```json Response Example
     {
-      "phone.is_valid": true,
-      "phone.activity_score": 57,
-      "phone.line_type": "Mobile",
-      "phone.name_match": true,
-      "phone.contact_grade": "A",
-      "email.is_valid": true,
-      "email.name_match": true,
-      "email.contact_grade": "F",
-      "address.is_valid": true,
-      "address.name_match": true,
-      "add_ons": {
-        "litigator_checks": {
-          "phone.is_litigator_risk": false
-        },
-        "email_checks": {
-          "email.is_deliverable": false,
-          "email.age_score": 70
-        }
+      "phone": {
+        "contact_grade": null,
+        "is_valid": true,
+        "activity_score": null,
+        "line_type": "Mobile",
+        "name_match": true,
       },
-      "error": {
-        "name": "InternalError",
-        "message": "Could not retrieve entire response"
+      "email": {
+        "contact_grade": "B",
+        "is_valid": true,
+        "name_match": null
       },
+      "address": {
+        "is_valid": true,
+        "name_match": true
+      },
+      "ip_address": {
+        "trust_score": 89,
+        "ip_distance_to_address": 5,
+      },
+      "add_ons": null,
       "warnings": [
-        "Missing Input"
-      ]
+        "Free Email Service Provider"
+      ],
+      "errors": null
     }
     ```
   </ResponseExample>
 </Panel>
 
-## Real Contact 1.1
+## Real Contact 2.0
 
 ```http
-GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert_name]&phone=[insert_phone]&email=[insert_email]&ip_address=[insert_ip_address]&address.street_line_1=[insert_street_line_1]&address.city=[insert_city]&address.state_code=[insert_state_code]&address.postal_code=[insert_postal_code]&address.country_code=[insert_country_code]
+GET https://api.trestleiq.com/2.0/real_contact?api_key=[insert_key]&name=[insert_name]&phone=[insert_phone]&email=[insert_email]&ip_address=[insert_ip_address]&address.street_line_1=[insert_street_line_1]&address.city=[insert_city]&address.state_code=[insert_state_code]&address.postal_code=[insert_postal_code]&address.country_code=[insert_country_code]
 ```
 
 ## Query Parameters
@@ -179,23 +180,23 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 </ParamField>
 
 <ParamField query="phone" type="string" required>
-  The phone provided by the lead on the web form. **Example:** `phone=4259853735`
+  The phone provided by the lead on the web form. **Example:**
+  `phone=4259853735`
 </ParamField>
 
 <ParamField query="email" type="string">
-  The email provided by the lead on the web form. **Example:** `email=john.doe@example.com`
-</ParamField>
-
-<ParamField query="ip_address" type="string">
-  The IP address from which the lead signed up on the web form. **Example:** `ip_address=192.0.0.1`
+  The email provided by the lead on the web form. **Example:**
+  `email=john.doe@example.com`
 </ParamField>
 
 <ParamField query="address.street_line_1" type="string">
-  The first line of the street part in the structured address. **Example:** `address.street_line_1=100 Syrws St`
+  The first line of the street part in the structured address. **Example:**
+  `address.street_line_1=100 Syrws St`
 </ParamField>
 
 <ParamField query="address.city" type="string">
-  The name of the city in the structured address. **Example:** `address.city=Lynden`
+  The name of the city in the structured address. **Example:**
+  `address.city=Lynden`
 </ParamField>
 
 <ParamField query="address.state_code" type="string">
@@ -203,21 +204,29 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 </ParamField>
 
 <ParamField query="address.postal_code" type="string">
-  The postal code of the structured address. **Example:** `address.postal_code=98229`
+  The postal code of the structured address. **Example:**
+  `address.postal_code=98229`
 </ParamField>
 
 <ParamField query="address.country_code" type="string <ISO-3166-2>">
-  The ISO-3166 alpha-2 country code of the address. **Example:** `address.country_code=US`
+  The ISO-3166 alpha-2 country code of the address. **Example:**
+  `address.country_code=US`
+</ParamField>
+
+<ParamField query="ip_address" type="string">
+  The IP address from which the lead signed up on the web form. **Example:**
+  `ip_address=192.0.0.1`
 </ParamField>
 
 <ParamField query="add_ons" type="string">
   Request parameter to enable specific add-ons available for this endpoint. Add-ons incur additional charges. Please see [here](https://trestleiq.com/pricing/) for more details.
 
-  - email_checks_deliverability: to enable email deliverability checks in the response
-  - email_checks_age: to enable email age score in the response
-  - litigator_checks: to enable litigator checks in the response
+- email_checks_deliverability: to enable email deliverability checks in the response
+- email_checks_age: to enable email age score in the response
+- litigator_checks: to enable litigator checks in the response
 
-  **Example:** `add_ons=litigator_checks,email_checks_deliverability`
+**Example:** `add_ons=litigator_checks,email_checks_deliverability`
+
 </ParamField>
 
 ## Headers
@@ -228,89 +237,131 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 
 ## Response
 
-<ResponseField name="phone.is_valid" type="boolean or null">
-  True if the phone number is valid.
+<ResponseField name="phone" type="object or null">
+  <Expandable title="phone object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the phone number is valid.
+    </ResponseField>
+    <ResponseField name="activity_score" type="integer or null">
+      Trestle's activity scores range from 0 to 100. A score of 100 means consistent activity in the last 12 months, and a score of 0 means a disconnected number or no activity has been seen in the past year.
+
+      An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
+
+      If you want to filter leads based on the activity score, the following rules can be recommended:
+
+      - Prioritize dialing good numbers with consistent activity: Scores 70 or above.
+      - Weed out leads with disconnected/inactive numbers: Scores of 30 or below.
+    </ResponseField>
+    <ResponseField name="line_type" type="string or null">
+      The line type of the phone number. Possible values: - `Landline` - Traditional
+      wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
+      connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
+      a fixed physical address - `Premium` - Caller pays a premium for the call -
+      `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
+      `Other` - Line type is unclear Enum: <Badge>Landline</Badge>{" "}
+      <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>{" "}
+      <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>{" "}
+      <Badge>Other</Badge>
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      A match/no match indicator whether the name provided on the lead form matches
+      to the input phone number according to our database. A match is a positive
+      indicator that verifies the lead is real and is who he/she says they are.
+    </ResponseField>
+    <ResponseField name="contact_grade" type="string or null">
+      An A-F grade determining the quality of the lead and whether it is
+      contactable. A Grade-F lead is a bad lead and should be deprioritized while a
+      Grade-A lead is real and contactable and should be prioritized. Read up on
+      contact grades in our [Knowledge Base
+      article](https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/).
+    </ResponseField>
+
+  </Expandable>
 </ResponseField>
 
-<ResponseField name="phone.activity_score" type="integer or null">
-  Trestle's activity scores range from 0 to 100. A score of 100 means consistent activity in the last 12 months, and a score of 0 means a disconnected number or no activity has been seen in the past year.
-
-  An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
-
-  If you want to filter leads based on the activity score, the following rules can be recommended:
-
-  - Prioritize dialing good numbers with consistent activity: Scores 70 or above.
-  - Weed out leads with disconnected/inactive numbers: Scores of 30 or below.
+<ResponseField name="email" type="object or null">
+  <Expandable title="email object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the email is valid.
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      A match/no match indicator whether the name provided on the lead form
+      matches to the input email address according to our database.
+    </ResponseField>
+    <ResponseField name="contact_grade" type="string or null">
+      An A-F grade determining the quality of the lead and whether it is
+      contactable via the email provided. Read up on contact grades in our
+      [Knowledge Base
+      article](https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/).
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
-<ResponseField name="phone.line_type" type="string or null">
-  The line type of the phone number. Possible values: 
-  - `Landline` - Traditional wired phone line 
-  - `Mobile` - Wireless phone line 
-  - `FixedVOIP` - VOIP number connected to a physical address 
-  - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address 
-  - `Premium` - Caller pays a premium for the call 
-  - `TollFree` - Callee pays for call 
-  - `Voicemail` - Voicemail-only service 
-  - `Other` - Line type is unclear 
-  
-  Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
+<ResponseField name="address" type="object or null">
+  <Expandable title="address object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the address is valid.
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      A match/no match indicator whether the name provided on the lead form
+      matches to the input address according to our database.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
-<ResponseField name="phone.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches to the input phone number according to our database. A match is a positive indicator that verifies the lead is real and is who he/she says they are.
-</ResponseField>
-
-<ResponseField name="phone.contact_grade" type="string or null">
-  An A-F grade determining the quality of the lead and whether it is contactable. A Grade-F lead is a bad lead and should be deprioritized while a Grade-A lead is real and contactable and should be prioritized. Read up on contact grades in our [Knowledge Base article](https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/).
-</ResponseField>
-
-<ResponseField name="email.is_valid" type="boolean or null">
-  True if the email is valid.
-</ResponseField>
-
-<ResponseField name="email.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches to the input email address according to our database.
-</ResponseField>
-
-<ResponseField name="email.contact_grade" type="string or null">
-  An A-F grade determining the quality of the lead and whether it is contactable via the email provided. Read up on contact grades in our [Knowledge Base article](https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/).
-</ResponseField>
-
-<ResponseField name="address.is_valid" type="boolean or null">
-  True if the address is valid.
-</ResponseField>
-
-<ResponseField name="address.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches to the input address according to our database.
+<ResponseField name="ip_address" type="object or null">
+  <Expandable title="ip_address object" defaultOpen>
+    <ResponseField name="trust_score" type="integer or null">
+      A 0–100 score representing the trustworthiness of the IP address. A higher
+      score indicates a safer, lower-risk IP; a lower score indicates a
+      potentially risky IP (e.g., VPN, proxy, or fraud signals). The score is
+      derived from raw IP data collected from IPinfo, which is passed through a
+      trained ML model to produce the final output.
+    </ResponseField>
+    <ResponseField name="ip_distance_to_address" type="integer or null">
+      Distance in kilometers between the IP address's geolocation and the user's
+      provided address, computed using the Haversine formula. If the address is
+      invalid, the postal code is used as a fallback; if both are invalid,
+      `null` is returned. The result is rounded up (ceiling, e.g. 4.2 km → 5
+      km). Returns `null` if the computed distance is 200 km or greater.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="add_ons" type="object or null">
-  <Expandable title="Add Ons Object">
+  <Expandable title="Add Ons Object" defaultOpen>
     <ResponseField name="litigator_checks" type="object">
-      <Expandable title="litigator_checks">
+      <Expandable title="litigator_checks" defaultOpen>
         <ResponseField name="phone.is_litigator_risk" type="boolean or null">
           True if the phone subscriber is a TCPA litigator.
         </ResponseField>
       </Expandable>
     </ResponseField>
     <ResponseField name="email_checks" type="object">
-      <Expandable title="email_checks Object">
+      <Expandable title="email_checks Object" defaultOpen>
         <ResponseField name="email.is_deliverable" type="boolean or null">
           True if the email is valid and deliverable.
         </ResponseField>
         <ResponseField name="email.age_score" type="integer or null">
-          A 0-100 score indicating the longevity and activity-level of an email address.
+          A 0-100 score indicating the longevity and activity-level of an email
+          address.
         </ResponseField>
       </Expandable>
     </ResponseField>
   </Expandable>
 </ResponseField>
 
-<ResponseField name="error" type="object(PartialError)">
+<ResponseField name="warnings" type="string[]">
+  Warnings returned as part of the response, if applicable.
+
+Enum: <Badge>Missing Input</Badge> <Badge>Missing Unit/Apt/Suite Number</Badge> <Badge>Invalid Address</Badge> <Badge>Invalid House/Building Number</Badge> <Badge>Invalid Unit/Apt/Suite Number</Badge> <Badge>Invalid Phone</Badge> <Badge>Lead is a Litigator. Must not be contacted.</Badge> <Badge>TimeoutError: Timeout getting response for litigator check. Partial response returned.</Badge> <Badge>Invalid Email</Badge> <Badge>Free Email Service Provider</Badge> <Badge>Tumbled Email</Badge> <Badge>Disposible Email</Badge> <Badge>Privacy Email</Badge> <Badge>Email is a spam trap</Badge> <Badge>Potential Junk Email</Badge> <Badge>Role Based Email</Badge> <Badge>Undeliverable Email</Badge> <Badge>Domain is a catch all and does not support validation</Badge> <Badge>Could not validate email</Badge> <Badge>TimeoutError: Timeout getting a response from the email server for email deliverability check</Badge>
+
+</ResponseField>
+
+<ResponseField name="errors" type="object or null">
   Error details in case of an error.
 
-  <Expandable title="error object">
+  <Expandable title="errors object" defaultOpen>
     <ResponseField name="name" type="string">
       Incomplete response due to external timeouts. **value:** "InternalError"
     </ResponseField>
@@ -320,30 +371,25 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
   </Expandable>
 </ResponseField>
 
-<ResponseField name="warnings" type="string[]">
-  Warnings returned as part of the response, if applicable.
-
-  Enum: <Badge>Missing Input</Badge> <Badge>Missing Unit/Apt/Suite Number</Badge> <Badge>Invalid Address</Badge> <Badge>Invalid House/Building Number</Badge> <Badge>Invalid Unit/Apt/Suite Number</Badge> <Badge>Invalid Phone</Badge> <Badge>Lead is a Litigator. Must not be contacted.</Badge> <Badge>TimeoutError: Timeout getting response for litigator check. Partial response returned.</Badge> <Badge>Invalid Email</Badge> <Badge>Free Email Service Provider</Badge> <Badge>Tumbled Email</Badge> <Badge>Disposible Email</Badge> <Badge>Privacy Email</Badge> <Badge>Email is a spam trap</Badge> <Badge>Potential Junk Email</Badge> <Badge>Role Based Email</Badge> <Badge>Undeliverable Email</Badge> <Badge>Domain is a catch all and does not support validation</Badge> <Badge>Could not validate email</Badge> <Badge>TimeoutError: Timeout getting a response from the email server for email deliverability check</Badge>
-</ResponseField>
-
 <Danger>
-  ## Error Responses
+    ## Error Responses
 
-  ### 400 Bad Request:
+    ### 400 Bad Request:
 
-  - Indicates that the server cannot process the request due to client-side errors.
+    - Indicates that the server cannot process the request due to client-side errors.
 
-  ### 403
+    ### 403
 
-  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-  - **API Key Missing**: Indicates that your request did not include an API key.
-  - **API Key Expired**: Indicates that the API key has expired.
+    - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+    - **API Key Missing**: Indicates that your request did not include an API key.
+    - **API Key Expired**: Indicates that the API key has expired.
 
-  ### 429 Too Many Requests:
+    ### 429 Too Many Requests:
 
-  - API Key has exceeded its rate limit.
+    - API Key has exceeded its rate limit.
 
-  ### 500 Internal Server Error:
+    ### 500 Internal Server Error:
 
-  - An unexpected error occurred on the server.
-</Danger>
+    - An unexpected error occurred on the server.
+
+  </Danger>
