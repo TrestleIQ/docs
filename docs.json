@@ -112,6 +112,13 @@
                 ]
               },
               {
+                "group": "Real Contact API 2.0",
+                "expanded": false,
+                "pages": [
+                  "api-reference/real-contact-api-v2"
+                ]
+              },
+              {
                 "group": "Phone Feedback API",
                 "expanded": false,
                 "pages": [
