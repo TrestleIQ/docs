@@ -2,6 +2,7 @@
 title: "Smart CNAM API (Archived)"
 description: "Validates a phone number and provides person or business name associated to the phone."
 api: "GET /3.1/cnam"
+playground: "none"
 ---
 
 <Panel>
@@ -167,7 +168,7 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
   The phone number in E.164 or local format. **Example:** `phone=2069735100`
 </ParamField>
 
-<ParamField query="phone.country_hint" type="string <ISO-3166-2>">
+<ParamField query="phone.country_hint" type="string (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   **Example:** `phone.country_hint=US`
@@ -262,4 +263,4 @@ GET https://api.trestleiq.com/3.1/cnam?api_key=[insert_key]&phone=[insert_phone_
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
-  </Danger>
+</Danger>

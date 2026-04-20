@@ -2,6 +2,7 @@
 title: "Reverse Address API (Archived)"
 description: "Reverse Address API validates and normalizes the input address and provides the current residents at the address with their information, including demographics, historical addresses, relatives and associated people and phone numbers."
 api: "GET /3.0/location"
+playground: "none"
 ---
 
 <Panel>
@@ -366,7 +367,7 @@ GET https://api.trestleiq.com/3.0/location?api_key=[insert_key]&city=[insert_cit
   characters. **Example:** `postal_code=98101`
 </ParamField>
 
-<ParamField query="country_code" type="string <ISO-3166-2>">
+<ParamField query="country_code" type="string (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the address.
   See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   Cannot be longer than 100 characters. **Example:** `country_code=US`
@@ -412,7 +413,7 @@ GET https://api.trestleiq.com/3.0/location?api_key=[insert_key]&city=[insert_cit
   The state code of the structured address.
 </ResponseField>
 
-<ResponseField name="country_code" type="string or null <ISO-3166-2>">
+<ResponseField name="country_code" type="string or null (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the address.
 </ResponseField>
 
@@ -566,7 +567,7 @@ GET https://api.trestleiq.com/3.0/location?api_key=[insert_key]&city=[insert_cit
           The state code of the structured address.
         </ResponseField>
 
-        <ResponseField name="country_code" type="string or null <ISO-3166-2>">
+        <ResponseField name="country_code" type="string or null (ISO-3166-2)">
           The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
         </ResponseField>
 
@@ -705,7 +706,7 @@ GET https://api.trestleiq.com/3.0/location?api_key=[insert_key]&city=[insert_cit
       The state code of the structured address.
     </ResponseField>
 
-    <ResponseField name="country_code" type="string or null <ISO-3166-2>">
+    <ResponseField name="country_code" type="string or null (ISO-3166-2)">
       The ISO-3166 alpha-2 country code of the address.
     </ResponseField>
 
@@ -858,7 +859,7 @@ GET https://api.trestleiq.com/3.0/location?api_key=[insert_key]&city=[insert_cit
               The state code of the structured address.
             </ResponseField>
 
-            <ResponseField name="country_code" type="string or null <ISO-3166-2>">
+            <ResponseField name="country_code" type="string or null (ISO-3166-2)">
               The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
             </ResponseField>
 
@@ -949,4 +950,4 @@ GET https://api.trestleiq.com/3.0/location?api_key=[insert_key]&city=[insert_cit
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
-  </Danger>
+</Danger>
