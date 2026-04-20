@@ -387,21 +387,41 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
 <Danger>
   ## Error Responses
 
-  ### 400 Bad Request:
+  ### 400 Bad Request
 
-  - Indicates that the server cannot process the request due to client-side errors.
+  The server cannot process the request due to client-side errors.
 
-  ### 403
+  Check for: Syntax errors in the request script, malformed JSON, or invalid parameters.
 
-  - **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
-  - **API Key Missing**: Indicates that your request did not include an API key.
-  - **API Key Expired**: Indicates that the API key has expired.
+  ### 403 Forbidden
 
-  ### 429 Too Many Requests:
+  The request is understood, but the server is refusing to fulfill it.
 
-  - API Key has exceeded its rate limit.
+  - **Invalid API Key**: The key is incorrect or deactivated.
 
-  ### 500 Internal Server Error:
+    Check for: Trailing spaces, syntax errors, or incorrect character counts.
 
-  - An unexpected error occurred on the server.
+  - **API Key Missing**: The request header did not include an API key.
+
+  - **API Key Disabled (Portal Issue)**: The key is inactive.
+
+    Check for: Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
+
+  - **API Key does not have Product Access (Portal Issue)**: The API key is active, but it is not enabled for this product or API version.
+
+    Check for: Incorrect endpoint, incorrect API version, or missing product access on the key.
+
+  - **API Key Expired**: The key has reached its end-of-life (primarily affects Trial users).
+
+  ### 429 Too Many Requests
+
+  You have sent too many requests in a given amount of time.
+
+  - **Rate Limit Exceeded**: You have surpassed the queries-per-second (QPS) threshold for your tier.
+
+  - **Quota Exceeded (Portal Issue)**: You have reached the total volume allowed for your current billing cycle. Upgrade your plan in the portal to resume service.
+
+  ### 500 Internal Server Error
+
+  An unexpected error occurred on the server side. Please contact support if this persists.
 </Danger>
