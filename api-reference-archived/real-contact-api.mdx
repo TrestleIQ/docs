@@ -1,7 +1,8 @@
 ---
-title: "Real Contact API (Archived)"
+title: "Real Contact API 1.0 (Archived)"
 description: "Real Contact API validates whether a lead is real, confirms the person is who he/she says they are, and grades the contactability of the lead."
 api: "GET /1.0/real_contact"
+playground: "none"
 ---
 
 <Panel>
@@ -196,7 +197,7 @@ GET https://api.trestleiq.com/1.0/real_contact?api_key=[insert_key]&name=[insert
   characters.) **Example:** `address.state_code=WA`
 </ParamField>
 
-<ParamField query="address.country_code" type="string <ISO-3166-2>">
+<ParamField query="address.country_code" type="string (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the address.
   See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   Cannot be longer than 100 characters. **Example:** `address.country_code=US`
@@ -234,10 +235,7 @@ If you want to filter leads based on the activity score, the following rules can
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
   a fixed physical address - `Premium` - Caller pays a premium for the call -
   `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-  `Other` - Line type is unclear Enum: <Badge>Landline</Badge>{" "}
-  <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>{" "}
-  <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>{" "}
-  <Badge>Other</Badge>
+  `Other` - Line type is unclear Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
 </ResponseField>
 
 <ResponseField name="person.name_match" type="integer or null">
@@ -266,9 +264,7 @@ If you want to filter leads based on the activity score, the following rules can
 
 <ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable. The possible values
-  include - <Badge>Invalid Input</Badge>,{" "}
-  <Badge>International number. Not authorized</Badge>, or{" "}
-  <Badge>Missing Input</Badge>.
+  include - <Badge>Invalid Input</Badge>, <Badge>International number. Not authorized</Badge>, or <Badge>Missing Input</Badge>.
 </ResponseField>
 
 <Danger>
@@ -299,4 +295,5 @@ If you want to filter leads based on the activity score, the following rules can
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
-  </Danger>
+
+</Danger>

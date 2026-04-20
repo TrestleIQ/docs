@@ -2,6 +2,7 @@
 title: "Caller Identification API (Archived)"
 description: "The Caller Identification API provides an incoming caller's identity, including phone metadata (carrier, line type, prepaid status, etc.), name, demographics, and current address."
 api: "GET /3.0/caller_id"
+playground: "none"
 ---
 
 <Panel>
@@ -201,7 +202,7 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
   +1 (USA). **Example:** `phone=2069735100`
 </ParamField>
 
-<ParamField query="phone.country_hint" type="string <ISO-3166-2>">
+<ParamField query="phone.country_hint" type="string (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   **Example:** `phone.country_hint=US`
@@ -354,7 +355,7 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
       The state code of the structured address.
     </ResponseField>
 
-    <ResponseField name="country_code" type="string or null <ISO-3166-2>">
+    <ResponseField name="country_code" type="string or null (ISO-3166-2)">
       The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
     </ResponseField>
 
@@ -437,4 +438,4 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
 ### 500 Internal Server Error
 
 - An unexpected error occurred on the server.
-  </Danger>
+</Danger>
