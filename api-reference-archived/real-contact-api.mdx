@@ -1,21 +1,21 @@
 ---
-title: "Real Contact API"
-description: "Real Contact API verifies and grades phone numbers, emails, and addresses and delivers essential insights, including a phone activity score, line types, name matches for phone, email, and address, and phone and email contact grades."
-api: "GET /1.1/real_contact"
+title: "Real Contact API 1.0 (Archived)"
+description: "Real Contact API validates whether a lead is real, confirms the person is who he/she says they are, and grades the contactability of the lead."
+api: "GET /1.0/real_contact"
 playground: "none"
 ---
 
 <Panel>
-<RequestExample>
+  <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com" \
+      --url "https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
     ```javascript JavaScript
     const response = await fetch(
-      "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com",
+      "https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -29,7 +29,7 @@ playground: "none"
     import axios from "axios";
 
     const { data } = await axios.get(
-      "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com",
+      "https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -50,7 +50,7 @@ playground: "none"
     }
 
     response = requests.get(
-        "https://api.trestleiq.com/1.1/real_contact",
+        "https://api.trestleiq.com/1.0/real_contact",
         params=params,
         headers=headers,
         timeout=30,
@@ -63,7 +63,7 @@ playground: "none"
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com");
+    var response = await client.GetAsync("https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -78,7 +78,7 @@ playground: "none"
     )
 
     func main() {
-    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com", nil)
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com", nil)
     	req.Header.Set("x-api-key", "YOUR_API_KEY")
 
     	resp, err := http.DefaultClient.Do(req)
@@ -94,7 +94,7 @@ playground: "none"
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com");
+    $curl = curl_init("https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -110,13 +110,13 @@ playground: "none"
     import java.net.http.HttpRequest;
     import java.net.http.HttpResponse;
 
-    public class RealContactExample {
+    public class RealContactArchivedExample {
       public static void main(String[] args) throws Exception {
         HttpRequest request =
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/1.1/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com"))
+                        "https://api.trestleiq.com/1.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
@@ -129,6 +129,7 @@ playground: "none"
     ```
 
   </RequestExample>
+
   <ResponseExample>
     ```json Response Example
     {
@@ -136,37 +137,18 @@ playground: "none"
       "phone.activity_score": 57,
       "phone.line_type": "Mobile",
       "phone.name_match": true,
-      "phone.contact_grade": "A",
-      "email.is_valid": true,
-      "email.name_match": true,
-      "email.contact_grade": "F",
-      "address.is_valid": true,
-      "address.name_match": true,
-      "add_ons": {
-        "litigator_checks": {
-          "phone.is_litigator_risk": false
-        },
-        "email_checks": {
-          "email.is_deliverable": false,
-          "email.age_score": 70
-        }
-      },
-      "error": {
-        "name": "InternalError",
-        "message": "Could not retrieve entire response"
-      },
-      "warnings": [
-        "Missing Input"
-      ]
+      "contact_grade": "A",
+      "error": {},
+      "warnings": "Missing Input"
     }
     ```
   </ResponseExample>
 </Panel>
 
-## Real Contact 1.1
+## Real Contact 1.0
 
 ```http
-GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert_name]&phone=[insert_phone]&email=[insert_email]&ip_address=[insert_ip_address]&address.street_line_1=[insert_street_line_1]&address.city=[insert_city]&address.state_code=[insert_state_code]&address.postal_code=[insert_postal_code]&address.country_code=[insert_country_code]
+GET https://api.trestleiq.com/1.0/real_contact?api_key=[insert_key]&name=[insert_name]&phone=[insert_phone]&email=[insert_email]&ip_address=[insert_ip_address]&address.street_line_1=[insert_street_line_1]&address.city=[insert_city]&address.state_code=[insert_state_code]&address.postal_code=[insert_postal_code]&address.country_code=[insert_country_code]
 ```
 
 ## Query Parameters
@@ -175,13 +157,9 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
   The name of the person to search. **Example:** `name=John Doe`
 </ParamField>
 
-<ParamField query="business.name" type="string">
-  The business name to search. **Example:** `business.name=The Golden Company`
-</ParamField>
-
 <ParamField query="phone" type="string" required>
   The phone provided by the lead on the web form. **Example:**
-  `phone=4259853735`
+  `phone=2069735100`
 </ParamField>
 
 <ParamField query="email" type="string">
@@ -195,43 +173,39 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
 </ParamField>
 
 <ParamField query="address.street_line_1" type="string">
-  The first line of the street part in the structured address. **Example:**
-  `address.street_line_1=100 Syrws St`
+  The first line of the street part in the structured address. (Cannot be longer
+  than 1000 characters.) **Example:** `address.street_line_1=100 Syrws St`
+</ParamField>
+
+<ParamField query="address.street_line_2" type="string">
+  The second line of the street part in the structured address. (Cannot be
+  longer than 1000 characters.) **Example:** `address.street_line_2=Ste 1`
 </ParamField>
 
 <ParamField query="address.city" type="string">
-  The name of the city in the structured address. **Example:**
-  `address.city=Lynden`
-</ParamField>
-
-<ParamField query="address.state_code" type="string">
-  The state code of the structured address. **Example:** `address.state_code=WA`
+  The name of the city in the structured address. (Cannot be longer than 500
+  characters.) **Example:** `address.city=Seattle`
 </ParamField>
 
 <ParamField query="address.postal_code" type="string">
-  The postal code of the structured address. **Example:**
-  `address.postal_code=98229`
+  The postal code of the structured address. (Cannot be longer than 100
+  characters.) **Example:** `address.postal_code=98101`
 </ParamField>
 
-<ParamField query="address.country_code" type="string <ISO-3166-2>">
-  The ISO-3166 alpha-2 country code of the address. **Example:**
-  `address.country_code=US`
+<ParamField query="address.state_code" type="string">
+  The state code of the structured address. (Cannot be longer than 100
+  characters.) **Example:** `address.state_code=WA`
 </ParamField>
 
-<ParamField query="add_ons" type="string">
-  Request parameter to enable specific add-ons available for this endpoint. Add-ons incur additional charges. Please see [here](https://trestleiq.com/pricing/) for more details.
-
-- email_checks_deliverability: to enable email deliverability checks in the response
-- email_checks_age: to enable email age score in the response
-- litigator_checks: to enable litigator checks in the response
-
-**Example:** `add_ons=litigator_checks,email_checks_deliverability`
-
+<ParamField query="address.country_code" type="string (ISO-3166-2)">
+  The ISO-3166 alpha-2 country code of the address.
+  See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
+  Cannot be longer than 100 characters. **Example:** `address.country_code=US`
 </ParamField>
 
 ## Headers
 
-<ParamField query="x-api-key" body="header" type="string" required>
+<ParamField header="x-api-key" type="string" required>
   Your API key for authentication. **Example:** `{{ apiKey }}`
 </ParamField>
 
@@ -241,8 +215,10 @@ GET https://api.trestleiq.com/1.1/real_contact?api_key=[insert_key]&name=[insert
   True if the phone number is valid.
 </ResponseField>
 
-<ResponseField name="phone.activity_score" type="integer or null">
-  Trestle's activity scores range from 0 to 100. A score of 100 means consistent activity in the last 12 months, and a score of 0 means a disconnected number or no activity has been seen in the past year.
+<ResponseField name="activity_score" type="integer or null">
+  Trestle's activity scores range from 0 to 100. A score of 100 means consistent
+  activity in the last 12 months, and a score of 0 means a disconnected number
+  or no activity has been seen in the past year.
 
 An activity score of 70 or above means there is a high confidence that the phone is connected, assigned to a subscriber, and someone has been taking calls consistently. An activity score of 30 or below means there is a high confidence that the phone is either disconnected or no one will answer the call when the number is dialed in. An activity score of 50 means Trestle doesn't have enough signals to predict whether the phone is connected or disconnected/inactive.
 
@@ -259,76 +235,23 @@ If you want to filter leads based on the activity score, the following rules can
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
   a fixed physical address - `Premium` - Caller pays a premium for the call -
   `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-  `Other` - Line type is unclear Enum: <Badge>Landline</Badge>{" "}
-  <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>{" "}
-  <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>{" "}
-  <Badge>Other</Badge>
+  `Other` - Line type is unclear Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
 </ResponseField>
 
-<ResponseField name="phone.name_match" type="boolean or null">
+<ResponseField name="person.name_match" type="integer or null">
   A match/no match indicator whether the name provided on the lead form matches
   to the input phone number according to our database. A match is a positive
   indicator that verifies the lead is real and is who he/she says they are.
 </ResponseField>
 
-<ResponseField name="phone.contact_grade" type="string or null">
-  An A-F grade determining the quality of the lead and whether it is
+<ResponseField name="contact_grade" type="string or null">
+  string An A-F grade determining the quality of the lead and whether it is
   contactable. A Grade-F lead is a bad lead and should be deprioritized while a
-  Grade-A lead is real and contactable and should be prioritized. Read up on
-  contact grades in our [Knowledge Base
-  article](https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/).
-</ResponseField>
-
-<ResponseField name="email.is_valid" type="boolean or null">
-  True if the email is valid.
-</ResponseField>
-
-<ResponseField name="email.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches
-  to the input email address according to our database.
-</ResponseField>
-
-<ResponseField name="email.contact_grade" type="string or null">
-  An A-F grade determining the quality of the lead and whether it is contactable
-  via the email provided. Read up on contact grades in our [Knowledge Base
-  article](https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/).
-</ResponseField>
-
-<ResponseField name="address.is_valid" type="boolean or null">
-  True if the address is valid.
-</ResponseField>
-
-<ResponseField name="address.name_match" type="boolean or null">
-  A match/no match indicator whether the name provided on the lead form matches
-  to the input address according to our database.
-</ResponseField>
-
-<ResponseField name="add_ons" type="object or null">
-  <Expandable title="Add Ons Object">
-    <ResponseField name="litigator_checks" type="object">
-      <Expandable title="litigator_checks">
-        <ResponseField name="phone.is_litigator_risk" type="boolean or null">
-          True if the phone subscriber is a TCPA litigator.
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="email_checks" type="object">
-      <Expandable title="email_checks Object">
-        <ResponseField name="email.is_deliverable" type="boolean or null">
-          True if the email is valid and deliverable.
-        </ResponseField>
-        <ResponseField name="email.age_score" type="integer or null">
-          A 0-100 score indicating the longevity and activity-level of an email
-          address.
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-  </Expandable>
+  Grade-A lead is real and contactable and should be prioritized.
 </ResponseField>
 
 <ResponseField name="error" type="object(PartialError)">
   Error details in case of an error.
-
   <Expandable title="error object">
     <ResponseField name="name" type="string">
       Incomplete response due to external timeouts. **value:** "InternalError"
@@ -386,4 +309,5 @@ Enum: <Badge>Missing Input</Badge> <Badge>Missing Unit/Apt/Suite Number</Badge> 
   ### 500 Internal Server Error
 
   An unexpected error occurred on the server side. Please contact support if this persists.
+
 </Danger>

@@ -181,6 +181,7 @@
                 "group": "Real Contact API",
                 "expanded": false,
                 "pages": [
+                  "api-reference-archived/real-contact-api-v1-1",
                   "api-reference-archived/real-contact-api"
                 ]
               }
