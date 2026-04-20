@@ -2,6 +2,7 @@
 title: "Phone Validation API (Archived)"
 description: "Trestle Phone Validation API validates the phone number and provides phone metadata, such as carrier name, line type (landline, mobile, non-fixed VoIP, etc.), is the phone prepaid, etc."
 api: "GET /3.0/phone_intel"
+playground: "none"
 ---
 
 <Panel>
@@ -157,7 +158,7 @@ GET https://api.trestleiq.com/3.0/phone_intel?phone=[insert_phone]
   The phone number in E.164 or local format. **Example:** `phone=2069735100`
 </ParamField>
 
-<ParamField query="phone.country_hint" type="string <ISO-3166-2>">
+<ParamField query="phone.country_hint" type="string (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
   **Example:** `phone.country_hint=US`
@@ -202,7 +203,7 @@ If you want to filter leads based on the activity score, the following rules can
   The country code of the phone number.
 </ResponseField>
 
-<ResponseField name="country_code" type="string or null <ISO-3166-2>">
+<ResponseField name="country_code" type="string or null (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the phone number. See:
   [ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
 </ResponseField>
@@ -251,43 +252,31 @@ If you want to filter leads based on the activity score, the following rules can
 </ResponseField>
 
 <Danger>
-  ## Error Responses
 
-  ### 400 Bad Request
+## Error Responses
 
-  The server cannot process the request due to client-side errors.
+### 400
 
-  Check for: Syntax errors in the request script, malformed JSON, or invalid parameters.
+- **Invalid Parameters Error**: Parameter called incorrectly.
+- **Input Field Error**: Incorrect parameter information, such as non-existent area code on a phone number.
+- **Input Error**: No parameters given.
+- **Internal Error**: If there is an internal error while performing the checks
 
-  ### 403 Forbidden
+### 401
 
-  The request is understood, but the server is refusing to fulfill it.
+- **Bad Request**: If ';' used as parameter separator in request. Non-UTF-8-encoded request.
+- **Not Authorized**: No api_key parameter in the request.
 
-  - **Invalid API Key**: The key is incorrect or deactivated.
+### 403
 
-    Check for: Trailing spaces, syntax errors, or incorrect character counts.
+- **Auth Error**: API Key is not authorized for that request or expired.
+- **Quota Exceeded Error**: API Key has exceeded its quota.
 
-  - **API Key Missing**: The request header did not include an API key.
+### 429 Too Many Requests
 
-  - **API Key Disabled (Portal Issue)**: The key is inactive.
+- API Key has exceeded its rate limit.
 
-    Check for: Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
+### 500 Internal Server Error
 
-  - **API Key does not have Product Access (Portal Issue)**: The API key is active, but it is not enabled for this product or API version.
-
-    Check for: Incorrect endpoint, incorrect API version, or missing product access on the key.
-
-  - **API Key Expired**: The key has reached its end-of-life (primarily affects Trial users).
-
-  ### 429 Too Many Requests
-
-  You have sent too many requests in a given amount of time.
-
-  - **Rate Limit Exceeded**: You have surpassed the queries-per-second (QPS) threshold for your tier.
-
-  - **Quota Exceeded (Portal Issue)**: You have reached the total volume allowed for your current billing cycle. Upgrade your plan in the portal to resume service.
-
-  ### 500 Internal Server Error
-
-  An unexpected error occurred on the server side. Please contact support if this persists.
+- An unexpected error occurred on the server.
 </Danger>

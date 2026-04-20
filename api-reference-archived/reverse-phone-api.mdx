@@ -2,6 +2,7 @@
 title: "Reverse Phone API (Archived)"
 description: "Reverse Phone API validates a phone number and provides phone metadata, owner name and demographics, current and historical addresses, relatives and associated people, and additional phone numbers."
 api: "GET /3.1/phone"
+playground: "none"
 ---
 
 <Panel>
@@ -230,7 +231,7 @@ GET https://api.trestleiq.com/3.1/phone?phone=[insert_phone_number]
   +1 (USA). **Example:** `phone=2069735100`
 </ParamField>
 
-<ParamField query="phone.country_hint" type="string <ISO-3166-2>">
+<ParamField query="phone.country_hint" type="string (ISO-3166-2)">
   The ISO-3166 alpha-2 country code of the phone number. **Example:**
   `phone.country_hint=US`
 </ParamField>
@@ -384,7 +385,7 @@ GET https://api.trestleiq.com/3.1/phone?phone=[insert_phone_number]
       The state code of the structured address.
     </ResponseField>
 
-    <ResponseField name="country_code" type="string or null <ISO-3166-2>">
+    <ResponseField name="country_code" type="string or null (ISO-3166-2)">
       The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
     </ResponseField>
 
@@ -455,7 +456,7 @@ GET https://api.trestleiq.com/3.1/phone?phone=[insert_phone_number]
       The state code of the structured address.
     </ResponseField>
 
-    <ResponseField name="country_code" type="string or null <ISO-3166-2>">
+    <ResponseField name="country_code" type="string or null (ISO-3166-2)">
       The ISO-3166 alpha-2 country code of the phone number. See:[ISO-3166](https://www.nationsonline.org/oneworld/country_code_list.htm).
     </ResponseField>
 
