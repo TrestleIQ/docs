@@ -278,10 +278,7 @@ GET https://api.trestleiq.com/3.1/phone?phone=[insert_phone_number]
   connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
   a fixed physical address - `Premium` - Caller pays a premium for the call -
   `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-  `Other` - Line type is unclear Enum: <Badge>Landline</Badge>{" "}
-  <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge>{" "}
-  <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge>{" "}
-  <Badge>Other</Badge>
+  `Other` - Line type is unclear Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
 </ResponseField>
 
 <ResponseField name="carrier" type="string or null">
@@ -564,9 +561,7 @@ GET https://api.trestleiq.com/3.1/phone?phone=[insert_phone_number]
 
 <ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable. The possible values
-  include - <Badge>Invalid Input</Badge>,{" "}
-  <Badge>International number. Not authorized</Badge>, or{" "}
-  <Badge>Missing Input</Badge>.
+  include - <Badge>Invalid Input</Badge>, <Badge>International number. Not authorized</Badge>, or <Badge>Missing Input</Badge>.
 </ResponseField>
 
 <Danger>
