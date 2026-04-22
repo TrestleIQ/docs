@@ -389,7 +389,7 @@ Enum: <Badge>Missing Input</Badge> <Badge>Missing Unit/Apt/Suite Number</Badge> 
 
   The server cannot process the request due to client-side errors.
 
-  Check for: Syntax errors in the request script, malformed JSON, or invalid parameters.
+  _<u>Check for:</u>_ Syntax errors in the request script, malformed JSON, or invalid parameters.
 
   ### 403 Forbidden
 
@@ -397,17 +397,17 @@ Enum: <Badge>Missing Input</Badge> <Badge>Missing Unit/Apt/Suite Number</Badge> 
 
   - **Invalid API Key**: The key is incorrect or deactivated.
 
-    Check for: Trailing spaces, syntax errors, or incorrect character counts.
+    _<u>Check for:</u>_ Trailing spaces, syntax errors, or incorrect character counts.
 
   - **API Key Missing**: The request header did not include an API key.
 
   - **API Key Disabled (Portal Issue)**: The key is inactive.
 
-    Check for: Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
+    _<u>Check for:</u>_ Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
 
   - **API Key does not have Product Access (Portal Issue)**: The API key is active, but it is not enabled for this product or API version.
 
-    Check for: Incorrect endpoint, incorrect API version, or missing product access on the key.
+    _<u>Check for:</u>_ Incorrect endpoint, incorrect API version, or missing product access on the key.
 
   - **API Key Expired**: The key has reached its end-of-life (primarily affects Trial users).
 
