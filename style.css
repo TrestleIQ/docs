@@ -26,6 +26,21 @@ html.dark #navbar-transition {
   background-color: #0D1E26 !important;
 }
 
+/* ========== NAVBAR VERSION DROPDOWN ========== */
+/* Force white text/arrow on version selector in light mode (navbar is dark teal) */
+html.light #navbar-transition *,
+html:not(.dark) #navbar-transition *,
+html.light #navbar *,
+html:not(.dark) #navbar * {
+  color: #ffffff !important;
+}
+
+html.light #navbar-transition svg *,
+html:not(.dark) #navbar-transition svg * {
+  stroke: #ffffff !important;
+  fill: currentColor;
+}
+
 /* ========== SHARED STYLES ========== */
 
 #sidebar,
