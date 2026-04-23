@@ -26,6 +26,19 @@ html.dark #navbar-transition {
   background-color: #0D1E26 !important;
 }
 
+/* ========== NAVBAR VERSION DROPDOWN ========== */
+/* Only force white text/arrow on the version selector trigger in light mode */
+html.light #navbar button[aria-haspopup="menu"],
+html:not(.dark) #navbar button[aria-haspopup="menu"] {
+  color: #ffffff !important;
+}
+
+html.light #navbar button[aria-haspopup="menu"] svg,
+html:not(.dark) #navbar button[aria-haspopup="menu"] svg {
+  color: #ffffff !important;
+  stroke: currentColor !important;
+}
+
 /* ========== SHARED STYLES ========== */
 
 #sidebar,
