@@ -27,18 +27,16 @@ html.dark #navbar-transition {
 }
 
 /* ========== NAVBAR VERSION DROPDOWN ========== */
-/* Force white text/arrow on version selector in light mode (navbar is dark teal) */
-html.light #navbar-transition *,
-html:not(.dark) #navbar-transition *,
-html.light #navbar *,
-html:not(.dark) #navbar * {
+/* Only force white text/arrow on the version selector trigger in light mode */
+html.light #navbar button[aria-haspopup="menu"],
+html:not(.dark) #navbar button[aria-haspopup="menu"] {
   color: #ffffff !important;
 }
 
-html.light #navbar-transition svg *,
-html:not(.dark) #navbar-transition svg * {
-  stroke: #ffffff !important;
-  fill: currentColor;
+html.light #navbar button[aria-haspopup="menu"] svg,
+html:not(.dark) #navbar button[aria-haspopup="menu"] svg {
+  color: #ffffff !important;
+  stroke: currentColor !important;
 }
 
 /* ========== SHARED STYLES ========== */
