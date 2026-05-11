@@ -112,6 +112,13 @@
                 ]
               },
               {
+                "group": "Address Validation API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/address-validation-api"
+                ]
+              },
+              {
                 "group": "Phone Feedback API",
                 "expanded": false,
                 "pages": [
