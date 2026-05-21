@@ -1,0 +1,110 @@
+openapi: 3.1.0
+info:
+  title: Smart CNAM API
+  version: "3.1"
+  description: >
+    Smart CNAM API validates phone numbers and returns the name or business
+    associated with the phone number. Use when only caller name data is needed.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.1/cnam:
+    get:
+      operationId: getSmartCnam
+      summary: Get the name associated with a phone number
+      description: >
+        Validates the phone number and returns the top associated name (person
+        or business). Lighter-weight than Caller ID — use when name-only
+        resolution is sufficient.
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            Phone number in E.164 or local format. Example `2069735100`
+        - name: phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmartCnamResponse'
+              example:
+                $ref: '../fixtures/smart-cnam/response.success.json'
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: './common/components.security.yaml#/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: './common/components.responses.yaml#/responses/400BadRequest'
+    403Forbidden:
+      $ref: './common/components.responses.yaml#/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: './common/components.responses.yaml#/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: './common/components.responses.yaml#/responses/500InternalServerError'
+
+  schemas:
+    SmartCnamResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+          description: Persistent phone ID. Format `Phone.<uuid>`.
+        is_valid:
+          type: boolean
+          nullable: true
+        belongs_to:
+          type: object
+          nullable: true
+          properties:
+            id:
+              type: string
+              nullable: true
+            name:
+              type: string
+              nullable: true
+            firstname:
+              type: string
+              nullable: true
+            middlename:
+              type: string
+              nullable: true
+            lastname:
+              type: string
+              nullable: true
+        error:
+          $ref: './common/components.schemas.yaml#/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string

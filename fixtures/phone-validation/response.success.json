@@ -1,0 +1,15 @@
+{
+  "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
+  "phone_number": "2069735100",
+  "is_valid": true,
+  "activity_score": 50,
+  "country_calling_code": "1",
+  "country_code": "US",
+  "country_name": "United States",
+  "line_type": "NonFixedVOIP",
+  "carrier": "Level 3 Communications, LLC",
+  "is_prepaid": false,
+  "add_ons": null,
+  "error": null,
+  "warnings": []
+}

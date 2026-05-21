@@ -1,0 +1,104 @@
+{
+  "version": "1.0",
+  "updated": "2026-05-19",
+  "description": "Controlled vocabulary for Trestle API entities and fields. Use this for consistent field naming in AI-generated code and documentation.",
+  "entity_types": {
+    "Phone": {
+      "id_format": "Phone.<uuid>",
+      "description": "A phone number record with carrier, line type, and subscriber metadata.",
+      "key_fields": ["id", "phone_number", "is_valid", "line_type", "carrier", "is_prepaid", "activity_score", "country_calling_code"]
+    },
+    "Person": {
+      "id_format": "Person.<uuid>",
+      "description": "An individual identified as a phone owner or address resident.",
+      "key_fields": ["id", "name", "firstname", "middlename", "lastname", "alternate_names", "age_range", "gender", "type"]
+    },
+    "Location": {
+      "id_format": "Location.<uuid>",
+      "description": "A physical address record with validation and geolocation data.",
+      "key_fields": ["id", "street_line_1", "street_line_2", "city", "state_code", "postal_code", "zip4", "country_code", "lat_long", "is_active", "delivery_point"]
+    }
+  },
+  "field_vocabulary": {
+    "activity_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "Phone line activity likelihood. 70+ = high confidence connected. 30- = high confidence disconnected/inactive. 50 = insufficient data.",
+      "apis": ["Phone Validation API", "Real Contact API"]
+    },
+    "contact_grade": {
+      "type": "string",
+      "values": ["A", "B", "C", "D", "F"],
+      "meaning": "Lead contactability grade. A = high quality/contactable. F = bad lead, deprioritize.",
+      "apis": ["Real Contact API"]
+    },
+    "line_type": {
+      "type": "string",
+      "values": ["Landline", "Mobile", "FixedVOIP", "NonFixedVOIP", "Premium", "TollFree", "Voicemail", "Other"],
+      "meaning": "The type of phone line/service.",
+      "apis": ["Phone Validation API", "Reverse Phone API", "Caller Identification API", "Smart CNAM API", "Real Contact API"]
+    },
+    "is_valid": {
+      "type": "boolean",
+      "meaning": "True if the phone number (or email/address depending on context) is structurally valid.",
+      "apis": ["all"]
+    },
+    "name_match": {
+      "type": "boolean",
+      "meaning": "True if the provided name matches the name on record for the phone/email/address.",
+      "apis": ["Real Contact API"]
+    },
+    "trust_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "IP Trust Score. Higher = more legitimate. Factors in VPN/proxy usage, network type, geographic signals.",
+      "apis": ["Real Contact API"]
+    },
+    "ip_distance_to_address": {
+      "type": "integer",
+      "unit": "miles",
+      "meaning": "Approximate distance between the user's IP location and the provided physical address. NULL if IP location confidence is low.",
+      "apis": ["Real Contact API"]
+    },
+    "delivery_point": {
+      "type": "string",
+      "values": ["SingleUnit", "MultiUnit", "POBox", "PartialAddress"],
+      "meaning": "The USPS delivery point type for the address.",
+      "apis": ["Reverse Address API", "Caller Identification API", "Reverse Phone API"]
+    },
+    "location_type": {
+      "type": "string",
+      "values": ["Country", "State", "City", "PostalCode", "ZipPlus4", "Neighborhood", "Address"],
+      "meaning": "The geographic granularity of a location record.",
+      "apis": ["Reverse Phone API", "Caller Identification API", "Reverse Address API"]
+    },
+    "lat_long.accuracy": {
+      "type": "string",
+      "values": ["Country", "State", "City", "PostalCode", "Neighborhood", "Street", "RoofTop"],
+      "meaning": "The precision level of the lat/long coordinates.",
+      "apis": ["Reverse Phone API", "Caller Identification API", "Reverse Address API"]
+    },
+    "phone_status": {
+      "type": "string",
+      "values": ["Connected", "Disconnected"],
+      "meaning": "Live-call outcome for a dialed phone number. Used in Phone Feedback API.",
+      "apis": ["Phone Feedback API"]
+    },
+    "phone_right_party_contact": {
+      "type": "boolean",
+      "meaning": "Whether the live call confirmed the number belongs to the intended person.",
+      "apis": ["Phone Feedback API"]
+    }
+  },
+  "common_warnings": {
+    "Missing Input": "A required or recommended field was not provided.",
+    "Invalid Phone": "The phone number is not a valid phone number.",
+    "Invalid Address": "The address could not be validated.",
+    "Invalid Email": "The email address is not valid.",
+    "Free Email Service Provider": "The email domain is a free provider (e.g., gmail.com).",
+    "Disposable Email": "The email appears to be from a disposable email service.",
+    "Undeliverable Email": "The email address cannot receive mail.",
+    "International number. Not authorized": "The phone number is international and the key is not authorized for international lookups.",
+    "Lead is a Litigator. Must not be contacted.": "The phone subscriber is a known TCPA litigator."
+  }
+}
