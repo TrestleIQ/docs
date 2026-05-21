@@ -103,7 +103,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RealContactResponse'
               example:
-                $ref: '../fixtures/real-contact/response.success.json'
+                status: success
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -116,17 +116,17 @@ paths:
 components:
   securitySchemes:
     ApiKeyAuth:
-      $ref: './common/components.security.yaml#/securitySchemes/ApiKeyAuth'
+      $ref: '#/components/securitySchemes/ApiKeyAuth'
 
   responses:
     400BadRequest:
-      $ref: './common/components.responses.yaml#/responses/400BadRequest'
+      $ref: '#/components/responses/400BadRequest'
     403Forbidden:
-      $ref: './common/components.responses.yaml#/responses/403Forbidden'
+      $ref: '#/components/responses/403Forbidden'
     429TooManyRequests:
-      $ref: './common/components.responses.yaml#/responses/429TooManyRequests'
+      $ref: '#/components/responses/429TooManyRequests'
     500InternalServerError:
-      $ref: './common/components.responses.yaml#/responses/500InternalServerError'
+      $ref: '#/components/responses/500InternalServerError'
 
   schemas:
     RealContactResponse:
