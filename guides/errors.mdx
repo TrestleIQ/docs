@@ -1,0 +1,75 @@
+---
+title: "Error handling"
+description: "HTTP error codes returned by Trestle APIs and how to handle them."
+---
+
+## HTTP error codes
+
+| Status | Name | When it occurs |
+|---|---|---|
+| `400` | Bad Request | Malformed request, missing required parameters, or invalid parameter values |
+| `401` | Unauthorized | Missing `x-api-key` header |
+| `403` | Forbidden | Invalid, expired, or disabled API key; missing product access |
+| `404` | Not Found | Endpoint path is incorrect |
+| `429` | Too Many Requests | QPS rate limit or monthly quota exceeded |
+| `500` | Internal Server Error | Unexpected server-side error |
+
+## 400 Bad Request
+
+The server cannot process the request due to a client-side error.
+
+**Common causes:**
+- Missing a required query parameter (e.g., `phone` on phone-based APIs)
+- Invalid parameter format (e.g., malformed phone number)
+- Syntax error in request URL
+
+**Fix:** Check the required parameters listed in the API reference for the endpoint you are calling.
+
+## 403 Forbidden
+
+The request is understood, but the server is refusing to fulfill it.
+
+| Subtype | Cause | Fix |
+|---|---|---|
+| Invalid API Key | Key is incorrect or deactivated | Check for trailing spaces or character errors in the key |
+| API Key Missing | `x-api-key` header not included | Add the header to your request |
+| API Key Disabled | Key is inactive (portal issue) | Check wallet balance or contact Trestle support |
+| No Product Access | Key not enabled for this product/version | Enable the product in the portal or contact support |
+| API Key Expired | Key reached end-of-life (trial users) | Renew or upgrade in the portal |
+
+## 429 Too Many Requests
+
+You have exceeded a rate or quota limit. See [Rate limits](./rate-limits) for retry guidance.
+
+## 500 Internal Server Error
+
+An unexpected error occurred on the server. If this persists, contact [support@trestleiq.com](mailto:support@trestleiq.com) with the request details and timestamp.
+
+## Partial errors
+
+Some APIs return a `200` response with an `error` or `errors` field when partial data could not be retrieved (e.g., due to an upstream timeout). Check for this field in every response:
+
+```json
+{
+  "phone_number": "2069735100",
+  "is_valid": true,
+  "error": {
+    "name": "InternalError",
+    "message": "Could not retrieve entire response"
+  }
+}
+```
+
+When `error` is present, the response is partial. The fields that were successfully retrieved are still usable.
+
+## Warnings
+
+Warnings indicate non-fatal issues with the input or response. They do not prevent a response from being returned:
+
+```json
+{
+  "warnings": ["Invalid Phone", "Missing Input"]
+}
+```
+
+Common warning values vary by API — see the `warnings` field documentation on each API reference page.

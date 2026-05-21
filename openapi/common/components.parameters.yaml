@@ -1,0 +1,89 @@
+parameters:
+  PhoneParam:
+    name: phone
+    in: query
+    required: true
+    schema:
+      type: string
+    description: >
+      The phone number in E.164 or local format. The default country calling
+      code is +1 (USA). Example: `2069735100`
+
+  PhoneCountryHint:
+    name: phone.country_hint
+    in: query
+    required: false
+    schema:
+      type: string
+    description: >
+      The ISO-3166 alpha-2 country code of the phone number.
+      Example: `US`
+
+  PhoneNameHint:
+    name: phone.name_hint
+    in: query
+    required: false
+    schema:
+      type: string
+    description: >
+      Person or business name associated with the phone number. Used to rank
+      results when multiple owners are found in the database.
+
+  PhonePostalCodeHint:
+    name: phone.postal_code_hint
+    in: query
+    required: false
+    schema:
+      type: string
+    description: >
+      The postal code of the subscriber address associated with the phone
+      number. Used to rank name/address results.
+
+  AddressStreetLine1:
+    name: address.street_line_1
+    in: query
+    required: false
+    schema:
+      type: string
+    description: The first line of the street address. Example: `100 Main St`
+
+  AddressStreetLine2:
+    name: address.street_line_2
+    in: query
+    required: false
+    schema:
+      type: string
+    description: The second line of the street address (unit, suite, etc.).
+
+  AddressCity:
+    name: address.city
+    in: query
+    required: false
+    schema:
+      type: string
+    description: The name of the city. Example: `Seattle`
+
+  AddressStateCode:
+    name: address.state_code
+    in: query
+    required: false
+    schema:
+      type: string
+    description: The two-letter state code. Example: `WA`
+
+  AddressPostalCode:
+    name: address.postal_code
+    in: query
+    required: false
+    schema:
+      type: string
+    description: The postal code. Example: `98101`
+
+  AddressCountryCode:
+    name: address.country_code
+    in: query
+    required: false
+    schema:
+      type: string
+    description: >
+      The ISO-3166 alpha-2 country code of the address. Example: `US`

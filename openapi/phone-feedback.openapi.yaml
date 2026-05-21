@@ -1,0 +1,110 @@
+openapi: 3.1.0
+info:
+  title: Phone Feedback API
+  version: "1.0"
+  description: >
+    Phone Feedback API allows submitting feedback to Trestle about dialed
+    numbers, including connected/disconnected status and right-party contact
+    confirmation. This data improves the accuracy of Trestle's phone activity
+    models.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /1.0/phone_feedback:
+    post:
+      operationId: submitPhoneFeedback
+      summary: Submit live-call feedback for a phone number
+      description: >
+        Submit feedback about a dialed phone number: whether it was connected
+        or disconnected, and whether the call confirmed the right party was
+        reached. Pair with the `response_id` returned from a prior Trestle
+        API call.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PhoneFeedbackRequest'
+            example:
+              $ref: '../fixtures/phone-feedback/request.valid.json'
+      responses:
+        "200":
+          description: Feedback accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneFeedbackResponse'
+              example:
+                $ref: '../fixtures/phone-feedback/response.success.json'
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: './common/components.security.yaml#/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: './common/components.responses.yaml#/responses/400BadRequest'
+    403Forbidden:
+      $ref: './common/components.responses.yaml#/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: './common/components.responses.yaml#/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: './common/components.responses.yaml#/responses/500InternalServerError'
+
+  schemas:
+    PhoneFeedbackRequest:
+      type: object
+      required:
+        - response_id
+        - phone
+        - phone_status
+        - phone_right_party_contact
+      properties:
+        response_id:
+          type: string
+          description: >
+            The response ID returned from a prior Trestle API call.
+            Example `T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f`
+        phone:
+          type: string
+          description: >
+            Phone number in E.164 or local format. Example `2069735100`
+        name:
+          type: string
+          description: Person or business name associated with the phone.
+        phone_status:
+          type: string
+          enum:
+            - Connected
+            - Disconnected
+          description: Live-call status for the phone number.
+        phone_right_party_contact:
+          type: boolean
+          description: Whether the call confirmed the number belongs to the right party.
+
+    PhoneFeedbackResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        error:
+          $ref: './common/components.schemas.yaml#/schemas/PartialError'

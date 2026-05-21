@@ -1,0 +1,138 @@
+openapi: 3.1.0
+info:
+  title: Caller Identification API
+  version: "3.1"
+  description: >
+    Caller Identification API identifies the phone owner's name and demographic
+    details, along with the owner's current address, alternate phones, and
+    emails. Returns only the highest-ranked phone owner.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.1/caller_id:
+    get:
+      operationId: getCallerIdentification
+      summary: Identify the top owner of a phone number
+      description: >
+        Validates the phone number, provides real-time metadata (line type,
+        carrier), and returns the highest-ranked phone owner with their
+        current address, emails, and alternate phone numbers.
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            Phone number in E.164 or local format. Default country code +1 (USA).
+            Example `2069735100`
+        - name: phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code of the phone number. Example `US`
+        - name: phone.name_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Name hint to rank results when multiple owners are found.
+        - name: phone.postal_code_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Postal code hint to rank name/address results.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CallerIdResponse'
+              example:
+                $ref: '../fixtures/caller-identification/response.success.json'
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: './common/components.security.yaml#/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: './common/components.responses.yaml#/responses/400BadRequest'
+    403Forbidden:
+      $ref: './common/components.responses.yaml#/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: './common/components.responses.yaml#/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: './common/components.responses.yaml#/responses/500InternalServerError'
+
+  schemas:
+    CallerIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+          description: Persistent phone ID. Format `Phone.<uuid>`.
+        phone_number:
+          type: string
+          nullable: true
+        is_valid:
+          type: boolean
+          nullable: true
+        country_calling_code:
+          type: string
+          nullable: true
+        line_type:
+          $ref: './common/components.schemas.yaml#/schemas/LineType'
+        carrier:
+          type: string
+          nullable: true
+        is_prepaid:
+          type: boolean
+          nullable: true
+        is_commercial:
+          type: boolean
+          nullable: true
+        belongs_to:
+          $ref: '#/components/schemas/CallerIdOwner'
+        current_addresses:
+          type: array
+          items:
+            $ref: './common/components.schemas.yaml#/schemas/Address'
+        emails:
+          type: array
+          items:
+            type: string
+        error:
+          $ref: './common/components.schemas.yaml#/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string
+
+    CallerIdOwner:
+      allOf:
+        - $ref: './common/components.schemas.yaml#/schemas/Person'

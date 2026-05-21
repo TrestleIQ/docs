@@ -1,0 +1,118 @@
+{
+  "version": "1.0",
+  "updated": "2026-05-19",
+  "endpoints": [
+    {
+      "product": "Real Contact API",
+      "endpoint": "GET /2.0/real_contact",
+      "fixtures": {
+        "request": "fixtures/real-contact/request.valid.json",
+        "response_success": "fixtures/real-contact/response.success.json",
+        "response_error_400": "fixtures/real-contact/response.error.400.json",
+        "response_error_429": "fixtures/real-contact/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/real-contact.md",
+        "javascript": "examples/javascript/real-contact.md",
+        "python": "examples/python/real-contact.md"
+      },
+      "inline_examples_in_docs": "api-reference/real-contact-api.mdx"
+    },
+    {
+      "product": "Caller Identification API",
+      "endpoint": "GET /3.1/caller_id",
+      "fixtures": {
+        "request": "fixtures/caller-identification/request.valid.json",
+        "response_success": "fixtures/caller-identification/response.success.json",
+        "response_error_400": "fixtures/caller-identification/response.error.400.json",
+        "response_error_429": "fixtures/caller-identification/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/caller-identification.md",
+        "javascript": "examples/javascript/caller-identification.md",
+        "python": "examples/python/caller-identification.md"
+      },
+      "inline_examples_in_docs": "api-reference/caller-identification-api.mdx"
+    },
+    {
+      "product": "Smart CNAM API",
+      "endpoint": "GET /3.1/cnam",
+      "fixtures": {
+        "request": "fixtures/smart-cnam/request.valid.json",
+        "response_success": "fixtures/smart-cnam/response.success.json",
+        "response_error_400": "fixtures/smart-cnam/response.error.400.json",
+        "response_error_429": "fixtures/smart-cnam/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/smart-cnam.md",
+        "javascript": "examples/javascript/smart-cnam.md",
+        "python": "examples/python/smart-cnam.md"
+      },
+      "inline_examples_in_docs": "api-reference/smart-cnam-api.mdx"
+    },
+    {
+      "product": "Phone Validation API",
+      "endpoint": "GET /3.0/phone_intel",
+      "fixtures": {
+        "request": "fixtures/phone-validation/request.valid.json",
+        "response_success": "fixtures/phone-validation/response.success.json",
+        "response_error_400": "fixtures/phone-validation/response.error.400.json",
+        "response_error_429": "fixtures/phone-validation/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/phone-validation.md",
+        "javascript": "examples/javascript/phone-validation.md",
+        "python": "examples/python/phone-validation.md"
+      },
+      "inline_examples_in_docs": "api-reference/phone-validation-api.mdx"
+    },
+    {
+      "product": "Reverse Phone API",
+      "endpoint": "GET /3.2/phone",
+      "fixtures": {
+        "request": "fixtures/reverse-phone/request.valid.json",
+        "response_success": "fixtures/reverse-phone/response.success.json",
+        "response_error_400": "fixtures/reverse-phone/response.error.400.json",
+        "response_error_429": "fixtures/reverse-phone/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/reverse-phone.md",
+        "javascript": "examples/javascript/reverse-phone.md",
+        "python": "examples/python/reverse-phone.md"
+      },
+      "inline_examples_in_docs": "api-reference/reverse-phone-api.mdx"
+    },
+    {
+      "product": "Reverse Address API",
+      "endpoint": "GET /3.1/location",
+      "fixtures": {
+        "request": "fixtures/reverse-address/request.valid.json",
+        "response_success": "fixtures/reverse-address/response.success.json",
+        "response_error_400": "fixtures/reverse-address/response.error.400.json",
+        "response_error_429": "fixtures/reverse-address/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/reverse-address.md",
+        "javascript": "examples/javascript/reverse-address.md",
+        "python": "examples/python/reverse-address.md"
+      },
+      "inline_examples_in_docs": "api-reference/reverse-address-api.mdx"
+    },
+    {
+      "product": "Phone Feedback API",
+      "endpoint": "POST /1.0/phone_feedback",
+      "fixtures": {
+        "request": "fixtures/phone-feedback/request.valid.json",
+        "response_success": "fixtures/phone-feedback/response.success.json",
+        "response_error_400": "fixtures/phone-feedback/response.error.400.json",
+        "response_error_429": "fixtures/phone-feedback/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/phone-feedback.md",
+        "javascript": "examples/javascript/phone-feedback.md",
+        "python": "examples/python/phone-feedback.md"
+      },
+      "inline_examples_in_docs": "api-reference/phone-feedback-api.mdx"
+    }
+  ]
+}

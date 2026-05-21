@@ -1,0 +1,9 @@
+securitySchemes:
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: x-api-key
+    description: >
+      All Trestle API requests require an API key passed via the `x-api-key`
+      request header. Obtain a key by signing up at
+      https://portal.trestleiq.com/signup.
