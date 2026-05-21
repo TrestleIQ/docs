@@ -45,7 +45,8 @@ parameters:
     required: false
     schema:
       type: string
-    description: The first line of the street address. Example: `100 Main St`
+    description: >
+      The first line of the street address. Example: `100 Main St`
 
   AddressStreetLine2:
     name: address.street_line_2
@@ -61,7 +62,8 @@ parameters:
     required: false
     schema:
       type: string
-    description: The name of the city. Example: `Seattle`
+    description: >
+      The name of the city. Example: `Seattle`
 
   AddressStateCode:
     name: address.state_code
@@ -69,7 +71,8 @@ parameters:
     required: false
     schema:
       type: string
-    description: The two-letter state code. Example: `WA`
+    description: >
+      The two-letter state code. Example: `WA`
 
   AddressPostalCode:
     name: address.postal_code
@@ -77,7 +80,8 @@ parameters:
     required: false
     schema:
       type: string
-    description: The postal code. Example: `98101`
+    description: >
+      The postal code. Example: `98101`
 
   AddressCountryCode:
     name: address.country_code
