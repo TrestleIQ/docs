@@ -1,0 +1,70 @@
+openapi: 3.1.0
+info:
+  title: Find Person API (Archived)
+  version: "3.1"
+  description: >
+    Find Person API returns person details based on name and optional address hints.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.1/person:
+    get:
+      operationId: getFindPerson
+      summary: Find person by name and address hints
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: address.city
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: address.state_code
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  responses:
+    400BadRequest:
+      description: Bad Request.
+    403Forbidden:
+      description: Forbidden.
+    429TooManyRequests:
+      description: Too Many Requests.
+    500InternalServerError:
+      description: Internal Server Error.

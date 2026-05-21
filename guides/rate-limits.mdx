@@ -1,0 +1,65 @@
+---
+title: "Rate limits"
+description: "Understand Trestle API rate limits and how to handle 429 responses."
+---
+
+## Overview
+
+Trestle enforces two types of limits:
+
+| Limit type | Description |
+|---|---|
+| **QPS (queries per second)** | Maximum requests per second per API key |
+| **Monthly quota** | Total requests allowed in your current billing cycle |
+
+Limits vary by plan tier. Contact [support@trestleiq.com](mailto:support@trestleiq.com) to review or upgrade your limits.
+
+## Rate limit response
+
+When a limit is exceeded, the API returns `429 Too Many Requests`:
+
+```json
+{
+  "error": "rate_limit_exceeded",
+  "message": "You have exceeded your QPS limit. Please retry after 1 second."
+}
+```
+
+## Retry strategy
+
+Use exponential backoff when you receive a `429`:
+
+```python
+import time
+import requests
+
+def call_with_retry(url, headers, params, max_retries=5):
+    delay = 1
+    for attempt in range(max_retries):
+        response = requests.get(url, headers=headers, params=params, timeout=30)
+        if response.status_code != 429:
+            return response
+        time.sleep(delay)
+        delay *= 2
+    return response
+```
+
+### Retry rules
+
+- Start with a 1-second delay.
+- Double the delay on each subsequent retry (exponential backoff).
+- Add a small random jitter (e.g., ±100ms) to avoid thundering herd.
+- Stop retrying after 5 attempts or when the billing cycle quota is confirmed exhausted (quota exhaustion does not resolve with retries — upgrade the plan).
+
+## QPS vs quota errors
+
+Both return `429`, but the cause and resolution differ:
+
+| Scenario | `429` subtype | Resolution |
+|---|---|---|
+| Too many requests per second | Rate limit exceeded | Back off and retry |
+| Monthly usage cap reached | Quota exceeded | Upgrade plan in the portal |
+
+## Checking usage
+
+Log in to the [Developer Portal](https://portal.trestleiq.com) to view current usage and quota remaining for each API key.
