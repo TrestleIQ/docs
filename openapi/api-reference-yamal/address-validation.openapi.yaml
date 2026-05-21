@@ -1,0 +1,204 @@
+openapi: 3.1.0
+info:
+  title: Address Validation API
+  version: "3.0"
+  description: >
+    Reverse Address API validates and normalizes input addresses while
+    providing comprehensive insights into current residents' information,
+    including demographics, historical addresses, relatives, phone numbers,
+    and email addresses.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.0/location_intel:
+    get:
+      operationId: getAddressValidation
+      summary: Look up residents at a street address
+      description: >
+        Validates and normalizes the input address and returns all current
+        residents linked to the address, including demographics, phones,
+        emails, historical addresses, and associated people.
+      parameters:
+        - name: street_line_1
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The first line of the street address. Example `100 Syrws St`
+        - name: street_line_2
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The second line of the street address.
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The city name. Example `Seattle`
+        - name: state_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Two-letter state code. Example `WA`
+        - name: postal_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The postal code. Example `98101`
+        - name: country_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReverseAddressResponse'
+              example:
+                status: success
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: '#/components/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: '#/components/responses/400BadRequest'
+    403Forbidden:
+      $ref: '#/components/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: '#/components/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: '#/components/responses/500InternalServerError'
+
+  schemas:
+    ReverseAddressResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+          description: Persistent location ID. Format `Location.<uuid>`.
+        is_valid:
+          type: boolean
+          nullable: true
+        street_line_1:
+          type: string
+          nullable: true
+        street_line_2:
+          type: string
+          nullable: true
+        city:
+          type: string
+          nullable: true
+        postal_code:
+          type: string
+          nullable: true
+        zip4:
+          type: string
+          nullable: true
+        state_code:
+          type: string
+          nullable: true
+        country_code:
+          type: string
+          nullable: true
+        lat_long:
+          $ref: '#/components/schemas/LatLong'
+        is_active:
+          type: boolean
+          nullable: true
+        is_commercial:
+          type: boolean
+          nullable: true
+        delivery_point:
+          type: string
+          nullable: true
+          enum:
+            - SingleUnit
+            - MultiUnit
+            - POBox
+            - PartialAddress
+        current_residents:
+          type: array
+          items:
+            $ref: '#/components/schemas/Resident'
+        error:
+          $ref: '#/components/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string
+
+    Resident:
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - type: object
+          properties:
+            link_to_address_start_date:
+              type: string
+              nullable: true
+            phones:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhoneShort'
+            emails:
+              type: array
+              items:
+                type: string
+            historical_addresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/Address'
+            associated_people:
+              type: array
+              items:
+                $ref: '#/components/schemas/AssociatedPerson'
+
+    AssociatedPerson:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+        name:
+          type: string
+          nullable: true
+        firstname:
+          type: string
+          nullable: true
+        middlename:
+          type: string
+          nullable: true
+        lastname:
+          type: string
+          nullable: true
+        relation:
+          type: string
+          nullable: true

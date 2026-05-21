@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
-  title: Reverse Address API
-  version: "3.1"
+  title: Reverse Address API (Archived)
+  version: "3.0"
   description: >
     Reverse Address API validates and normalizes input addresses while
     providing comprehensive insights into current residents' information,
@@ -19,7 +19,7 @@ security:
   - ApiKeyAuth: []
 
 paths:
-  /3.1/location:
+  /3.0/location:
     get:
       operationId: getReverseAddress
       summary: Look up residents at a street address
@@ -72,7 +72,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ReverseAddressResponse'
               example:
-                $ref: '../fixtures/reverse-address/response.success.json'
+                status: success
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -85,17 +85,17 @@ paths:
 components:
   securitySchemes:
     ApiKeyAuth:
-      $ref: './common/components.security.yaml#/securitySchemes/ApiKeyAuth'
+      $ref: '#/components/securitySchemes/ApiKeyAuth'
 
   responses:
     400BadRequest:
-      $ref: './common/components.responses.yaml#/responses/400BadRequest'
+      $ref: '#/components/responses/400BadRequest'
     403Forbidden:
-      $ref: './common/components.responses.yaml#/responses/403Forbidden'
+      $ref: '#/components/responses/403Forbidden'
     429TooManyRequests:
-      $ref: './common/components.responses.yaml#/responses/429TooManyRequests'
+      $ref: '#/components/responses/429TooManyRequests'
     500InternalServerError:
-      $ref: './common/components.responses.yaml#/responses/500InternalServerError'
+      $ref: '#/components/responses/500InternalServerError'
 
   schemas:
     ReverseAddressResponse:
@@ -130,7 +130,7 @@ components:
           type: string
           nullable: true
         lat_long:
-          $ref: './common/components.schemas.yaml#/schemas/LatLong'
+          $ref: '#/components/schemas/LatLong'
         is_active:
           type: boolean
           nullable: true
@@ -150,7 +150,7 @@ components:
           items:
             $ref: '#/components/schemas/Resident'
         error:
-          $ref: './common/components.schemas.yaml#/schemas/PartialError'
+          $ref: '#/components/schemas/PartialError'
         warnings:
           type: array
           items:
@@ -158,7 +158,7 @@ components:
 
     Resident:
       allOf:
-        - $ref: './common/components.schemas.yaml#/schemas/Person'
+        - $ref: '#/components/schemas/Person'
         - type: object
           properties:
             link_to_address_start_date:
@@ -167,7 +167,7 @@ components:
             phones:
               type: array
               items:
-                $ref: './common/components.schemas.yaml#/schemas/PhoneShort'
+                $ref: '#/components/schemas/PhoneShort'
             emails:
               type: array
               items:
@@ -175,7 +175,7 @@ components:
             historical_addresses:
               type: array
               items:
-                $ref: './common/components.schemas.yaml#/schemas/Address'
+                $ref: '#/components/schemas/Address'
             associated_people:
               type: array
               items:
