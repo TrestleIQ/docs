@@ -1,0 +1,137 @@
+openapi: 3.1.0
+info:
+  title: Phone Validation API
+  version: "3.0"
+  description: >
+    Phone Validation API validates phone numbers and provides phone metadata,
+    including carrier, line type, prepaid status, and a phone activity score
+    to identify disconnected numbers. TCPA litigator check available as an
+    add-on.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.0/phone_intel:
+    get:
+      operationId: getPhoneValidation
+      summary: Validate a phone number and get metadata
+      description: >
+        Validates the phone number and returns carrier, line type, prepaid
+        status, country info, and a 0–100 activity score indicating whether
+        the number is active.
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            Phone number in E.164 or local format. Example `2069735100`
+        - name: phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+        - name: add_ons
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Comma-separated add-ons to enable. Options: `litigator_checks`.
+            Additional charges apply.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneValidationResponse'
+              example:
+                status: success
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: '#/components/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: '#/components/responses/400BadRequest'
+    403Forbidden:
+      $ref: '#/components/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: '#/components/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: '#/components/responses/500InternalServerError'
+
+  schemas:
+    PhoneValidationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+          description: Persistent phone ID. Format `Phone.<uuid>`.
+        phone_number:
+          type: string
+          nullable: true
+        is_valid:
+          type: boolean
+          nullable: true
+        activity_score:
+          type: integer
+          nullable: true
+          description: >
+            0–100. 70+ = high confidence connected. 30- = high confidence
+            disconnected/inactive. 50 = insufficient signals.
+        country_calling_code:
+          type: string
+          nullable: true
+        country_code:
+          type: string
+          nullable: true
+        country_name:
+          type: string
+          nullable: true
+        line_type:
+          $ref: '#/components/schemas/LineType'
+        carrier:
+          type: string
+          nullable: true
+        is_prepaid:
+          type: boolean
+          nullable: true
+        add_ons:
+          type: object
+          nullable: true
+          properties:
+            litigator_checks:
+              type: object
+              properties:
+                phone.is_litigator_risk:
+                  type: boolean
+                  nullable: true
+        error:
+          $ref: '#/components/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string

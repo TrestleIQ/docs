@@ -1,0 +1,50 @@
+responses:
+  400BadRequest:
+    description: >
+      Bad Request. The server cannot process the request due to client-side
+      errors (e.g., missing required parameters, invalid format, malformed URL).
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
+
+  401Unauthorized:
+    description: Unauthorized. The `x-api-key` header is missing.
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
+
+  403Forbidden:
+    description: >
+      Forbidden. The API key is invalid, expired, disabled, or does not have
+      access to this product/version.
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
+
+  404NotFound:
+    description: Not found. The endpoint path is incorrect.
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
+
+  429TooManyRequests:
+    description: >
+      Too Many Requests. Either the per-second QPS rate limit or the monthly
+      quota has been exceeded.
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'
+
+  500InternalServerError:
+    description: >
+      Internal Server Error. An unexpected server-side error occurred. Contact
+      support@trestleiq.com if this persists.
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/ErrorResponse'

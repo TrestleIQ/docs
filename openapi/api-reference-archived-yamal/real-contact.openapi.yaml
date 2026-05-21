@@ -1,0 +1,231 @@
+openapi: 3.1.0
+info:
+  title: Real Contact API 1.0 (Archived)
+  version: "1.0"
+  description: >
+    Real Contact API verifies and grades phone numbers, emails, and addresses.
+    Returns Phone Activity Score, line type, name matches, and IP-based
+    intelligence signals. Add-ons available for email deliverability, email age,
+    and TCPA litigator checks.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /1.0/real_contact:
+    get:
+      operationId: getRealContactV10
+      summary: Verify and grade a lead's contact information
+      description: >
+        Verifies the contactability and consistency of an identity profile
+        across name, phone, email, address, and IP address. Returns contact
+        grades (A–F), activity scores, name-match indicators, and IP trust
+        signals.
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The name of the person to search. Example `John Doe`
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The phone number provided by the lead. Example `4259853735`
+        - name: email
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The email provided by the lead. Example `john.doe@example.com`
+        - name: address.street_line_1
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: address.city
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: address.state_code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: address.postal_code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: address.country_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+        - name: ip_address
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            The IP address captured at time of interaction. Example `192.0.0.1`
+        - name: add_ons
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Comma-separated list of add-ons to enable. Options:
+            `email_checks_deliverability`, `email_checks_age`,
+            `litigator_checks`. Additional charges apply.
+        - name: business.name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The business name to search. Example `The Golden Company`
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealContactResponse'
+              example:
+                status: success
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: '#/components/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: '#/components/responses/400BadRequest'
+    403Forbidden:
+      $ref: '#/components/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: '#/components/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: '#/components/responses/500InternalServerError'
+
+  schemas:
+    RealContactResponse:
+      type: object
+      properties:
+        phone:
+          type: object
+          properties:
+            contact_grade:
+              type: string
+              nullable: true
+              description: >
+                A–F grade for lead contactability via phone. A = high quality,
+                F = bad lead.
+            is_valid:
+              type: boolean
+              nullable: true
+            activity_score:
+              type: integer
+              nullable: true
+              description: >
+                0–100 score. 70+ = high confidence connected; 30- = high
+                confidence disconnected/inactive.
+            line_type:
+              type: string
+              nullable: true
+              enum:
+                - Landline
+                - Mobile
+                - FixedVOIP
+                - NonFixedVOIP
+                - Premium
+                - TollFree
+                - Voicemail
+                - Other
+            name_match:
+              type: boolean
+              nullable: true
+        email:
+          type: object
+          properties:
+            contact_grade:
+              type: string
+              nullable: true
+            is_valid:
+              type: boolean
+              nullable: true
+            name_match:
+              type: boolean
+              nullable: true
+        address:
+          type: object
+          properties:
+            is_valid:
+              type: boolean
+              nullable: true
+            name_match:
+              type: boolean
+              nullable: true
+        ip_address:
+          type: object
+          nullable: true
+          properties:
+            trust_score:
+              type: integer
+              nullable: true
+              description: 0–100 score evaluating interaction legitimacy based on IP.
+            ip_distance_to_address:
+              type: integer
+              nullable: true
+              description: Approximate miles between IP location and provided address.
+        add_ons:
+          type: object
+          nullable: true
+          properties:
+            litigator_checks:
+              type: object
+              properties:
+                phone_is_litigator_risk:
+                  type: boolean
+                  nullable: true
+            email_checks:
+              type: object
+              properties:
+                email_is_deliverable:
+                  type: boolean
+                  nullable: true
+                email_age_score:
+                  type: integer
+                  nullable: true
+        warnings:
+          type: array
+          items:
+            type: string
+        errors:
+          type: object
+          nullable: true
+          properties:
+            name:
+              type: string
+            message:
+              type: string

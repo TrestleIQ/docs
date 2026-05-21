@@ -1,0 +1,178 @@
+schemas:
+  ErrorResponse:
+    type: object
+    properties:
+      error:
+        type: string
+        description: Error code identifier.
+      message:
+        type: string
+        description: Human-readable description of the error.
+
+  PartialError:
+    type: object
+    description: >
+      Returned inside a 200 response when partial data could not be retrieved
+      due to an upstream timeout or internal issue.
+    properties:
+      name:
+        type: string
+        example: InternalError
+      message:
+        type: string
+        example: Could not retrieve entire response
+
+  LatLong:
+    type: object
+    properties:
+      latitude:
+        type: number
+        format: double
+        nullable: true
+      longitude:
+        type: number
+        format: double
+        nullable: true
+      accuracy:
+        type: string
+        nullable: true
+        enum:
+          - Country
+          - State
+          - City
+          - PostalCode
+          - Neighborhood
+          - Street
+          - RoofTop
+
+  Address:
+    type: object
+    properties:
+      id:
+        type: string
+        nullable: true
+        description: Persistent location ID. Format `Location.<uuid>`.
+      location_type:
+        type: string
+        nullable: true
+        enum:
+          - Country
+          - State
+          - City
+          - PostalCode
+          - ZipPlus4
+          - Neighborhood
+          - Address
+      street_line_1:
+        type: string
+        nullable: true
+      street_line_2:
+        type: string
+        nullable: true
+      city:
+        type: string
+        nullable: true
+      postal_code:
+        type: string
+        nullable: true
+      zip4:
+        type: string
+        nullable: true
+        pattern: '^\d+-\d{4}$'
+      state_code:
+        type: string
+        nullable: true
+      country_code:
+        type: string
+        nullable: true
+      lat_long:
+        $ref: '#/components/schemas/LatLong'
+      is_active:
+        type: boolean
+        nullable: true
+        description: True if the address is currently receiving mail.
+      delivery_point:
+        type: string
+        nullable: true
+        enum:
+          - SingleUnit
+          - MultiUnit
+          - POBox
+          - PartialAddress
+      link_to_person_start_date:
+        type: string
+        nullable: true
+      link_to_person_end_date:
+        type: string
+        nullable: true
+
+  Person:
+    type: object
+    properties:
+      id:
+        type: string
+        nullable: true
+        description: Persistent person ID. Format `Person.<uuid>`.
+      name:
+        type: string
+        nullable: true
+      firstname:
+        type: string
+        nullable: true
+      middlename:
+        type: string
+        nullable: true
+      lastname:
+        type: string
+        nullable: true
+      alternate_names:
+        type: array
+        items:
+          type: string
+      age_range:
+        type: string
+        nullable: true
+        description: Age of the person in a 5-year range. Example `25-29`.
+      gender:
+        type: string
+        nullable: true
+      type:
+        type: string
+        enum:
+          - Person
+          - Business
+      industry:
+        type: array
+        items:
+          type: string
+        nullable: true
+      link_to_phone_start_date:
+        type: string
+        nullable: true
+
+  LineType:
+    type: string
+    nullable: true
+    enum:
+      - Landline
+      - Mobile
+      - FixedVOIP
+      - NonFixedVOIP
+      - Premium
+      - TollFree
+      - Voicemail
+      - Other
+
+  PhoneShort:
+    type: object
+    description: Abbreviated phone record used in nested contexts.
+    properties:
+      id:
+        type: string
+        nullable: true
+        description: Persistent phone ID. Format `Phone.<uuid>`.
+      phone_number:
+        type: string
+        nullable: true
+      line_type:
+        $ref: '#/components/schemas/LineType'

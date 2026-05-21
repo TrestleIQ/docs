@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: Reverse Phone API (Archived)
+  version: "3.1"
+  description: >
+    Reverse Phone API offers comprehensive verification and enrichment of phone
+    numbers. Returns phone validity, line type, carrier data, and all owners
+    associated with the phone including demographics, current addresses,
+    alternate phones, and email addresses.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.1/phone:
+    get:
+      operationId: getReversePhone
+      summary: Look up all owners of a phone number
+      description: >
+        Validates the phone and returns all potential owners with demographics,
+        current addresses, alternate phone numbers, and email addresses for
+        each owner.
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            Phone number in E.164 or local format. Example `2069735100`
+        - name: phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+        - name: phone.name_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Name hint to rank results when multiple owners are found.
+        - name: phone.postal_code_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Postal code hint to rank name/address results.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReversePhoneResponse'
+              example:
+                status: success
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      $ref: '#/components/securitySchemes/ApiKeyAuth'
+
+  responses:
+    400BadRequest:
+      $ref: '#/components/responses/400BadRequest'
+    403Forbidden:
+      $ref: '#/components/responses/403Forbidden'
+    429TooManyRequests:
+      $ref: '#/components/responses/429TooManyRequests'
+    500InternalServerError:
+      $ref: '#/components/responses/500InternalServerError'
+
+  schemas:
+    ReversePhoneResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          nullable: true
+          description: Persistent phone ID. Format `Phone.<uuid>`.
+        phone_number:
+          type: string
+          nullable: true
+        is_valid:
+          type: boolean
+          nullable: true
+        country_calling_code:
+          type: string
+          nullable: true
+        line_type:
+          $ref: '#/components/schemas/LineType'
+        carrier:
+          type: string
+          nullable: true
+        is_prepaid:
+          type: boolean
+          nullable: true
+        is_commercial:
+          type: boolean
+          nullable: true
+        owners:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneOwner'
+        error:
+          $ref: '#/components/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string
+
+    PhoneOwner:
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - type: object
+          properties:
+            current_addresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/Address'
+            alternate_phones:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhoneShort'
+            emails:
+              type: array
+              items:
+                type: string
