@@ -63,10 +63,7 @@
           {
             "group": "Get Started",
             "pages": [
-              "guides/overview",
-              "guides/authentication",
-              "guides/rate-limits",
-              "guides/errors"
+              "guides/overview"
             ]
           },
           {
@@ -140,10 +137,7 @@
           {
             "group": "Get Started",
             "pages": [
-              "guides/overview",
-              "guides/authentication",
-              "guides/rate-limits",
-              "guides/errors"
+              "guides/overview"
             ]
           },
           {
