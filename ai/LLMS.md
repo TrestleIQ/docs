@@ -30,6 +30,7 @@ Trestle provides identity data APIs for verifying, enriching, and validating US 
 | Reverse Phone API | `GET https://api.trestleiq.com/3.2/phone` | All owners of a phone number with full demographics |
 | Reverse Address API | `GET https://api.trestleiq.com/3.1/location` | All residents at a street address |
 | Phone Feedback API | `POST https://api.trestleiq.com/1.0/phone_feedback` | Submit connected/disconnected call outcome feedback |
+| Address Validation API | `GET https://api.trestleiq.com/3.0/location_intel` | Validate and normalize a US address; returns coordinates and USPS-normalized fields |
 
 ## Minimum request example (Phone Validation)
 
@@ -68,6 +69,9 @@ Each product has a standalone OpenAPI 3.1 YAML spec:
 - `openapi/reverse-phone.openapi.yaml`
 - `openapi/reverse-address.openapi.yaml`
 - `openapi/phone-feedback.openapi.yaml`
+- `openapi/address-validation.openapi.yaml`
+
+Archived specs: `openapi/archived/`
 
 Shared schemas: `openapi/common/`
 

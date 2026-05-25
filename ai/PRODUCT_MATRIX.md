@@ -13,6 +13,13 @@ Last updated: 2026-05-19
 | Reverse Phone API | v3.2 | GET | `/3.2/phone` | `https://api.trestleiq.com` | `x-api-key` | `openapi/reverse-phone.openapi.yaml` | `api-reference/reverse-phone-api.mdx` | `fixtures/reverse-phone/` | GA |
 | Reverse Address API | v3.1 | GET | `/3.1/location` | `https://api.trestleiq.com` | `x-api-key` | `openapi/reverse-address.openapi.yaml` | `api-reference/reverse-address-api.mdx` | `fixtures/reverse-address/` | GA |
 | Phone Feedback API | v1.0 | POST | `/1.0/phone_feedback` | `https://api.trestleiq.com` | `x-api-key` | `openapi/phone-feedback.openapi.yaml` | `api-reference/phone-feedback-api.mdx` | `fixtures/phone-feedback/` | GA |
+| Address Validation API | v3.0 | GET | `/3.0/location_intel` | `https://api.trestleiq.com` | `x-api-key` | `openapi/address-validation.openapi.yaml` | `api-reference/address-validation-api.mdx` | `fixtures/address-validation/` | GA |
+
+## Deprecated / archived versions
+
+| Product | Version | Method | Path | OpenAPI Spec | Docs Page | Status | Replacement |
+|---|---|---|---|---|---|---|---|
+| Real Contact API | v1.1 | GET | `/1.1/real_contact` | `openapi/real-contact-v1-1.openapi.yaml` | `api-reference/real-contact-api-v1-1.mdx` | deprecated | `/2.0/real_contact` |
 
 ## Notes
 
