@@ -1,0 +1,4 @@
+{
+  "error": "rate_limit_exceeded",
+  "message": "You have exceeded your QPS limit. Please retry after 1 second."
+}

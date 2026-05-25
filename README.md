@@ -31,6 +31,7 @@ All Trestle APIs are RESTful and return responses in JSON format. API calls are 
 | Reverse Phone API | v3.2 | GET | `https://api.trestleiq.com/3.2/phone` | `x-api-key` | [openapi/reverse-phone.openapi.yaml](openapi/reverse-phone.openapi.yaml) | GA |
 | Reverse Address API | v3.1 | GET | `https://api.trestleiq.com/3.1/location` | `x-api-key` | [openapi/reverse-address.openapi.yaml](openapi/reverse-address.openapi.yaml) | GA |
 | Phone Feedback API | v1.0 | POST | `https://api.trestleiq.com/1.0/phone_feedback` | `x-api-key` | [openapi/phone-feedback.openapi.yaml](openapi/phone-feedback.openapi.yaml) | GA |
+| Address Validation API | v3.0 | GET | `https://api.trestleiq.com/3.0/location_intel` | `x-api-key` | [openapi/address-validation.openapi.yaml](openapi/address-validation.openapi.yaml) | GA |
 
 ---
 

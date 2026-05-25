@@ -1,0 +1,18 @@
+{
+  "id": "Location.6a3b1c11-76fd-4b25-86bc-5cfb588b4f6b",
+  "is_valid": true,
+  "street_line_1": "800 Bellevue Way NE",
+  "street_line_2": null,
+  "city": "Bellevue",
+  "postal_code": "98004",
+  "zip4": "4286",
+  "state_code": "WA",
+  "country_code": "US",
+  "lat_long": {
+    "latitude": 47.6175,
+    "longitude": -122.2017,
+    "accuracy": "RoofTop"
+  },
+  "error": null,
+  "warnings": []
+}
