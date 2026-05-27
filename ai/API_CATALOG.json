@@ -117,5 +117,40 @@
     "required_body_fields": ["response_id", "phone", "phone_status", "phone_right_party_contact"],
     "optional_body_fields": ["name"],
     "add_ons": []
+  },
+  {
+    "product": "Address Validation API",
+    "version": "3.0",
+    "method": "GET",
+    "path": "/3.0/location_intel",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.0/location_intel",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/address-validation.openapi.yaml",
+    "docs_path": "api-reference/address-validation-api.mdx",
+    "fixtures_path": "fixtures/address-validation/",
+    "status": "GA",
+    "description": "Validates and normalizes a US street address using USPS CASS standards. Returns is_valid flag, normalized address fields, ZIP+4, and lat/long coordinates.",
+    "required_params": [],
+    "optional_params": ["street_line_1", "street_line_2", "city", "state_code", "postal_code"],
+    "add_ons": []
+  },
+  {
+    "product": "Real Contact API",
+    "version": "1.1",
+    "method": "GET",
+    "path": "/1.1/real_contact",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/1.1/real_contact",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/real-contact-v1-1.openapi.yaml",
+    "docs_path": "api-reference/real-contact-api-v1-1.mdx",
+    "fixtures_path": null,
+    "status": "deprecated",
+    "replacement": "GET /2.0/real_contact",
+    "description": "Deprecated version of the Real Contact API. Use v2.0 for new integrations.",
+    "required_params": ["name", "phone"],
+    "optional_params": ["email", "address.street_line_1", "address.city", "address.state_code", "address.postal_code"],
+    "add_ons": []
   }
 ]
