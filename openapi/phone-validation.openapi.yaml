@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: Phone Validation API
+  version: "3.0"
+  description: >
+    Phone Validation API validates phone numbers and provides phone metadata,
+    including carrier, line type, prepaid status, and a phone activity score
+    to identify disconnected numbers. TCPA litigator check available as an
+    add-on.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.0/phone_intel:
+    get:
+      operationId: getPhoneValidation
+      summary: Validate a phone number and get metadata
+      description: >
+        Validates the phone number and returns carrier, line type, prepaid
+        status, country info, and a 0–100 activity score indicating whether
+        the number is active.
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            Phone number in E.164 or local format. Example `2069735100`
+        - name: phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+        - name: add_ons
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Comma-separated add-ons to enable. Options: `litigator_checks`.
+            Additional charges apply.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PhoneValidationResponse'
+              example:
+                status: success
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: >
+        All Trestle API requests require an API key passed via the `x-api-key`
+        request header. Obtain a key by signing up at
+        https://portal.trestleiq.com/signup.
+
+  responses:
+    400BadRequest:
+      description: >
+        Bad Request. The server cannot process the request due to client-side
+        errors (e.g., missing required parameters, invalid format, malformed URL).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    403Forbidden:
+      description: >
+        Forbidden. The API key is invalid, expired, disabled, or does not have
+        access to this product/version.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    429TooManyRequests:
+      description: >
+        Too Many Requests. Either the per-second QPS rate limit or the monthly
+        quota has been exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    500InternalServerError:
+      description: >
+        Internal Server Error. An unexpected server-side error occurred. Contact
+        support@trestleiq.com if this persists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code identifier.
+        message:
+          type: string
+          description: Human-readable description of the error.
+
+    PartialError:
+      type: object
+      description: >
+        Returned inside a 200 response when partial data could not be retrieved
+        due to an upstream timeout or internal issue. The remaining fields in
+        the response are still usable.
+      properties:
+        name:
+          type: string
+          example: InternalError
+        message:
+          type: string
+          example: Could not retrieve entire response
+
+    PhoneValidationResponse:
+      type: object
+      properties:
+        id:
+          type: [string, "null"]
+          description: Persistent phone ID. Format `Phone.<uuid>`.
+        phone_number:
+          type: [string, "null"]
+        is_valid:
+          type: [boolean, "null"]
+        activity_score:
+          type: [integer, "null"]
+          description: >
+            0–100. 70+ = high confidence connected. 30- = high confidence
+            disconnected/inactive. 50 = insufficient signals.
+        country_calling_code:
+          type: [string, "null"]
+        country_code:
+          type: [string, "null"]
+        country_name:
+          type: [string, "null"]
+        line_type:
+          $ref: '#/components/schemas/LineType'
+        carrier:
+          type: [string, "null"]
+        is_prepaid:
+          type: [boolean, "null"]
+        add_ons:
+          type: [object, "null"]
+          properties:
+            litigator_checks:
+              type: object
+              properties:
+                phone.is_litigator_risk:
+                  type: [boolean, "null"]
+        error:
+          $ref: '#/components/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string

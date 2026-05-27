@@ -1,0 +1,191 @@
+openapi: 3.1.0
+info:
+  title: Reverse Phone API
+  version: "3.2"
+  description: >
+    Reverse Phone API offers comprehensive verification and enrichment of phone
+    numbers. Returns phone validity, line type, carrier data, and all owners
+    associated with the phone including demographics, current addresses,
+    alternate phones, and email addresses.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /3.2/phone:
+    get:
+      operationId: getReversePhone
+      summary: Look up all owners of a phone number
+      description: >
+        Validates the phone and returns all potential owners with demographics,
+        current addresses, alternate phone numbers, and email addresses for
+        each owner.
+      parameters:
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            Phone number in E.164 or local format. Example `2069735100`
+        - name: phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code. Example `US`
+        - name: phone.name_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Name hint to rank results when multiple owners are found.
+        - name: phone.postal_code_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Postal code hint to rank name/address results.
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReversePhoneResponse'
+              example:
+                status: success
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: >
+        All Trestle API requests require an API key passed via the `x-api-key`
+        request header. Obtain a key by signing up at
+        https://portal.trestleiq.com/signup.
+
+  responses:
+    400BadRequest:
+      description: >
+        Bad Request. The server cannot process the request due to client-side
+        errors (e.g., missing required parameters, invalid format, malformed URL).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    403Forbidden:
+      description: >
+        Forbidden. The API key is invalid, expired, disabled, or does not have
+        access to this product/version.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    429TooManyRequests:
+      description: >
+        Too Many Requests. Either the per-second QPS rate limit or the monthly
+        quota has been exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    500InternalServerError:
+      description: >
+        Internal Server Error. An unexpected server-side error occurred. Contact
+        support@trestleiq.com if this persists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code identifier.
+        message:
+          type: string
+          description: Human-readable description of the error.
+
+    PartialError:
+      type: object
+      description: >
+        Returned inside a 200 response when partial data could not be retrieved
+        due to an upstream timeout or internal issue. The remaining fields in
+        the response are still usable.
+      properties:
+        name:
+          type: string
+          example: InternalError
+        message:
+          type: string
+          example: Could not retrieve entire response
+
+    ReversePhoneResponse:
+      type: object
+      properties:
+        id:
+          type: [string, "null"]
+          description: Persistent phone ID. Format `Phone.<uuid>`.
+        phone_number:
+          type: [string, "null"]
+        is_valid:
+          type: [boolean, "null"]
+        country_calling_code:
+          type: [string, "null"]
+        line_type:
+          $ref: '#/components/schemas/LineType'
+        carrier:
+          type: [string, "null"]
+        is_prepaid:
+          type: [boolean, "null"]
+        is_commercial:
+          type: [boolean, "null"]
+        owners:
+          type: array
+          items:
+            $ref: '#/components/schemas/PhoneOwner'
+        error:
+          $ref: '#/components/schemas/PartialError'
+        warnings:
+          type: array
+          items:
+            type: string
+
+    PhoneOwner:
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - type: object
+          properties:
+            current_addresses:
+              type: array
+              items:
+                $ref: '#/components/schemas/Address'
+            alternate_phones:
+              type: array
+              items:
+                $ref: '#/components/schemas/PhoneShort'
+            emails:
+              type: array
+              items:
+                type: string

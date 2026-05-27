@@ -1,0 +1,33 @@
+{
+  "phone": {
+    "contact_grade": "A",
+    "is_valid": true,
+    "activity_score": 95,
+    "line_type": "Mobile",
+    "name_match": true
+  },
+  "email": {
+    "contact_grade": "A",
+    "is_valid": true,
+    "name_match": true
+  },
+  "address": {
+    "is_valid": true,
+    "name_match": true
+  },
+  "ip_address": {
+    "trust_score": 92,
+    "ip_distance_to_address": 12
+  },
+  "add_ons": {
+    "litigator_checks": {
+      "phone_is_litigator_risk": false
+    },
+    "email_checks": {
+      "email_age_score": 95,
+      "email_is_deliverable": true
+    }
+  },
+  "warnings": [],
+  "errors": null
+}
