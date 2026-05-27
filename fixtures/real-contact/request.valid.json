@@ -1,0 +1,11 @@
+{
+  "name": "John Doe",
+  "phone": "4259853735",
+  "email": "john.doe@example.com",
+  "ip_address": "192.0.0.1",
+  "address.street_line_1": "100 Syrws St",
+  "address.city": "Lynden",
+  "address.state_code": "WA",
+  "address.postal_code": "98264",
+  "address.country_code": "US"
+}
