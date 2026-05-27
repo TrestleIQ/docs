@@ -77,31 +77,23 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         belongs_to:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             id:
-              type: string
-              nullable: true
+              type: [string, "null"]
             name:
-              type: string
-              nullable: true
+              type: [string, "null"]
             firstname:
-              type: string
-              nullable: true
+              type: [string, "null"]
             middlename:
-              type: string
-              nullable: true
+              type: [string, "null"]
             lastname:
-              type: string
-              nullable: true
+              type: [string, "null"]
         error:
           $ref: '#/components/schemas/PartialError'
         warnings:
