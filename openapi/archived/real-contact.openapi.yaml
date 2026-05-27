@@ -136,23 +136,19 @@ components:
           type: object
           properties:
             contact_grade:
-              type: string
-              nullable: true
+              type: [string, "null"]
               description: >
                 A–F grade for lead contactability via phone. A = high quality,
                 F = bad lead.
             is_valid:
-              type: boolean
-              nullable: true
+              type: [boolean, "null"]
             activity_score:
-              type: integer
-              nullable: true
+              type: [integer, "null"]
               description: >
                 0–100 score. 70+ = high confidence connected; 30- = high
                 confidence disconnected/inactive.
             line_type:
-              type: string
-              nullable: true
+              type: [string, "null"]
               enum:
                 - Landline
                 - Mobile
@@ -163,67 +159,53 @@ components:
                 - Voicemail
                 - Other
             name_match:
-              type: boolean
-              nullable: true
+              type: [boolean, "null"]
         email:
           type: object
           properties:
             contact_grade:
-              type: string
-              nullable: true
+              type: [string, "null"]
             is_valid:
-              type: boolean
-              nullable: true
+              type: [boolean, "null"]
             name_match:
-              type: boolean
-              nullable: true
+              type: [boolean, "null"]
         address:
           type: object
           properties:
             is_valid:
-              type: boolean
-              nullable: true
+              type: [boolean, "null"]
             name_match:
-              type: boolean
-              nullable: true
+              type: [boolean, "null"]
         ip_address:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             trust_score:
-              type: integer
-              nullable: true
+              type: [integer, "null"]
               description: 0–100 score evaluating interaction legitimacy based on IP.
             ip_distance_to_address:
-              type: integer
-              nullable: true
+              type: [integer, "null"]
               description: Approximate miles between IP location and provided address.
         add_ons:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             litigator_checks:
               type: object
               properties:
                 phone_is_litigator_risk:
-                  type: boolean
-                  nullable: true
+                  type: [boolean, "null"]
             email_checks:
               type: object
               properties:
                 email_is_deliverable:
-                  type: boolean
-                  nullable: true
+                  type: [boolean, "null"]
                 email_age_score:
-                  type: integer
-                  nullable: true
+                  type: [integer, "null"]
         warnings:
           type: array
           items:
             type: string
         errors:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             name:
               type: string

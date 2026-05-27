@@ -10,3 +10,6 @@ Thumbs.db
 # Mintlify
 .mintlify/
 node_modules/
+
+# Claude Code session metadata
+.claude/

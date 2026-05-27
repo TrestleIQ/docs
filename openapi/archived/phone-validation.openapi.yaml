@@ -87,48 +87,37 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         phone_number:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         activity_score:
-          type: integer
-          nullable: true
+          type: [integer, "null"]
           description: >
             0–100. 70+ = high confidence connected. 30- = high confidence
             disconnected/inactive. 50 = insufficient signals.
         country_calling_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         country_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         country_name:
-          type: string
-          nullable: true
+          type: [string, "null"]
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_prepaid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         add_ons:
-          type: object
-          nullable: true
+          type: [object, "null"]
           properties:
             litigator_checks:
               type: object
               properties:
                 phone.is_litigator_risk:
-                  type: boolean
-                  nullable: true
+                  type: [boolean, "null"]
         error:
           $ref: '#/components/schemas/PartialError'
         warnings:
