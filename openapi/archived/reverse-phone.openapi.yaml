@@ -91,29 +91,22 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         phone_number:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         country_calling_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_prepaid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         is_commercial:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         owners:
           type: array
           items:

@@ -74,46 +74,93 @@ paths:
 components:
   securitySchemes:
     ApiKeyAuth:
-      $ref: '#/components/securitySchemes/ApiKeyAuth'
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: >
+        All Trestle API requests require an API key passed via the `x-api-key`
+        request header. Obtain a key by signing up at
+        https://portal.trestleiq.com/signup.
 
   responses:
     400BadRequest:
-      $ref: '#/components/responses/400BadRequest'
+      description: >
+        Bad Request. The server cannot process the request due to client-side
+        errors (e.g., missing required parameters, invalid format, malformed URL).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
-      $ref: '#/components/responses/403Forbidden'
+      description: >
+        Forbidden. The API key is invalid, expired, disabled, or does not have
+        access to this product/version.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     429TooManyRequests:
-      $ref: '#/components/responses/429TooManyRequests'
+      description: >
+        Too Many Requests. Either the per-second QPS rate limit or the monthly
+        quota has been exceeded.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     500InternalServerError:
-      $ref: '#/components/responses/500InternalServerError'
+      description: >
+        Internal Server Error. An unexpected server-side error occurred. Contact
+        support@trestleiq.com if this persists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
 
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code identifier.
+        message:
+          type: string
+          description: Human-readable description of the error.
+
+    PartialError:
+      type: object
+      description: >
+        Returned inside a 200 response when partial data could not be retrieved
+        due to an upstream timeout or internal issue. The remaining fields in
+        the response are still usable.
+      properties:
+        name:
+          type: string
+          example: InternalError
+        message:
+          type: string
+          example: Could not retrieve entire response
+
     ReversePhoneResponse:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         phone_number:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         country_calling_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_prepaid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         is_commercial:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         owners:
           type: array
           items:

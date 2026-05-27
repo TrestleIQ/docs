@@ -121,6 +121,21 @@ Add an entry to `changelog/` whenever a production API change is documented:
 - Include `breaking` and `non-breaking` sections.
 - Mirror the entry in `ai/CHANGELOG_AI.md` for AI discoverability.
 
+## LLM-readable files
+
+The repo serves two files for AI tooling:
+
+- `llms.txt` — concise entry-point index (hand-edited).
+- `llms-full.txt` — aggregated reference (regenerated from `ai/`, `guides/`, `openapi/`, `fixtures/`).
+
+After changing any of `ai/*`, `guides/*`, `openapi/*.openapi.yaml`, or `fixtures/*`, rebuild `llms-full.txt`:
+
+```bash
+bash scripts/build-llms-full.sh
+```
+
+Commit the regenerated `llms-full.txt` together with the source changes.
+
 ---
 
 ## GitHub Domain Verification

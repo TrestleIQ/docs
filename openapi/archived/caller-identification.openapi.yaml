@@ -187,16 +187,13 @@ components:
       type: object
       properties:
         latitude:
-          type: number
+          type: [number, "null"]
           format: double
-          nullable: true
         longitude:
-          type: number
+          type: [number, "null"]
           format: double
-          nullable: true
         accuracy:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - Country
             - State
@@ -210,12 +207,10 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent location ID. Format `Location.<uuid>`.
         location_type:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - Country
             - State
@@ -225,95 +220,74 @@ components:
             - Neighborhood
             - Address
         street_line_1:
-          type: string
-          nullable: true
+          type: [string, "null"]
         street_line_2:
-          type: string
-          nullable: true
+          type: [string, "null"]
         city:
-          type: string
-          nullable: true
+          type: [string, "null"]
         postal_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         zip4:
-          type: string
-          nullable: true
+          type: [string, "null"]
           pattern: '^\d+-\d{4}$'
         state_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         country_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         lat_long:
           $ref: '#/components/schemas/LatLong'
         is_active:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
           description: True if the address is currently receiving mail.
         delivery_point:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - SingleUnit
             - MultiUnit
             - POBox
             - PartialAddress
         link_to_person_start_date:
-          type: string
-          nullable: true
+          type: [string, "null"]
         link_to_person_end_date:
-          type: string
-          nullable: true
+          type: [string, "null"]
 
     Person:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent person ID. Format `Person.<uuid>`.
         name:
-          type: string
-          nullable: true
+          type: [string, "null"]
         firstname:
-          type: string
-          nullable: true
+          type: [string, "null"]
         middlename:
-          type: string
-          nullable: true
+          type: [string, "null"]
         lastname:
-          type: string
-          nullable: true
+          type: [string, "null"]
         alternate_names:
           type: array
           items:
             type: string
         age_range:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Age of the person in a 5-year range. Example `25-29`.
         gender:
-          type: string
-          nullable: true
+          type: [string, "null"]
         type:
           type: string
           enum:
             - Person
             - Business
         industry:
-          type: array
+          type: [array, "null"]
           items:
             type: string
-          nullable: true
         link_to_phone_start_date:
-          type: string
-          nullable: true
+          type: [string, "null"]
 
     LineType:
-      type: string
-      nullable: true
+      type: [string, "null"]
       enum:
         - Landline
         - Mobile
@@ -328,29 +302,22 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         phone_number:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         country_calling_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_prepaid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         is_commercial:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         belongs_to:
           $ref: '#/components/schemas/CallerIdOwner'
         current_addresses:
