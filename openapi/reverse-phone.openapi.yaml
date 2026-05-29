@@ -5,8 +5,7 @@ info:
   description: >
     Reverse Phone API offers comprehensive verification and enrichment of phone
     numbers. Returns phone validity, line type, carrier data, and all owners
-    associated with the phone including demographics, current addresses,
-    alternate phones, and email addresses.
+    associated with the phone including demographics and current addresses.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -181,11 +180,3 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Address'
-            alternate_phones:
-              type: array
-              items:
-                $ref: '#/components/schemas/PhoneShort'
-            emails:
-              type: array
-              items:
-                type: string

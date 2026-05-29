@@ -14,7 +14,7 @@ Trestle provides 8 production REST APIs for identity intelligence. This file is 
 ## API Reference
 
 - [Real Contact API](https://docs.trestleiq.com/api-reference/real-contact-api): `GET /2.0/real_contact` — verify and grade phone + email + address + IP for lead quality (A–F contact grade)
-- [Caller Identification API](https://docs.trestleiq.com/api-reference/caller-identification-api): `GET /3.1/caller_id` — top caller identity (name, address, emails) for a phone number
+- [Caller Identification API](https://docs.trestleiq.com/api-reference/caller-identification-api): `GET /3.1/caller_id` — top caller identity (name, address) for a phone number
 - [Smart CNAM API](https://docs.trestleiq.com/api-reference/smart-cnam-api): `GET /3.1/cnam` — caller name only (lightest enrichment)
 - [Phone Validation API](https://docs.trestleiq.com/api-reference/phone-validation-api): `GET /3.0/phone_intel` — phone validity, carrier, line type, activity score
 - [Reverse Phone API](https://docs.trestleiq.com/api-reference/reverse-phone-api): `GET /3.2/phone` — all owners of a phone number with full demographics

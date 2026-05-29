@@ -25,7 +25,7 @@ paths:
       summary: Look up residents at a street address
       description: >
         Validates and normalizes the input address and returns all current
-        residents linked to the address, including demographics, phones,
+        residents linked to the address, including demographics,
         emails, historical addresses, and associated people.
       parameters:
         - name: street_line_1
@@ -151,10 +151,6 @@ components:
           properties:
             link_to_address_start_date:
               type: [string, "null"]
-            phones:
-              type: array
-              items:
-                $ref: '#/components/schemas/PhoneShort'
             emails:
               type: array
               items:
