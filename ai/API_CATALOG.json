@@ -28,7 +28,7 @@
     "docs_path": "api-reference/caller-identification-api.mdx",
     "fixtures_path": "fixtures/caller-identification/",
     "status": "GA",
-    "description": "Returns the highest-ranked owner of a phone number with demographics, current address, emails, and alternate phones.",
+    "description": "Returns the highest-ranked owner of a phone number with demographics, current address.",
     "required_params": ["phone"],
     "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
     "add_ons": []
@@ -79,7 +79,7 @@
     "docs_path": "api-reference/reverse-phone-api.mdx",
     "fixtures_path": "fixtures/reverse-phone/",
     "status": "GA",
-    "description": "Returns all owners of a phone number with demographics, current addresses, alternate phones, and emails for each owner.",
+    "description": "Returns all owners of a phone number with demographics and current addresses for each owner.",
     "required_params": ["phone"],
     "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
     "add_ons": []
@@ -96,7 +96,7 @@
     "docs_path": "api-reference/reverse-address-api.mdx",
     "fixtures_path": "fixtures/reverse-address/",
     "status": "GA",
-    "description": "Validates and normalizes a street address and returns all current residents with demographics, phones, emails, historical addresses, and associated people.",
+    "description": "Validates and normalizes a street address and returns all current residents with demographics, historical addresses, and associated people.",
     "required_params": [],
     "optional_params": ["street_line_1", "street_line_2", "city", "state_code", "postal_code", "country_code"],
     "add_ons": []
