@@ -1,6 +1,6 @@
 ---
 title: "Reverse Address API"
-description: "Reverse Address API validates and normalizes input addresses while providing comprehensive insights into current residents' information, including demographics, historical addresses, relatives and associated people, phone numbers, and associated email addresses."
+description: "Reverse Address API validates and normalizes input addresses while providing comprehensive insights into current residents' information, including demographics, historical addresses, relatives and associated people."
 api: "GET /3.1/location"
 playground: none
 ---
@@ -164,16 +164,6 @@ playground: none
           "type": "Person",
           "industry": null,
           "link_to_address_start_date": "2023-01-02",
-          "phones": [
-            {
-              "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
-              "phone_number": "2069735100",
-              "line_type": "NonFixedVOIP"
-            }
-          ],
-          "emails": [
-            "waidong.syrws@email.com"
-          ],
           "historical_addresses": [
             {
               "id": "Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01",
@@ -365,32 +355,6 @@ GET https://api.trestleiq.com/3.1/location?api_key=[insert_key]&city=[insert_cit
     </ResponseField>
     <ResponseField name="industry" type="string[] or null">
       The industry classification of the business associated to the phone.
-    </ResponseField>
-    <ResponseField name="phones" type="object[]">
-      The phone numbers associated with the person.
-
-      <Expandable title="phone object">
-        <ResponseField name="id" type="string or null <Phone.<uuid>>">
-          The persistent ID of the phone number.
-        </ResponseField>
-        <ResponseField name="phone_number" type="string or null (PhoneNumber)">
-          The phone number in E.164 or local format. The default country calling code is +1 (USA).
-        </ResponseField>
-        <ResponseField name="line_type" type="string or null">
-          The line type of the phone number. Possible values:
-          - `Landline` - Traditional wired phone line
-          - `Mobile` - Wireless phone line
-          - `FixedVOIP` - VOIP number connected to a physical address
-          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address
-          - `Premium` - Caller pays a premium for the call
-          - `TollFree` - Callee pays for call
-          - `Voicemail` - Voicemail-only service
-          - `Other` - Line type is unclear
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="emails" type="string[]">
-      The list of emails associated to the primary owner of the phone.
     </ResponseField>
     <ResponseField name="historical_addresses" type="object[]">
       A list of historical addresses associated with the current resident of the input address.
