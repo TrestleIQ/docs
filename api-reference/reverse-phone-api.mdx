@@ -1,6 +1,6 @@
 ---
 title: "Reverse Phone API"
-description: "Reverse Phone API offers comprehensive verification and enrichment of phone numbers. It includes phone validity, line type, carrier data, and all owners associated with the phone and their details, like demographics, current addresses, alternate phones, and email addresses."
+description: "Reverse Phone API offers comprehensive verification and enrichment of phone numbers. It includes phone validity, line type, carrier data, and all owners associated with the phone and their details, like demographics and current addresses."
 api: "GET /3.2/phone"
 playground: none
 ---
@@ -166,16 +166,7 @@ playground: none
               "delivery_point": "SingleUnit",
               "link_to_person_start_date": "2011-10-05"
             }
-          ],
-          "alternate_phones": [
-            {
-              "phone_number": "2069735100",
-              "line_type": "NonFixedVOIP"
-            }
-          ],
-          "emails": [
-            "waidong.syrws@email.com"
-          ]  
+          ]
         }
       ],
       "error": {
@@ -355,29 +346,6 @@ GET https://api.trestleiq.com/3.2/phone?phone=[insert_phone_number]
           The date when the address was first linked to the person.
         </ResponseField>
       </Expandable>
-    </ResponseField>
-    <ResponseField name="alternate_phones" type="object[]">
-      The list of alternate phone numbers of the primary owner of the phone number.
-
-      <Expandable title="alternate_phone object">
-        <ResponseField name="phone_number" type="string or null">
-          The phone number in E.164 or local format. The default country calling code is +1 (USA).
-        </ResponseField>
-        <ResponseField name="line_type" type="string or null">
-          The line type of the phone number. Possible values:
-          - `Landline` - Traditional wired phone line
-          - `Mobile` - Wireless phone line
-          - `FixedVOIP` - VOIP number connected to a physical address
-          - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address
-          - `Premium` - Caller pays a premium for the call
-          - `TollFree` - Callee pays for call
-          - `Voicemail` - Voicemail-only service
-          - `Other` - Line type is unclear
-        </ResponseField>
-      </Expandable>
-    </ResponseField>
-    <ResponseField name="emails" type="string[]">
-      The list of emails associated to the primary owner of the phone.
     </ResponseField>
   </Expandable>
 </ResponseField>

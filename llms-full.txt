@@ -34,7 +34,7 @@ Trestle provides identity data APIs for verifying, enriching, and validating US 
 | Product | Endpoint | Use case |
 |---|---|---|
 | Real Contact API | `GET https://api.trestleiq.com/2.0/real_contact` | Lead verification: phone + email + address + IP quality grading |
-| Caller ID API | `GET https://api.trestleiq.com/3.1/caller_id` | Top caller identity (name, address, emails) for a phone number |
+| Caller ID API | `GET https://api.trestleiq.com/3.1/caller_id` | Top caller identity (name, address) for a phone number |
 | Smart CNAM API | `GET https://api.trestleiq.com/3.1/cnam` | Caller name only (lightest enrichment) |
 | Phone Validation API | `GET https://api.trestleiq.com/3.0/phone_intel` | Phone validity, carrier, line type, activity score |
 | Reverse Phone API | `GET https://api.trestleiq.com/3.2/phone` | All owners of a phone number with full demographics |
@@ -274,7 +274,7 @@ Last updated: 2026-05-19
     "docs_path": "api-reference/caller-identification-api.mdx",
     "fixtures_path": "fixtures/caller-identification/",
     "status": "GA",
-    "description": "Returns the highest-ranked owner of a phone number with demographics, current address, emails, and alternate phones.",
+    "description": "Returns the highest-ranked owner of a phone number with demographics, current address, and alternate phones.",
     "required_params": ["phone"],
     "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
     "add_ons": []
@@ -325,7 +325,7 @@ Last updated: 2026-05-19
     "docs_path": "api-reference/reverse-phone-api.mdx",
     "fixtures_path": "fixtures/reverse-phone/",
     "status": "GA",
-    "description": "Returns all owners of a phone number with demographics, current addresses, alternate phones, and emails for each owner.",
+    "description": "Returns all owners of a phone number with demographics and current addresses for each owner.",
     "required_params": ["phone"],
     "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
     "add_ons": []
@@ -342,7 +342,7 @@ Last updated: 2026-05-19
     "docs_path": "api-reference/reverse-address-api.mdx",
     "fixtures_path": "fixtures/reverse-address/",
     "status": "GA",
-    "description": "Validates and normalizes a street address and returns all current residents with demographics, phones, emails, historical addresses, and associated people.",
+    "description": "Validates and normalizes a street address and returns all current residents with demographics, historical addresses, and associated people.",
     "required_params": [],
     "optional_params": ["street_line_1", "street_line_2", "city", "state_code", "postal_code", "country_code"],
     "add_ons": []
@@ -577,10 +577,10 @@ Here's a brief overview of Trestle's APIs:
 
 ### Enrichment APIs
 
-- [Reverse Phone API](https://trestleiq.com/reverse-phone-api/): Trestle’s most robust enrichment API. Validates an input phone, provides relevant metadata, and returns **all potential phone owners** along with each owner’s linked addresses, emails, and alternate phone numbers.
-- [Caller Identification API](https://trestleiq.com/caller-identification-api/): Designed for use cases where only the top associated identity is needed, the Caller Identification API validates the phone, provides real-time metadata, and returns **only the** **highest ranked phone owner** along with their current address, emails, and alternate phone numbers.
+- [Reverse Phone API](https://trestleiq.com/reverse-phone-api/): Trestle’s most robust enrichment API. Validates an input phone, provides relevant metadata, and returns **all potential phone owners** along with each owner’s linked addresses.
+- [Caller Identification API](https://trestleiq.com/caller-identification-api/): Designed for use cases where only the top associated identity is needed, the Caller Identification API validates the phone, provides real-time metadata, and returns **only the** **highest ranked phone owner** along with their current address and alternate phone numbers.
 - [Smart CNAM API](https://trestleiq.com/smart-cnam-api/): Designed for use cases where only name data is needed, the Smart CNAM API validates the phone number and returns the **top associated name**.
-- [Reverse Address API](https://trestleiq.com/reverse-address-api/): Validates an input address, returns relevant metadata, and returns all identities currently linked to the address with demographic data, phone numbers, emails, associated people, and historical addresses for each linked identity.
+- [Reverse Address API](https://trestleiq.com/reverse-address-api/): Validates an input address, returns relevant metadata, and returns all identities currently linked to the address with demographic data, associated people, and historical addresses for each linked identity.
 - [Phone Feedback API](https://trestleiq.com/phone-feedback-api/): Offers a method of providing feedback to Trestle about dialed numbers for their connected/disconnected status and confirmation of right party contact.
 
 # FAQ
