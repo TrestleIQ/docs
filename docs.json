@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Trestle Identity APIs",
+  "name": "Documentation",
   "theme": "mint",
   "favicon": "/favicon.svg",
   "logo": {
@@ -47,11 +47,23 @@
       "/style.css"
     ]
   },
+  "seo": {
+    "metatags": {
+      "description": "Trestle provides quality identity data APIs, which include phone verification, phone validation, CNAM lookup, reverse phone lookup API, and reverse address lookup API.",
+      "og:image": "https://docs.trestleiq.com/assets/trestle_logo.png"
+    }
+  },
   "headTags": [
     {
       "tag": "script",
       "attributes": {
         "src": "/leadfeeder.js"
+      }
+    },
+    {
+      "tag": "script",
+      "attributes": {
+        "src": "/jsonld.js"
       }
     }
   ],
