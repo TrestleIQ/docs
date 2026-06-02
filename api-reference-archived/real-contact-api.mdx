@@ -3,6 +3,7 @@ title: "Real Contact API 1.0 (Archived)"
 description: "Real Contact API validates whether a lead is real, confirms the person is who he/she says they are, and grades the contactability of the lead."
 api: "GET /1.0/real_contact"
 playground: "none"
+noindex: true
 ---
 
 <Panel>
@@ -155,6 +156,14 @@ GET https://api.trestleiq.com/1.0/real_contact?api_key=[insert_key]&name=[insert
 
 <ParamField query="name" type="string" required>
   The name of the person to search. **Example:** `name=John Doe`
+</ParamField>
+
+<ParamField query="first_name" type="string">
+  The first name of the person to search. **Example:** `first_name=John`
+</ParamField>
+
+<ParamField query="last_name" type="string">
+  The last name of the person to search. **Example:** `last_name=Doe`
 </ParamField>
 
 <ParamField query="phone" type="string" required>
