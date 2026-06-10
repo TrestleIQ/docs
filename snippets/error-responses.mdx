@@ -9,33 +9,41 @@
 
   ### 403 Forbidden
 
-  The request is understood, but the server is refusing to fulfill it.
+  The request is understood, but the server is refusing to fulfill it. Error responses include an `errorCode` field identifying the cause:
 
-  - **Invalid API Key**: The key is incorrect or deactivated.
+  ```json
+  {
+    "errorCode": "INVALID_API_KEY",
+    "message": "The API key provided is invalid or has been revoked.",
+    "hint": "Verify your x-api-key header value or contact support."
+  }
+  ```
 
-    Check for: Trailing spaces, syntax errors, or incorrect character counts.
+  - **Invalid API Key** (`INVALID_API_KEY`): The key is incorrect, deactivated, or missing from the request.
 
-  - **API Key Missing**: The request header did not include an API key.
+    Check for: Trailing spaces, syntax errors, incorrect character counts, or a missing `x-api-key` header.
 
-  - **API Key Disabled (Portal Issue)**: The key is inactive.
+  - **API Key Disabled (Portal Issue)** (`FORBIDDEN`): The key is inactive.
 
     Check for: Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
 
-  - **API Key does not have Product Access (Portal Issue)**: The API key is active, but it is not enabled for this product or API version.
+  - **API Key does not have Product Access (Portal Issue)** (`FORBIDDEN`): The API key is active, but it is not enabled for this product or API version.
 
     Check for: Incorrect endpoint, incorrect API version, or missing product access on the key.
 
-  - **API Key Expired**: The key has reached its end-of-life (primarily affects Trial users).
+  - **API Key Expired** (`FORBIDDEN`): The key has reached its end-of-life (primarily affects Trial users).
 
   ### 429 Too Many Requests
 
   You have sent too many requests in a given amount of time.
 
-  - **Rate Limit Exceeded**: You have surpassed the queries-per-second (QPS) threshold for your tier.
+  - **Rate Limit Exceeded** (`RATE_LIMIT_EXCEEDED`): You have surpassed the queries-per-second (QPS) threshold for your tier.
 
-  - **Quota Exceeded (Portal Issue)**: You have reached the total volume allowed for your current billing cycle. Upgrade your plan in the portal to resume service.
+  - **Quota Exceeded (Portal Issue)** (`QUOTA_EXCEEDED`): You have reached the total volume allowed for your current billing cycle. Upgrade your plan in the portal to resume service.
 
   ### 500 Internal Server Error
 
   An unexpected error occurred on the server side. Please contact support if this persists.
+
+  See [Error handling](/guides/errors) for all error response bodies and codes.
 </Danger>
