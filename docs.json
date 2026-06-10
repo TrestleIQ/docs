@@ -57,13 +57,13 @@
     {
       "tag": "script",
       "attributes": {
-        "src": "/leadfeeder.js"
+        "src": "/scripts/leadfeeder.js"
       }
     },
     {
       "tag": "script",
       "attributes": {
-        "src": "/jsonld.js"
+        "src": "/scripts/jsonld.js"
       }
     }
   ],
