@@ -11,14 +11,6 @@
 
   The request is understood, but the server is refusing to fulfill it. Error responses include an `errorCode` field identifying the cause:
 
-  ```json
-  {
-    "errorCode": "INVALID_API_KEY",
-    "message": "The API key provided is invalid or has been revoked.",
-    "hint": "Verify your x-api-key header value or contact support."
-  }
-  ```
-
   - **Invalid API Key** (`INVALID_API_KEY`): The key is incorrect, deactivated, or missing from the request.
 
     Check for: Trailing spaces, syntax errors, incorrect character counts, or a missing `x-api-key` header.

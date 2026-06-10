@@ -58,33 +58,9 @@ The request is understood, but the server is refusing to fulfill it.
 
 A missing `x-api-key` header returns `INVALID_API_KEY`, not `MISSING_API_KEY`. The `MISSING_API_KEY` code appears only when the request targets a non-existent endpoint path or an unsupported HTTP method.
 
-```json
-{
-  "errorCode": "FORBIDDEN",
-  "message": "Access denied. Your API key may be disabled, expired, or not authorized for this product.",
-  "hint": "Contact support with your API key reference."
-}
-```
-
 ## 429 Too Many Requests
 
 You have exceeded a rate or quota limit. See [Rate limits](./rate-limits) for retry guidance.
-
-```json
-{
-  "errorCode": "RATE_LIMIT_EXCEEDED",
-  "message": "You are sending requests too quickly.",
-  "hint": "Implement exponential backoff and retry."
-}
-```
-
-```json
-{
-  "errorCode": "QUOTA_EXCEEDED",
-  "message": "Your API quota for this billing period has been exhausted.",
-  "hint": "Upgrade your plan or wait for the next billing cycle."
-}
-```
 
 ## 500 Internal Server Error
 
