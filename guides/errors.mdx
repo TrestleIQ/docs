@@ -60,14 +60,6 @@ A missing `x-api-key` header returns `INVALID_API_KEY`, not `MISSING_API_KEY`. T
 
 ```json
 {
-  "errorCode": "INVALID_API_KEY",
-  "message": "The API key provided is invalid or has been revoked.",
-  "hint": "Verify your x-api-key header value or contact support."
-}
-```
-
-```json
-{
   "errorCode": "FORBIDDEN",
   "message": "Access denied. Your API key may be disabled, expired, or not authorized for this product.",
   "hint": "Contact support with your API key reference."
