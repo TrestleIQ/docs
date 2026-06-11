@@ -6,7 +6,7 @@ info:
     Reverse Phone API offers comprehensive verification and enrichment of phone
     numbers. Returns phone validity, line type, carrier data, and all owners
     associated with the phone including demographics, current addresses,
-    alternate phones, and email addresses.
+    and email addresses.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -91,29 +91,22 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         phone_number:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         country_calling_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_prepaid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         is_commercial:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         owners:
           type: array
           items:
@@ -134,10 +127,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Address'
-            alternate_phones:
-              type: array
-              items:
-                $ref: '#/components/schemas/PhoneShort'
             emails:
               type: array
               items:

@@ -1,0 +1,52 @@
+# Trestle Identity APIs
+
+> REST APIs for validating, verifying, and enriching contact data (phone, email, address, IP). All endpoints authenticate via the `x-api-key` request header and are served from `https://api.trestleiq.com`.
+
+Trestle provides 8 production REST APIs for identity intelligence. This file is the entry point for AI agents and tools: the docs site links below render human-readable references, and the raw GitHub URLs below provide structured, machine-readable artifacts (OpenAPI 3.1 specs, JSON fixtures, code samples, and an endpoint catalog).
+
+## Guides
+
+- [Overview](https://docs.trestleiq.com/guides/overview): What Trestle APIs do and common use cases
+- [Authentication](https://docs.trestleiq.com/guides/authentication): `x-api-key` header usage and key management
+- [Rate limits](https://docs.trestleiq.com/guides/rate-limits): QPS limits, monthly quota, and retry guidance
+- [Errors](https://docs.trestleiq.com/guides/errors): HTTP status codes, partial errors, and warnings
+
+## API Reference
+
+- [Real Contact API](https://docs.trestleiq.com/api-reference/real-contact-api): `GET /2.0/real_contact` — verify and grade phone + email + address + IP for lead quality (A–F contact grade)
+- [Caller Identification API](https://docs.trestleiq.com/api-reference/caller-identification-api): `GET /3.1/caller_id` — top caller identity (name, address) for a phone number
+- [Smart CNAM API](https://docs.trestleiq.com/api-reference/smart-cnam-api): `GET /3.1/cnam` — caller name only (lightest enrichment)
+- [Phone Validation API](https://docs.trestleiq.com/api-reference/phone-validation-api): `GET /3.0/phone_intel` — phone validity, carrier, line type, activity score
+- [Reverse Phone API](https://docs.trestleiq.com/api-reference/reverse-phone-api): `GET /3.2/phone` — all owners of a phone number with full demographics
+- [Reverse Address API](https://docs.trestleiq.com/api-reference/reverse-address-api): `GET /3.1/location` — all residents at a US street address
+- [Address Validation API](https://docs.trestleiq.com/api-reference/address-validation-api): `GET /3.0/location_intel` — validate and USPS-normalize a US street address
+- [Phone Feedback API](https://docs.trestleiq.com/api-reference/phone-feedback-api): `POST /1.0/phone_feedback` — submit live-call outcome feedback
+
+## Machine-readable resources
+
+- [LLMS.md](https://raw.githubusercontent.com/TrestleIQ/docs/main/ai/LLMS.md): Start-here guide for AI-assisted integration
+- [API_CATALOG.json](https://raw.githubusercontent.com/TrestleIQ/docs/main/ai/API_CATALOG.json): One JSON object per API (method, path, auth, params, fixtures)
+- [PRODUCT_MATRIX.md](https://raw.githubusercontent.com/TrestleIQ/docs/main/ai/PRODUCT_MATRIX.md): Canonical product/version/endpoint table
+- [EXAMPLES_INDEX.json](https://raw.githubusercontent.com/TrestleIQ/docs/main/ai/EXAMPLES_INDEX.json): Endpoint → fixture + sample-code path mapping
+- [TAXONOMY.json](https://raw.githubusercontent.com/TrestleIQ/docs/main/ai/TAXONOMY.json): Controlled vocabulary for entities and fields (activity_score, contact_grade, line_type, etc.)
+- [CHANGELOG_AI.md](https://raw.githubusercontent.com/TrestleIQ/docs/main/ai/CHANGELOG_AI.md): Structured version history with migration notes
+
+## OpenAPI 3.1 specs
+
+- [Real Contact](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/real-contact.openapi.yaml)
+- [Caller Identification](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/caller-identification.openapi.yaml)
+- [Smart CNAM](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/smart-cnam.openapi.yaml)
+- [Phone Validation](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/phone-validation.openapi.yaml)
+- [Reverse Phone](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/reverse-phone.openapi.yaml)
+- [Reverse Address](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/reverse-address.openapi.yaml)
+- [Address Validation](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/address-validation.openapi.yaml)
+- [Phone Feedback](https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/phone-feedback.openapi.yaml)
+- [Shared components (schemas/parameters/responses/security)](https://github.com/TrestleIQ/docs/tree/main/openapi/common)
+
+## Optional
+
+- [Fixtures](https://github.com/TrestleIQ/docs/tree/main/fixtures): canonical request and response JSON for every API (`request.valid.json`, `response.success.json`, `response.error.400.json`, `response.error.429.json`)
+- [Code samples](https://github.com/TrestleIQ/docs/tree/main/examples): curl, JavaScript, and Python examples per API
+- [Repository README](https://raw.githubusercontent.com/TrestleIQ/docs/main/README.md): integration-first overview with Product Matrix
+- [Sign up for an API key](https://portal.trestleiq.com/signup)
+- [Support](mailto:support@trestleiq.com)

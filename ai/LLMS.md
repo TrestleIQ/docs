@@ -24,7 +24,7 @@ Trestle provides identity data APIs for verifying, enriching, and validating US 
 | Product | Endpoint | Use case |
 |---|---|---|
 | Real Contact API | `GET https://api.trestleiq.com/2.0/real_contact` | Lead verification: phone + email + address + IP quality grading |
-| Caller ID API | `GET https://api.trestleiq.com/3.1/caller_id` | Top caller identity (name, address, emails) for a phone number |
+| Caller ID API | `GET https://api.trestleiq.com/3.1/caller_id` | Top caller identity (name, address) for a phone number |
 | Smart CNAM API | `GET https://api.trestleiq.com/3.1/cnam` | Caller name only (lightest enrichment) |
 | Phone Validation API | `GET https://api.trestleiq.com/3.0/phone_intel` | Phone validity, carrier, line type, activity score |
 | Reverse Phone API | `GET https://api.trestleiq.com/3.2/phone` | All owners of a phone number with full demographics |

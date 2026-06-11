@@ -51,6 +51,7 @@ All Trestle APIs are RESTful and return responses in JSON format. API calls are 
 | Get just a caller's name | Smart CNAM API |
 | Validate a phone and get carrier/line type metadata | Phone Validation API |
 | Look up residents at a street address | Reverse Address API |
+| Validate and normalize a US street address | Address Validation API |
 | Submit live-call feedback about a phone number | Phone Feedback API |
 
 ### 3. Send your first request
@@ -94,6 +95,8 @@ docs/
 
 ### Key files for integrators
 
+- **[llms.txt](llms.txt)** — LLM agent entry point (served at `https://docs.trestleiq.com/llms.txt`)
+- **[llms-full.txt](llms-full.txt)** — Full aggregated reference for one-shot LLM consumption
 - **[ai/LLMS.md](ai/LLMS.md)** — Start here for AI-assisted integration
 - **[ai/API_CATALOG.json](ai/API_CATALOG.json)** — Machine-readable endpoint catalog
 - **[openapi/](openapi/)** — OpenAPI 3.1 specs for all products

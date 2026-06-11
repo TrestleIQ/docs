@@ -25,7 +25,7 @@ paths:
       summary: Look up residents at a street address
       description: >
         Validates and normalizes the input address and returns all current
-        residents linked to the address, including demographics, phones,
+        residents linked to the address, including demographics,
         emails, historical addresses, and associated people.
       parameters:
         - name: street_line_1
@@ -102,44 +102,32 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent location ID. Format `Location.<uuid>`.
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         street_line_1:
-          type: string
-          nullable: true
+          type: [string, "null"]
         street_line_2:
-          type: string
-          nullable: true
+          type: [string, "null"]
         city:
-          type: string
-          nullable: true
+          type: [string, "null"]
         postal_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         zip4:
-          type: string
-          nullable: true
+          type: [string, "null"]
         state_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         country_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         lat_long:
           $ref: '#/components/schemas/LatLong'
         is_active:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         is_commercial:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         delivery_point:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - SingleUnit
             - MultiUnit
@@ -162,12 +150,7 @@ components:
         - type: object
           properties:
             link_to_address_start_date:
-              type: string
-              nullable: true
-            phones:
-              type: array
-              items:
-                $ref: '#/components/schemas/PhoneShort'
+              type: [string, "null"]
             emails:
               type: array
               items:
@@ -185,20 +168,14 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
         name:
-          type: string
-          nullable: true
+          type: [string, "null"]
         firstname:
-          type: string
-          nullable: true
+          type: [string, "null"]
         middlename:
-          type: string
-          nullable: true
+          type: [string, "null"]
         lastname:
-          type: string
-          nullable: true
+          type: [string, "null"]
         relation:
-          type: string
-          nullable: true
+          type: [string, "null"]

@@ -4,8 +4,7 @@ info:
   version: "3.1"
   description: >
     Caller Identification API identifies the phone owner's name and demographic
-    details, along with the owner's current address, alternate phones, and
-    emails. Returns only the highest-ranked phone owner.
+    details, along with the owner's current address.Returns only the highest-ranked phone owner.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -25,7 +24,7 @@ paths:
       description: >
         Validates the phone number, provides real-time metadata (line type,
         carrier), and returns the highest-ranked phone owner with their
-        current address, emails, and alternate phone numbers.
+        current address.
       parameters:
         - name: phone
           in: query
@@ -101,8 +100,6 @@ paths:
                     is_active: true
                     delivery_point: SingleUnit
                     link_to_person_start_date: "2011-10-05"
-                emails:
-                  - waidong.syrws@email.com
                 error: null
                 warnings: []
         "400":
@@ -187,16 +184,13 @@ components:
       type: object
       properties:
         latitude:
-          type: number
+          type: [number, "null"]
           format: double
-          nullable: true
         longitude:
-          type: number
+          type: [number, "null"]
           format: double
-          nullable: true
         accuracy:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - Country
             - State
@@ -210,12 +204,10 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent location ID. Format `Location.<uuid>`.
         location_type:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - Country
             - State
@@ -225,95 +217,74 @@ components:
             - Neighborhood
             - Address
         street_line_1:
-          type: string
-          nullable: true
+          type: [string, "null"]
         street_line_2:
-          type: string
-          nullable: true
+          type: [string, "null"]
         city:
-          type: string
-          nullable: true
+          type: [string, "null"]
         postal_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         zip4:
-          type: string
-          nullable: true
+          type: [string, "null"]
           pattern: '^\d+-\d{4}$'
         state_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         country_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         lat_long:
           $ref: '#/components/schemas/LatLong'
         is_active:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
           description: True if the address is currently receiving mail.
         delivery_point:
-          type: string
-          nullable: true
+          type: [string, "null"]
           enum:
             - SingleUnit
             - MultiUnit
             - POBox
             - PartialAddress
         link_to_person_start_date:
-          type: string
-          nullable: true
+          type: [string, "null"]
         link_to_person_end_date:
-          type: string
-          nullable: true
+          type: [string, "null"]
 
     Person:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent person ID. Format `Person.<uuid>`.
         name:
-          type: string
-          nullable: true
+          type: [string, "null"]
         firstname:
-          type: string
-          nullable: true
+          type: [string, "null"]
         middlename:
-          type: string
-          nullable: true
+          type: [string, "null"]
         lastname:
-          type: string
-          nullable: true
+          type: [string, "null"]
         alternate_names:
           type: array
           items:
             type: string
         age_range:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Age of the person in a 5-year range. Example `25-29`.
         gender:
-          type: string
-          nullable: true
+          type: [string, "null"]
         type:
           type: string
           enum:
             - Person
             - Business
         industry:
-          type: array
+          type: [array, "null"]
           items:
             type: string
-          nullable: true
         link_to_phone_start_date:
-          type: string
-          nullable: true
+          type: [string, "null"]
 
     LineType:
-      type: string
-      nullable: true
+      type: [string, "null"]
       enum:
         - Landline
         - Mobile
@@ -328,39 +299,28 @@ components:
       type: object
       properties:
         id:
-          type: string
-          nullable: true
+          type: [string, "null"]
           description: Persistent phone ID. Format `Phone.<uuid>`.
         phone_number:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_valid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         country_calling_code:
-          type: string
-          nullable: true
+          type: [string, "null"]
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
-          type: string
-          nullable: true
+          type: [string, "null"]
         is_prepaid:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         is_commercial:
-          type: boolean
-          nullable: true
+          type: [boolean, "null"]
         belongs_to:
           $ref: '#/components/schemas/CallerIdOwner'
         current_addresses:
           type: array
           items:
             $ref: '#/components/schemas/Address'
-        emails:
-          type: array
-          items:
-            type: string
         error:
           $ref: '#/components/schemas/PartialError'
         warnings:

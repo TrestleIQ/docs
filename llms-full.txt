@@ -1,0 +1,1099 @@
+# Trestle Identity APIs — Full LLM Reference
+
+> One-file aggregated reference for AI agents. Includes guides, AI integration notes, product matrix, taxonomy, and pointers to OpenAPI specs and fixtures.
+
+Last assembled from the repository at `https://github.com/TrestleIQ/docs` (branch: main).
+
+---
+
+## 1. Start-Here Guide (ai/LLMS.md)
+
+# Trestle API Integration Guide for AI Agents
+
+This file is the canonical start-here resource for AI-assisted integration with Trestle Identity APIs.
+
+## What Trestle APIs do
+
+Trestle provides identity data APIs for verifying, enriching, and validating US contact information:
+- Phone numbers (line type, carrier, activity, owner identity)
+- Email addresses (validity, deliverability, age)
+- Physical addresses (validation, resident lookup)
+- IP addresses (trust scoring)
+- Lead contact quality grading
+
+## Integration path (start here)
+
+1. **Get an API key** — Sign up at https://portal.trestleiq.com/signup
+2. **Authenticate** — All APIs use `x-api-key: YOUR_KEY` as a request header. No OAuth or tokens.
+3. **Choose an API** — See Product Matrix below or `PRODUCT_MATRIX.md`
+4. **Send a request** — All APIs are REST/GET (except Phone Feedback which is POST)
+5. **Handle the response** — Check `warnings` array and `error`/`errors` object for partial results
+
+## Product Matrix (quick reference)
+
+| Product | Endpoint | Use case |
+|---|---|---|
+| Real Contact API | `GET https://api.trestleiq.com/2.0/real_contact` | Lead verification: phone + email + address + IP quality grading |
+| Caller ID API | `GET https://api.trestleiq.com/3.1/caller_id` | Top caller identity (name, address) for a phone number |
+| Smart CNAM API | `GET https://api.trestleiq.com/3.1/cnam` | Caller name only (lightest enrichment) |
+| Phone Validation API | `GET https://api.trestleiq.com/3.0/phone_intel` | Phone validity, carrier, line type, activity score |
+| Reverse Phone API | `GET https://api.trestleiq.com/3.2/phone` | All owners of a phone number with full demographics |
+| Reverse Address API | `GET https://api.trestleiq.com/3.1/location` | All residents at a street address |
+| Phone Feedback API | `POST https://api.trestleiq.com/1.0/phone_feedback` | Submit connected/disconnected call outcome feedback |
+| Address Validation API | `GET https://api.trestleiq.com/3.0/location_intel` | Validate and normalize a US address; returns coordinates and USPS-normalized fields |
+
+## Minimum request example (Phone Validation)
+
+```bash
+curl --request GET \
+  --url "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+## Key concepts for AI agents
+
+- **Activity score** (0–100): 70+ = likely connected; 30- = likely disconnected; present in Phone Validation and Real Contact APIs.
+- **Contact grade** (A–F): Lead quality signal in Real Contact API. A = high quality, F = bad lead.
+- **Partial responses**: A `200` can include an `error` or `errors` field with `InternalError` — data is still usable but incomplete.
+- **Warnings**: Non-fatal flags about input quality or data gaps. Never prevent a response.
+- **Rate limits**: 429 = either QPS exceeded (retry with backoff) or monthly quota exhausted (upgrade plan).
+
+## File index
+
+| File | Purpose |
+|---|---|
+| `PRODUCT_MATRIX.md` | Full product details with all endpoints, versions, and spec paths |
+| `API_CATALOG.json` | Machine-readable endpoint catalog (one object per API) |
+| `EXAMPLES_INDEX.json` | Maps endpoints to code sample files and fixture files |
+| `CHANGELOG_AI.md` | Structured version history with breaking/non-breaking changes |
+| `TAXONOMY.json` | Controlled vocabulary for entity types and field names |
+
+## OpenAPI specs
+
+Each product has a standalone OpenAPI 3.1 YAML spec:
+
+- `openapi/real-contact.openapi.yaml`
+- `openapi/caller-identification.openapi.yaml`
+- `openapi/smart-cnam.openapi.yaml`
+- `openapi/phone-validation.openapi.yaml`
+- `openapi/reverse-phone.openapi.yaml`
+- `openapi/reverse-address.openapi.yaml`
+- `openapi/phone-feedback.openapi.yaml`
+- `openapi/address-validation.openapi.yaml`
+
+Archived specs: `openapi/archived/`
+
+Shared schemas: `openapi/common/`
+
+## Fixture files
+
+Canonical request/response JSON under `fixtures/<product>/`:
+- `request.valid.json`
+- `response.success.json`
+- `response.error.400.json`
+- `response.error.429.json`
+
+---
+
+## 2. Product Matrix (ai/PRODUCT_MATRIX.md)
+
+# Trestle API Product Matrix
+
+Canonical reference for all Trestle API products. Matches the README.md Product Matrix.
+
+Last updated: 2026-05-19
+
+| Product | Version | Method | Path | Base URL | Auth Header | OpenAPI Spec | Docs Page | Fixtures | Status |
+|---|---|---|---|---|---|---|---|---|---|
+| Real Contact API | v2.0 | GET | `/2.0/real_contact` | `https://api.trestleiq.com` | `x-api-key` | `openapi/real-contact.openapi.yaml` | `api-reference/real-contact-api.mdx` | `fixtures/real-contact/` | GA |
+| Caller Identification API | v3.1 | GET | `/3.1/caller_id` | `https://api.trestleiq.com` | `x-api-key` | `openapi/caller-identification.openapi.yaml` | `api-reference/caller-identification-api.mdx` | `fixtures/caller-identification/` | GA |
+| Smart CNAM API | v3.1 | GET | `/3.1/cnam` | `https://api.trestleiq.com` | `x-api-key` | `openapi/smart-cnam.openapi.yaml` | `api-reference/smart-cnam-api.mdx` | `fixtures/smart-cnam/` | GA |
+| Phone Validation API | v3.0 | GET | `/3.0/phone_intel` | `https://api.trestleiq.com` | `x-api-key` | `openapi/phone-validation.openapi.yaml` | `api-reference/phone-validation-api.mdx` | `fixtures/phone-validation/` | GA |
+| Reverse Phone API | v3.2 | GET | `/3.2/phone` | `https://api.trestleiq.com` | `x-api-key` | `openapi/reverse-phone.openapi.yaml` | `api-reference/reverse-phone-api.mdx` | `fixtures/reverse-phone/` | GA |
+| Reverse Address API | v3.1 | GET | `/3.1/location` | `https://api.trestleiq.com` | `x-api-key` | `openapi/reverse-address.openapi.yaml` | `api-reference/reverse-address-api.mdx` | `fixtures/reverse-address/` | GA |
+| Phone Feedback API | v1.0 | POST | `/1.0/phone_feedback` | `https://api.trestleiq.com` | `x-api-key` | `openapi/phone-feedback.openapi.yaml` | `api-reference/phone-feedback-api.mdx` | `fixtures/phone-feedback/` | GA |
+| Address Validation API | v3.0 | GET | `/3.0/location_intel` | `https://api.trestleiq.com` | `x-api-key` | `openapi/address-validation.openapi.yaml` | `api-reference/address-validation-api.mdx` | `fixtures/address-validation/` | GA |
+
+## Deprecated / archived versions
+
+| Product | Version | Method | Path | OpenAPI Spec | Docs Page | Status | Replacement |
+|---|---|---|---|---|---|---|---|
+| Real Contact API | v1.1 | GET | `/1.1/real_contact` | `openapi/real-contact-v1-1.openapi.yaml` | `api-reference/real-contact-api-v1-1.mdx` | deprecated | `/2.0/real_contact` |
+
+## Notes
+
+- All endpoints are under base URL `https://api.trestleiq.com`.
+- All endpoints authenticate via `x-api-key` header. No query-parameter auth is supported (deprecated in v2.0+).
+- Phone Feedback is the only POST endpoint; all others use GET.
+- Add-ons (extra charges) are available for Real Contact (litigator_checks, email_checks_age, email_checks_deliverability) and Phone Validation (litigator_checks).
+
+---
+
+## 3. Taxonomy (ai/TAXONOMY.json)
+
+```json
+{
+  "version": "1.0",
+  "updated": "2026-05-19",
+  "description": "Controlled vocabulary for Trestle API entities and fields. Use this for consistent field naming in AI-generated code and documentation.",
+  "entity_types": {
+    "Phone": {
+      "id_format": "Phone.<uuid>",
+      "description": "A phone number record with carrier, line type, and subscriber metadata.",
+      "key_fields": ["id", "phone_number", "is_valid", "line_type", "carrier", "is_prepaid", "activity_score", "country_calling_code"]
+    },
+    "Person": {
+      "id_format": "Person.<uuid>",
+      "description": "An individual identified as a phone owner or address resident.",
+      "key_fields": ["id", "name", "firstname", "middlename", "lastname", "alternate_names", "age_range", "gender", "type"]
+    },
+    "Location": {
+      "id_format": "Location.<uuid>",
+      "description": "A physical address record with validation and geolocation data.",
+      "key_fields": ["id", "street_line_1", "street_line_2", "city", "state_code", "postal_code", "zip4", "country_code", "lat_long", "is_active", "delivery_point"]
+    }
+  },
+  "field_vocabulary": {
+    "activity_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "Phone line activity likelihood. 70+ = high confidence connected. 30- = high confidence disconnected/inactive. 50 = insufficient data.",
+      "apis": ["Phone Validation API", "Real Contact API"]
+    },
+    "contact_grade": {
+      "type": "string",
+      "values": ["A", "B", "C", "D", "F"],
+      "meaning": "Lead contactability grade. A = high quality/contactable. F = bad lead, deprioritize.",
+      "apis": ["Real Contact API"]
+    },
+    "line_type": {
+      "type": "string",
+      "values": ["Landline", "Mobile", "FixedVOIP", "NonFixedVOIP", "Premium", "TollFree", "Voicemail", "Other"],
+      "meaning": "The type of phone line/service.",
+      "apis": ["Phone Validation API", "Reverse Phone API", "Caller Identification API", "Smart CNAM API", "Real Contact API"]
+    },
+    "is_valid": {
+      "type": "boolean",
+      "meaning": "True if the phone number (or email/address depending on context) is structurally valid.",
+      "apis": ["all"]
+    },
+    "name_match": {
+      "type": "boolean",
+      "meaning": "True if the provided name matches the name on record for the phone/email/address.",
+      "apis": ["Real Contact API"]
+    },
+    "trust_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "IP Trust Score. Higher = more legitimate. Factors in VPN/proxy usage, network type, geographic signals.",
+      "apis": ["Real Contact API"]
+    },
+    "ip_distance_to_address": {
+      "type": "integer",
+      "unit": "miles",
+      "meaning": "Approximate distance between the user's IP location and the provided physical address. NULL if IP location confidence is low.",
+      "apis": ["Real Contact API"]
+    },
+    "delivery_point": {
+      "type": "string",
+      "values": ["SingleUnit", "MultiUnit", "POBox", "PartialAddress"],
+      "meaning": "The USPS delivery point type for the address.",
+      "apis": ["Reverse Address API", "Caller Identification API", "Reverse Phone API"]
+    },
+    "location_type": {
+      "type": "string",
+      "values": ["Country", "State", "City", "PostalCode", "ZipPlus4", "Neighborhood", "Address"],
+      "meaning": "The geographic granularity of a location record.",
+      "apis": ["Reverse Phone API", "Caller Identification API", "Reverse Address API"]
+    },
+    "lat_long.accuracy": {
+      "type": "string",
+      "values": ["Country", "State", "City", "PostalCode", "Neighborhood", "Street", "RoofTop"],
+      "meaning": "The precision level of the lat/long coordinates.",
+      "apis": ["Reverse Phone API", "Caller Identification API", "Reverse Address API"]
+    },
+    "phone_status": {
+      "type": "string",
+      "values": ["Connected", "Disconnected"],
+      "meaning": "Live-call outcome for a dialed phone number. Used in Phone Feedback API.",
+      "apis": ["Phone Feedback API"]
+    },
+    "phone_right_party_contact": {
+      "type": "boolean",
+      "meaning": "Whether the live call confirmed the number belongs to the intended person.",
+      "apis": ["Phone Feedback API"]
+    }
+  },
+  "common_warnings": {
+    "Missing Input": "A required or recommended field was not provided.",
+    "Invalid Phone": "The phone number is not a valid phone number.",
+    "Invalid Address": "The address could not be validated.",
+    "Invalid Email": "The email address is not valid.",
+    "Free Email Service Provider": "The email domain is a free provider (e.g., gmail.com).",
+    "Disposable Email": "The email appears to be from a disposable email service.",
+    "Undeliverable Email": "The email address cannot receive mail.",
+    "International number. Not authorized": "The phone number is international and the key is not authorized for international lookups.",
+    "Lead is a Litigator. Must not be contacted.": "The phone subscriber is a known TCPA litigator."
+  }
+}
+
+```
+
+---
+
+## 4. API Catalog (ai/API_CATALOG.json)
+
+```json
+[
+  {
+    "product": "Real Contact API",
+    "version": "2.0",
+    "method": "GET",
+    "path": "/2.0/real_contact",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/2.0/real_contact",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/real-contact.openapi.yaml",
+    "docs_path": "api-reference/real-contact-api.mdx",
+    "fixtures_path": "fixtures/real-contact/",
+    "status": "GA",
+    "description": "Verifies and grades phone, email, address, and IP for lead quality. Returns A-F contact grades, activity scores, name-match indicators, and IP trust signals.",
+    "required_params": ["name", "phone"],
+    "optional_params": ["email", "address.street_line_1", "address.city", "address.state_code", "address.postal_code", "address.country_code", "ip_address", "add_ons", "business.name"],
+    "add_ons": ["litigator_checks", "email_checks_deliverability", "email_checks_age"]
+  },
+  {
+    "product": "Caller Identification API",
+    "version": "3.1",
+    "method": "GET",
+    "path": "/3.1/caller_id",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.1/caller_id",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/caller-identification.openapi.yaml",
+    "docs_path": "api-reference/caller-identification-api.mdx",
+    "fixtures_path": "fixtures/caller-identification/",
+    "status": "GA",
+    "description": "Returns the highest-ranked owner of a phone number with demographics, current address, and alternate phones.",
+    "required_params": ["phone"],
+    "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
+    "add_ons": []
+  },
+  {
+    "product": "Smart CNAM API",
+    "version": "3.1",
+    "method": "GET",
+    "path": "/3.1/cnam",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.1/cnam",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/smart-cnam.openapi.yaml",
+    "docs_path": "api-reference/smart-cnam-api.mdx",
+    "fixtures_path": "fixtures/smart-cnam/",
+    "status": "GA",
+    "description": "Validates a phone number and returns the top associated caller name. Lightest enrichment option.",
+    "required_params": ["phone"],
+    "optional_params": ["phone.country_hint"],
+    "add_ons": []
+  },
+  {
+    "product": "Phone Validation API",
+    "version": "3.0",
+    "method": "GET",
+    "path": "/3.0/phone_intel",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.0/phone_intel",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/phone-validation.openapi.yaml",
+    "docs_path": "api-reference/phone-validation-api.mdx",
+    "fixtures_path": "fixtures/phone-validation/",
+    "status": "GA",
+    "description": "Validates a phone number and returns carrier, line type, prepaid status, country info, and 0-100 activity score.",
+    "required_params": ["phone"],
+    "optional_params": ["phone.country_hint", "add_ons"],
+    "add_ons": ["litigator_checks"]
+  },
+  {
+    "product": "Reverse Phone API",
+    "version": "3.2",
+    "method": "GET",
+    "path": "/3.2/phone",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.2/phone",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/reverse-phone.openapi.yaml",
+    "docs_path": "api-reference/reverse-phone-api.mdx",
+    "fixtures_path": "fixtures/reverse-phone/",
+    "status": "GA",
+    "description": "Returns all owners of a phone number with demographics and current addresses for each owner.",
+    "required_params": ["phone"],
+    "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
+    "add_ons": []
+  },
+  {
+    "product": "Reverse Address API",
+    "version": "3.1",
+    "method": "GET",
+    "path": "/3.1/location",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.1/location",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/reverse-address.openapi.yaml",
+    "docs_path": "api-reference/reverse-address-api.mdx",
+    "fixtures_path": "fixtures/reverse-address/",
+    "status": "GA",
+    "description": "Validates and normalizes a street address and returns all current residents with demographics, historical addresses, and associated people.",
+    "required_params": [],
+    "optional_params": ["street_line_1", "street_line_2", "city", "state_code", "postal_code", "country_code"],
+    "add_ons": []
+  },
+  {
+    "product": "Phone Feedback API",
+    "version": "1.0",
+    "method": "POST",
+    "path": "/1.0/phone_feedback",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/1.0/phone_feedback",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/phone-feedback.openapi.yaml",
+    "docs_path": "api-reference/phone-feedback-api.mdx",
+    "fixtures_path": "fixtures/phone-feedback/",
+    "status": "GA",
+    "description": "Submit live-call feedback (connected/disconnected status, right-party contact) for a dialed phone number to improve Trestle's activity models.",
+    "required_body_fields": ["response_id", "phone", "phone_status", "phone_right_party_contact"],
+    "optional_body_fields": ["name"],
+    "add_ons": []
+  },
+  {
+    "product": "Address Validation API",
+    "version": "3.0",
+    "method": "GET",
+    "path": "/3.0/location_intel",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/3.0/location_intel",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/address-validation.openapi.yaml",
+    "docs_path": "api-reference/address-validation-api.mdx",
+    "fixtures_path": "fixtures/address-validation/",
+    "status": "GA",
+    "description": "Validates and normalizes a US street address using USPS CASS standards. Returns is_valid flag, normalized address fields, ZIP+4, and lat/long coordinates.",
+    "required_params": [],
+    "optional_params": ["street_line_1", "street_line_2", "city", "state_code", "postal_code"],
+    "add_ons": []
+  },
+  {
+    "product": "Real Contact API",
+    "version": "1.1",
+    "method": "GET",
+    "path": "/1.1/real_contact",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/1.1/real_contact",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/real-contact-v1-1.openapi.yaml",
+    "docs_path": "api-reference/real-contact-api-v1-1.mdx",
+    "fixtures_path": null,
+    "status": "deprecated",
+    "replacement": "GET /2.0/real_contact",
+    "description": "Deprecated version of the Real Contact API. Use v2.0 for new integrations.",
+    "required_params": ["name", "phone"],
+    "optional_params": ["email", "address.street_line_1", "address.city", "address.state_code", "address.postal_code"],
+    "add_ons": []
+  }
+]
+
+```
+
+---
+
+## 5. Examples Index (ai/EXAMPLES_INDEX.json)
+
+```json
+{
+  "version": "1.0",
+  "updated": "2026-05-19",
+  "endpoints": [
+    {
+      "product": "Real Contact API",
+      "endpoint": "GET /2.0/real_contact",
+      "fixtures": {
+        "request": "fixtures/real-contact/request.valid.json",
+        "response_success": "fixtures/real-contact/response.success.json",
+        "response_error_400": "fixtures/real-contact/response.error.400.json",
+        "response_error_429": "fixtures/real-contact/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/real-contact.md",
+        "javascript": "examples/javascript/real-contact.md",
+        "python": "examples/python/real-contact.md"
+      },
+      "inline_examples_in_docs": "api-reference/real-contact-api.mdx"
+    },
+    {
+      "product": "Caller Identification API",
+      "endpoint": "GET /3.1/caller_id",
+      "fixtures": {
+        "request": "fixtures/caller-identification/request.valid.json",
+        "response_success": "fixtures/caller-identification/response.success.json",
+        "response_error_400": "fixtures/caller-identification/response.error.400.json",
+        "response_error_429": "fixtures/caller-identification/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/caller-identification.md",
+        "javascript": "examples/javascript/caller-identification.md",
+        "python": "examples/python/caller-identification.md"
+      },
+      "inline_examples_in_docs": "api-reference/caller-identification-api.mdx"
+    },
+    {
+      "product": "Smart CNAM API",
+      "endpoint": "GET /3.1/cnam",
+      "fixtures": {
+        "request": "fixtures/smart-cnam/request.valid.json",
+        "response_success": "fixtures/smart-cnam/response.success.json",
+        "response_error_400": "fixtures/smart-cnam/response.error.400.json",
+        "response_error_429": "fixtures/smart-cnam/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/smart-cnam.md",
+        "javascript": "examples/javascript/smart-cnam.md",
+        "python": "examples/python/smart-cnam.md"
+      },
+      "inline_examples_in_docs": "api-reference/smart-cnam-api.mdx"
+    },
+    {
+      "product": "Phone Validation API",
+      "endpoint": "GET /3.0/phone_intel",
+      "fixtures": {
+        "request": "fixtures/phone-validation/request.valid.json",
+        "response_success": "fixtures/phone-validation/response.success.json",
+        "response_error_400": "fixtures/phone-validation/response.error.400.json",
+        "response_error_429": "fixtures/phone-validation/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/phone-validation.md",
+        "javascript": "examples/javascript/phone-validation.md",
+        "python": "examples/python/phone-validation.md"
+      },
+      "inline_examples_in_docs": "api-reference/phone-validation-api.mdx"
+    },
+    {
+      "product": "Reverse Phone API",
+      "endpoint": "GET /3.2/phone",
+      "fixtures": {
+        "request": "fixtures/reverse-phone/request.valid.json",
+        "response_success": "fixtures/reverse-phone/response.success.json",
+        "response_error_400": "fixtures/reverse-phone/response.error.400.json",
+        "response_error_429": "fixtures/reverse-phone/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/reverse-phone.md",
+        "javascript": "examples/javascript/reverse-phone.md",
+        "python": "examples/python/reverse-phone.md"
+      },
+      "inline_examples_in_docs": "api-reference/reverse-phone-api.mdx"
+    },
+    {
+      "product": "Reverse Address API",
+      "endpoint": "GET /3.1/location",
+      "fixtures": {
+        "request": "fixtures/reverse-address/request.valid.json",
+        "response_success": "fixtures/reverse-address/response.success.json",
+        "response_error_400": "fixtures/reverse-address/response.error.400.json",
+        "response_error_429": "fixtures/reverse-address/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/reverse-address.md",
+        "javascript": "examples/javascript/reverse-address.md",
+        "python": "examples/python/reverse-address.md"
+      },
+      "inline_examples_in_docs": "api-reference/reverse-address-api.mdx"
+    },
+    {
+      "product": "Phone Feedback API",
+      "endpoint": "POST /1.0/phone_feedback",
+      "fixtures": {
+        "request": "fixtures/phone-feedback/request.valid.json",
+        "response_success": "fixtures/phone-feedback/response.success.json",
+        "response_error_400": "fixtures/phone-feedback/response.error.400.json",
+        "response_error_429": "fixtures/phone-feedback/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/phone-feedback.md",
+        "javascript": "examples/javascript/phone-feedback.md",
+        "python": "examples/python/phone-feedback.md"
+      },
+      "inline_examples_in_docs": "api-reference/phone-feedback-api.mdx"
+    },
+    {
+      "product": "Address Validation API",
+      "endpoint": "GET /3.0/location_intel",
+      "fixtures": {
+        "request": "fixtures/address-validation/request.valid.json",
+        "response_success": "fixtures/address-validation/response.success.json",
+        "response_error_400": "fixtures/address-validation/response.error.400.json",
+        "response_error_429": "fixtures/address-validation/response.error.429.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/address-validation.md",
+        "javascript": "examples/javascript/address-validation.md",
+        "python": "examples/python/address-validation.md"
+      },
+      "inline_examples_in_docs": "api-reference/address-validation-api.mdx"
+    }
+  ]
+}
+
+```
+
+---
+
+## 6. Guides
+
+### overview
+
+
+Trestle Support: [support@trestleiq.com](mailto:support@trestleiq.com) | URL: [https://trestleiq.com/contact/](https://trestleiq.com/contact) | [ Terms of Service](https://trestleiq.com/terms-of-service/)
+
+### Base URL
+
+All API requests should be made to:
+
+```
+https://api.trestleiq.com
+```
+
+### Authentication
+
+Trestle controls access to the API and data via an API key. The API key is the primary data authentication method for your account. Your usage is recorded and reported via the API key. You may use a single API key for multiple Trestle APIs.
+
+# Trestle Product Descriptions
+
+Here's a brief overview of Trestle's APIs:
+
+### Validation and Verification APIs
+
+- [Phone Validation API](https://trestleiq.com/phone-validation-api/): Validates an input phone number and returns real-time metadata signals like carrier, line type, prepaid status, and phone activity. TCPA litigator checks available as an add-on.
+- [Real Contact API](https://trestleiq.com/real-contact-api/): Verify the contactability and consistency of an identity profile across name, email, phone number, physical address, and IP address. Returns powerful metadata, name match results, and contact grades. Available with add-ons for email deliverability, email age, and TCPA litigator checks.
+
+### Enrichment APIs
+
+- [Reverse Phone API](https://trestleiq.com/reverse-phone-api/): Trestle’s most robust enrichment API. Validates an input phone, provides relevant metadata, and returns **all potential phone owners** along with each owner’s linked addresses.
+- [Caller Identification API](https://trestleiq.com/caller-identification-api/): Designed for use cases where only the top associated identity is needed, the Caller Identification API validates the phone, provides real-time metadata, and returns **only the** **highest ranked phone owner** along with their current address and alternate phone numbers.
+- [Smart CNAM API](https://trestleiq.com/smart-cnam-api/): Designed for use cases where only name data is needed, the Smart CNAM API validates the phone number and returns the **top associated name**.
+- [Reverse Address API](https://trestleiq.com/reverse-address-api/): Validates an input address, returns relevant metadata, and returns all identities currently linked to the address with demographic data, associated people, and historical addresses for each linked identity.
+- [Phone Feedback API](https://trestleiq.com/phone-feedback-api/): Offers a method of providing feedback to Trestle about dialed numbers for their connected/disconnected status and confirmation of right party contact.
+
+# FAQ
+
+### **_How do I get an API Key?_**
+
+[Sign up for a Developer Portal account](https://portal.trestleiq.com/signup). Once verified, you can request access to any of Trestle’s Enrichment APIs or start using Real Contact API or Phone Validation API immediately.
+
+### **_Do you have a Postman Collection?_**
+
+Yes, we do, and you can find it [here](https://www.postman.com/trestleiq/workspace/trestle-identity-data-apis). You will need to fork the collection to use it and an API key, for which you can [sign up here](https://dev-portal.trestleiq.com/accounts/create).
+
+### **_Where can I check the status of the service?_**
+
+You can find the API status on the [Trestle Status Page](https://status.trestleiq.com/).
+
+### **_Can I submit a request using POST method?_**
+
+POST is only supported for our Phone Feedback API. Rest of the APIs only support via GET.
+
+### **_I have more questions. Who can I contact?_**
+
+Please email us at [support@trestleiq.com](mailto:support@trestleiq.com).
+
+### authentication
+
+
+## API Key Authentication
+
+Trestle controls access to the API and data via an API Key. The API key is the primary authentication method for your account. Your usage is recorded and reported via the API Key. You may use a single API key for multiple Trestle APIs.
+
+## Getting an API Key
+
+To get an API key:
+
+1. [Sign up for a Developer Portal account](https://portal.trestleiq.com/signup)
+2. Once approved, you can send a request to any of Trestle's APIs
+3. Your API key will be available in the Developer Portal
+
+## Using Your API Key
+
+All API requests require authentication via the `x-api-key` header.
+
+### Header Format
+
+Include your API key in the request header:
+
+```bash
+x-api-key: YOUR_API_KEY
+```
+
+### Example Request
+
+<CodeGroup>
+
+```bash cURL
+curl --request GET \
+  --url "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+```javascript JavaScript
+const response = await fetch(
+  "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
+  {
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+    },
+  }
+);
+const data = await response.json();
+```
+
+```javascript Node.js
+import axios from "axios";
+
+const { data } = await axios.get(
+  "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100",
+  {
+    headers: {
+      "x-api-key": "YOUR_API_KEY",
+    },
+  }
+);
+console.log(data);
+```
+
+```python Python
+import requests
+
+headers = {"x-api-key": "YOUR_API_KEY"}
+
+response = requests.get(
+    "https://api.trestleiq.com/3.0/phone_intel",
+    params={"phone": "2069735100"},
+    headers=headers,
+    timeout=30,
+)
+data = response.json()
+print(data)
+```
+
+```csharp C#
+using var client = new HttpClient();
+client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
+
+var response = await client.GetAsync("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100");
+var body = await response.Content.ReadAsStringAsync();
+Console.WriteLine(body);
+```
+
+```go Go
+package main
+
+import (
+	"fmt"
+	"io"
+	"net/http"
+)
+
+func main() {
+	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.0/phone_intel?phone=2069735100", nil)
+	req.Header.Set("x-api-key", "YOUR_API_KEY")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	fmt.Println(string(body))
+}
+```
+
+```php PHP
+<?php
+$curl = curl_init("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100");
+curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
+curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+$response = curl_exec($curl);
+curl_close($curl);
+
+echo $response;
+```
+
+```java Java
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class PhoneIntelExample {
+  public static void main(String[] args) throws Exception {
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create("https://api.trestleiq.com/3.0/phone_intel?phone=2069735100"))
+            .header("x-api-key", "YOUR_API_KEY")
+            .GET()
+            .build();
+
+    HttpResponse<String> response =
+        HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    System.out.println(response.body());
+  }
+}
+```
+
+</CodeGroup>
+
+## HTTP Methods
+
+### GET (Recommended)
+
+We recommend using GET for simplicity. Include the API key in the header:
+
+```bash
+GET /3.2/phone?phone=2069735100
+Headers:
+  x-api-key: YOUR_API_KEY
+```
+
+### POST
+
+POST is also supported. In this case, `api_key` must be in the request body and not part of the URL:
+
+```bash
+POST /3.2/phone
+Headers:
+  Content-Type: application/json
+  x-api-key: YOUR_API_KEY
+Body:
+{
+  "phone": "2069735100",
+}
+```
+
+## Security Best Practices
+
+<Warning>
+  Keep your API key secure and never expose it in client-side code or public
+  repositories.
+</Warning>
+
+- Store API keys in environment variables
+- Use different API keys for different environments (development, staging, production)
+- Rotate API keys regularly
+- Never commit API keys to version control
+
+## Error Responses
+
+### 400 Bad Request
+
+- Indicates that the server cannot process the request due to client-side errors.
+
+### 403
+
+- **Invalid API Key**: Indicates that the API key is either incorrect or has been deactivated.
+- **API Key Missing**: Indicates that your request did not include an API key.
+- **API Key Expired**: Indicates that the API key has expired.
+
+### 429 Too Many Requests
+
+- API Key has exceeded its rate limit.
+
+### 500 Internal Server Error
+
+- An unexpected error occurred on the server.
+
+## Need Help?
+
+If you're having trouble with authentication, check our [FAQ](/guides/overview) or contact [support@trestleiq.com](mailto:support@trestleiq.com).
+
+### rate-limits
+
+
+## Overview
+
+Trestle enforces two types of limits:
+
+| Limit type | Description |
+|---|---|
+| **QPS (queries per second)** | Maximum requests per second per API key |
+| **Monthly quota** | Total requests allowed in your current billing cycle |
+
+Limits vary by plan tier. Contact [support@trestleiq.com](mailto:support@trestleiq.com) to review or upgrade your limits.
+
+## Rate limit response
+
+When a limit is exceeded, the API returns `429 Too Many Requests`:
+
+```json
+{
+  "error": "rate_limit_exceeded",
+  "message": "You have exceeded your QPS limit. Please retry after 1 second."
+}
+```
+
+## Retry strategy
+
+Use exponential backoff when you receive a `429`:
+
+```python
+import time
+import requests
+
+def call_with_retry(url, headers, params, max_retries=5):
+    delay = 1
+    for attempt in range(max_retries):
+        response = requests.get(url, headers=headers, params=params, timeout=30)
+        if response.status_code != 429:
+            return response
+        time.sleep(delay)
+        delay *= 2
+    return response
+```
+
+### Retry rules
+
+- Start with a 1-second delay.
+- Double the delay on each subsequent retry (exponential backoff).
+- Add a small random jitter (e.g., ±100ms) to avoid thundering herd.
+- Stop retrying after 5 attempts or when the billing cycle quota is confirmed exhausted (quota exhaustion does not resolve with retries — upgrade the plan).
+
+## QPS vs quota errors
+
+Both return `429`, but the cause and resolution differ:
+
+| Scenario | `429` subtype | Resolution |
+|---|---|---|
+| Too many requests per second | Rate limit exceeded | Back off and retry |
+| Monthly usage cap reached | Quota exceeded | Upgrade plan in the portal |
+
+## Checking usage
+
+Log in to the [Developer Portal](https://portal.trestleiq.com) to view current usage and quota remaining for each API key.
+
+### errors
+
+
+## HTTP error codes
+
+| Status | Name | When it occurs |
+|---|---|---|
+| `400` | Bad Request | Malformed request, missing required parameters, or invalid parameter values |
+| `401` | Unauthorized | Missing `x-api-key` header |
+| `403` | Forbidden | Invalid, expired, or disabled API key; missing product access |
+| `404` | Not Found | Endpoint path is incorrect |
+| `429` | Too Many Requests | QPS rate limit or monthly quota exceeded |
+| `500` | Internal Server Error | Unexpected server-side error |
+
+## 400 Bad Request
+
+The server cannot process the request due to a client-side error.
+
+**Common causes:**
+- Missing a required query parameter (e.g., `phone` on phone-based APIs)
+- Invalid parameter format (e.g., malformed phone number)
+- Syntax error in request URL
+
+**Fix:** Check the required parameters listed in the API reference for the endpoint you are calling.
+
+## 403 Forbidden
+
+The request is understood, but the server is refusing to fulfill it.
+
+| Subtype | Cause | Fix |
+|---|---|---|
+| Invalid API Key | Key is incorrect or deactivated | Check for trailing spaces or character errors in the key |
+| API Key Missing | `x-api-key` header not included | Add the header to your request |
+| API Key Disabled | Key is inactive (portal issue) | Check wallet balance or contact Trestle support |
+| No Product Access | Key not enabled for this product/version | Enable the product in the portal or contact support |
+| API Key Expired | Key reached end-of-life (trial users) | Renew or upgrade in the portal |
+
+## 429 Too Many Requests
+
+You have exceeded a rate or quota limit. See [Rate limits](./rate-limits) for retry guidance.
+
+## 500 Internal Server Error
+
+An unexpected error occurred on the server. If this persists, contact [support@trestleiq.com](mailto:support@trestleiq.com) with the request details and timestamp.
+
+## Partial errors
+
+Some APIs return a `200` response with an `error` or `errors` field when partial data could not be retrieved (e.g., due to an upstream timeout). Check for this field in every response:
+
+```json
+{
+  "phone_number": "2069735100",
+  "is_valid": true,
+  "error": {
+    "name": "InternalError",
+    "message": "Could not retrieve entire response"
+  }
+}
+```
+
+When `error` is present, the response is partial. The fields that were successfully retrieved are still usable.
+
+## Warnings
+
+Warnings indicate non-fatal issues with the input or response. They do not prevent a response from being returned:
+
+```json
+{
+  "warnings": ["Invalid Phone", "Missing Input"]
+}
+```
+
+Common warning values vary by API — see the `warnings` field documentation on each API reference page.
+
+---
+
+## 7. OpenAPI specs (fetch raw YAML for each product)
+
+- address-validation: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/address-validation.openapi.yaml
+- caller-identification: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/caller-identification.openapi.yaml
+- phone-feedback: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/phone-feedback.openapi.yaml
+- phone-validation: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/phone-validation.openapi.yaml
+- real-contact-v1-1: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/real-contact-v1-1.openapi.yaml
+- real-contact: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/real-contact.openapi.yaml
+- reverse-address: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/reverse-address.openapi.yaml
+- reverse-phone: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/reverse-phone.openapi.yaml
+- smart-cnam: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/smart-cnam.openapi.yaml
+
+Shared components: https://github.com/TrestleIQ/docs/tree/main/openapi/common
+
+---
+
+## 8. Fixtures (canonical request/response JSON per product)
+
+### address-validation
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/response.success.json
+
+### caller-identification
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/response.success.json
+
+### phone-feedback
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/response.success.json
+
+### phone-validation
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/response.success.json
+
+### real-contact
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/response.success.json
+
+### reverse-address
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/response.success.json
+
+### reverse-phone
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/response.success.json
+
+### smart-cnam
+- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/request.valid.json
+- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/response.error.400.json
+- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/response.error.429.json
+- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/response.success.json
+
+---
+
+## 9. Code samples
+
+- curl: https://github.com/TrestleIQ/docs/tree/main/examples/curl
+- JavaScript: https://github.com/TrestleIQ/docs/tree/main/examples/javascript
+- Python: https://github.com/TrestleIQ/docs/tree/main/examples/python
+
+---
+
+## 10. Changelog (ai/CHANGELOG_AI.md)
+
+# Trestle API Changelog (AI-Readable)
+
+This file is structured for deterministic parsing by AI agents. Each version entry includes `breaking` and `non-breaking` sections, migration notes, and replacement endpoints.
+
+Format: ISO 8601 dates. Status: `current` | `deprecated` | `removed`.
+
+---
+
+## 2026-05-19 — Repository refactor (docs only, no API changes)
+
+### non-breaking
+
+- Added OpenAPI 3.1 spec files for all 7 API products under `openapi/`.
+- Added canonical fixture JSON files under `fixtures/`.
+- Added AI-readable index files under `ai/`.
+- Added `guides/rate-limits.mdx` and `guides/errors.mdx`.
+- Rewrote `README.md` to be integration-first with Product Matrix.
+- Added `CONTRIBUTING.md` with maintainer and build instructions.
+
+---
+
+## Current API versions
+
+| Product | Current Version | Endpoint | Status |
+|---|---|---|---|
+| Real Contact API | v2.0 | `GET /2.0/real_contact` | current |
+| Caller Identification API | v3.1 | `GET /3.1/caller_id` | current |
+| Smart CNAM API | v3.1 | `GET /3.1/cnam` | current |
+| Phone Validation API | v3.0 | `GET /3.0/phone_intel` | current |
+| Reverse Phone API | v3.2 | `GET /3.2/phone` | current |
+| Reverse Address API | v3.1 | `GET /3.1/location` | current |
+| Phone Feedback API | v1.0 | `POST /1.0/phone_feedback` | current |
+
+---
+
+## Deprecated/archived versions
+
+| Product | Version | Endpoint | Status | Replacement |
+|---|---|---|---|---|
+| Real Contact API | v1.1 | `GET /1.1/real_contact` | deprecated | `GET /2.0/real_contact` |
+| Real Contact API | v1.0 | `GET /1.0/real_contact` | deprecated | `GET /2.0/real_contact` |
+| Reverse Phone API | v3.0/v3.1 | `GET /3.0/phone`, `GET /3.1/phone` | deprecated | `GET /3.2/phone` |
+| Caller ID API | v2.x | `GET /2.x/caller_id` | deprecated | `GET /3.1/caller_id` |
+| Smart CNAM API | v2.x/v3.0 | older paths | deprecated | `GET /3.1/cnam` |
+| Phone Validation API | v2.x | older paths | deprecated | `GET /3.0/phone_intel` |
+| Reverse Address API | v2.x/v3.0 | older paths | deprecated | `GET /3.1/location` |
+| Find Person API | v1.x | `GET /1.x/find_person` | removed | use Reverse Phone or Caller ID |
+
+Archived docs: `api-reference-archived/`
+
+---
+
+## Migration notes
+
+### Real Contact v1.x → v2.0
+
+- **Breaking**: Authentication via query parameter (`api_key=`) removed. Must use `x-api-key` header.
+- **Breaking**: Response structure changed — nested `phone`, `email`, `address` objects replace flat fields.
+- **Non-breaking**: `ip_address` and `add_ons` parameters added.
+
+### Reverse Phone v3.1 → v3.2
+
+- **Non-breaking**: `owners` array replaces single `belongs_to` object to support multiple owners.
+

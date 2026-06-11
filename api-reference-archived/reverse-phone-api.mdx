@@ -1,6 +1,6 @@
 ---
 title: "Reverse Phone API (Archived)"
-description: "Reverse Phone API validates a phone number and provides phone metadata, owner name and demographics, current and historical addresses, relatives and associated people, and additional phone numbers."
+description: "Reverse Phone API validates a phone number and provides phone metadata, owner name and demographics, current and historical addresses, relatives and associated people."
 api: "GET /3.1/phone"
 playground: "none"
 noindex: true
@@ -200,13 +200,6 @@ noindex: true
           "middlename": "L",
           "lastname": "Syrws",
           "relation": "Household"
-        }
-      ],
-      "alternate_phones": [
-        {
-          "id": "Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4",
-          "phone_number": "2069735100",
-          "line_type": "NonFixedVOIP"
         }
       ],
       "error": {
@@ -519,30 +512,6 @@ GET https://api.trestleiq.com/3.1/phone?phone=[insert_phone_number]
 
     <ResponseField name="relation" type="string or null">
       Relation of the associated person. Enum: <Badge>Household</Badge> <Badge>PotentialOwner</Badge>
-    </ResponseField>
-
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="alternate_phones" type="object[]">
-  The list of alternate phone numbers of the primary owner of the phone number.
-  <Expandable title="alternate_phone object">
-    <ResponseField name="id" type="string or null <Phone.<uuid>>">
-      The persistent ID of the phone number.
-    </ResponseField>
-
-    <ResponseField name="phone_number" type="string or null (PhoneNumber)">
-      The phone number in E.164 or local format. The default country calling code is +1 (USA).
-    </ResponseField>
-
-    <ResponseField name="line_type" type="string or null">
-      The line type of the phone number. Possible values: - `Landline` - Traditional
-      wired phone line - `Mobile` - Wireless phone line - `FixedVOIP` - VOIP number
-      connected to a physical address - `NonFixedVOIP` - VOIP number unconnected to
-      a fixed physical address - `Premium` - Caller pays a premium for the call -
-      `TollFree` - Callee pays for call - `Voicemail` - Voicemail-only service -
-      `Other` - Line type is unclear
-      Enum: <Badge>Landline</Badge> <Badge>Mobile</Badge> <Badge>FixedVOIP</Badge> <Badge>NonFixedVOIP</Badge> <Badge>Premium</Badge> <Badge>TollFree</Badge> <Badge>Voicemail</Badge> <Badge>Other</Badge>
     </ResponseField>
 
   </Expandable>

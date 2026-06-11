@@ -1,6 +1,6 @@
 ---
 title: "Caller Identification API"
-description: "Caller Identification API identifies the phone owner’s name and demographic details, along with that owner’s address, alternate phones, and emails."
+description: "Caller Identification API identifies the phone owner’s name and demographic details, along with that owner’s address."
 api: "GET /3.1/caller_id"
 playground: none
 ---
@@ -169,9 +169,6 @@ import ErrorResponses from '/snippets/error-responses.mdx';
           "delivery_point": "SingleUnit",
           "link_to_person_start_date": "2011-10-05"
       },
-      "emails": [
-        "waidong.syrws@email.com"
-      ]
       "error": {
         "name": "InternalError",
         "message": "Could not retrieve entire response"
@@ -359,10 +356,6 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
       The date when the address was first linked to the person.
     </ResponseField>
   </Expandable>
-</ResponseField>
-
-<ResponseField name="emails" type="string[]">
-  The list of emails associated to the primary owner of the phone.
 </ResponseField>
 
 <ResponseField name="error" type="object(PartialError)">
