@@ -23,11 +23,19 @@ No automated tests are configured. Validate changes by running `mint dev` and re
 
 ## Architecture
 
-- `docs.json` - Main Mintlify configuration: navigation structure, versioning (Current/Archived), theming, and API settings
+- `docs.json` - Main Mintlify configuration: navigation structure, versioning (Current/Archived), theming, API settings, and `headTags` custom scripts
 - `api-reference/*.mdx` - Current API endpoint documentation
 - `api-reference-archived/*.mdx` - Deprecated/archived API versions
 - `guides/*.mdx` - Getting started and overview content
+- `snippets/*.mdx` - Reusable MDX components (e.g., `error-responses.mdx` shared by all API pages)
+- `openapi/*.openapi.yaml` - OpenAPI 3.1 specs per product (`common/` holds shared schemas)
+- `fixtures/<product>/*.json` - Canonical request/response examples, indexed by `ai/EXAMPLES_INDEX.json`
+- `ai/` - AI-readable index files (LLMS.md, API_CATALOG.json, EXAMPLES_INDEX.json)
+- `scripts/*.js` - Custom JS injected via `docs.json` headTags (Mintlify inlines file content into page HTML at build; direct URL 404 in prod is expected)
+- `operations/` - Local-only runbooks; gitignored and purged from git history. Never re-add to tracking.
 - `style.css` - Custom styling
+
+See `context.md` (repo root) for deep architecture (error response model, fixture conventions, deployment flow). Both files are listed in `.mintignore` so Mintlify never publishes them — keep any new internal docs there too.
 
 ## Content Conventions
 
@@ -36,6 +44,9 @@ No automated tests are configured. Validate changes by running `mint dev` and re
 - Use sentence case for titles
 - File names use kebab-case matching navigation entries
 - 2-space indentation in JSON and MDX
+- API reference pages render error documentation via the shared snippet — `import ErrorResponses from '/snippets/error-responses.mdx'` + `<ErrorResponses />`. Never hand-copy error blocks into pages.
+- Gateway `4XX`/`429` errors use the structured body `{errorCode, message, hint}` (TRES-4973). The five errorCodes and full bodies are documented in `guides/errors.mdx` — keep it the single source of truth.
+- Error fixtures follow `response.error.<status>[.<case>].json` naming (e.g., `response.error.403.json` = INVALID_API_KEY, `response.error.429.quota.json` = QUOTA_EXCEEDED). When adding fixtures, sync `ai/EXAMPLES_INDEX.json` and `ai/LLMS.md`.
 
 ## Navigation Updates
 
