@@ -1,4 +1,5 @@
 {
-  "error": "rate_limit_exceeded",
-  "message": "You have exceeded your QPS limit. Please retry after 1 second."
+  "errorCode": "RATE_LIMIT_EXCEEDED",
+  "message": "You are sending requests too quickly.",
+  "hint": "Implement exponential backoff and retry."
 }

@@ -1,0 +1,5 @@
+{
+  "errorCode": "MISSING_API_KEY",
+  "message": "No API key was provided in the request.",
+  "hint": "Include your API key in the x-api-key header."
+}

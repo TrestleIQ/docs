@@ -81,4 +81,10 @@ Canonical request/response JSON under `fixtures/<product>/`:
 - `request.valid.json`
 - `response.success.json`
 - `response.error.400.json`
-- `response.error.429.json`
+- `response.error.403.json` — `INVALID_API_KEY` (invalid, revoked, or missing key)
+- `response.error.403.missing_api_key.json` — `MISSING_API_KEY` (non-existent route or unsupported method)
+- `response.error.403.forbidden.json` — `FORBIDDEN` (disabled, expired, or no product access)
+- `response.error.429.json` — `RATE_LIMIT_EXCEEDED` (QPS limit)
+- `response.error.429.quota.json` — `QUOTA_EXCEEDED` (billing-period quota)
+
+Gateway `4XX`/`429` errors return a structured body: `{ "errorCode", "message", "hint" }`.

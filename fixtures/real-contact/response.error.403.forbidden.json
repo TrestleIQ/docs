@@ -1,0 +1,5 @@
+{
+  "errorCode": "FORBIDDEN",
+  "message": "Access denied. Your API key may be disabled, expired, or not authorized for this product.",
+  "hint": "Contact support with your API key reference."
+}
