@@ -90,7 +90,6 @@ docs/
   fixtures/            # Canonical request/response JSON examples per product
   ai/                  # AI-readable index files (LLMS.md, API_CATALOG.json, etc.)
   changelog/           # Versioned changelog entries
-  operations/          # Runbooks for operational tasks
   assets/              # Logos and static assets
 ```
 

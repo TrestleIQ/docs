@@ -1,0 +1,5 @@
+{
+  "errorCode": "QUOTA_EXCEEDED",
+  "message": "Your API quota for this billing period has been exhausted.",
+  "hint": "Upgrade your plan or wait for the next billing cycle."
+}
