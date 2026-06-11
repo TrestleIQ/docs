@@ -1,0 +1,5 @@
+{
+  "errorCode": "INVALID_API_KEY",
+  "message": "The API key provided is invalid or has been revoked.",
+  "hint": "Verify your x-api-key header value or contact support."
+}

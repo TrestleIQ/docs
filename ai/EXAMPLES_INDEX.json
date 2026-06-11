@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-19",
+  "updated": "2026-06-11",
   "endpoints": [
     {
       "product": "Real Contact API",
@@ -9,7 +9,11 @@
         "request": "fixtures/real-contact/request.valid.json",
         "response_success": "fixtures/real-contact/response.success.json",
         "response_error_400": "fixtures/real-contact/response.error.400.json",
-        "response_error_429": "fixtures/real-contact/response.error.429.json"
+        "response_error_429": "fixtures/real-contact/response.error.429.json",
+        "response_error_403": "fixtures/real-contact/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/real-contact/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/real-contact/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/real-contact/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/real-contact.md",
@@ -25,7 +29,11 @@
         "request": "fixtures/caller-identification/request.valid.json",
         "response_success": "fixtures/caller-identification/response.success.json",
         "response_error_400": "fixtures/caller-identification/response.error.400.json",
-        "response_error_429": "fixtures/caller-identification/response.error.429.json"
+        "response_error_429": "fixtures/caller-identification/response.error.429.json",
+        "response_error_403": "fixtures/caller-identification/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/caller-identification/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/caller-identification/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/caller-identification/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/caller-identification.md",
@@ -41,7 +49,11 @@
         "request": "fixtures/smart-cnam/request.valid.json",
         "response_success": "fixtures/smart-cnam/response.success.json",
         "response_error_400": "fixtures/smart-cnam/response.error.400.json",
-        "response_error_429": "fixtures/smart-cnam/response.error.429.json"
+        "response_error_429": "fixtures/smart-cnam/response.error.429.json",
+        "response_error_403": "fixtures/smart-cnam/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/smart-cnam/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/smart-cnam/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/smart-cnam/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/smart-cnam.md",
@@ -57,7 +69,11 @@
         "request": "fixtures/phone-validation/request.valid.json",
         "response_success": "fixtures/phone-validation/response.success.json",
         "response_error_400": "fixtures/phone-validation/response.error.400.json",
-        "response_error_429": "fixtures/phone-validation/response.error.429.json"
+        "response_error_429": "fixtures/phone-validation/response.error.429.json",
+        "response_error_403": "fixtures/phone-validation/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/phone-validation/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/phone-validation/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/phone-validation/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/phone-validation.md",
@@ -73,7 +89,11 @@
         "request": "fixtures/reverse-phone/request.valid.json",
         "response_success": "fixtures/reverse-phone/response.success.json",
         "response_error_400": "fixtures/reverse-phone/response.error.400.json",
-        "response_error_429": "fixtures/reverse-phone/response.error.429.json"
+        "response_error_429": "fixtures/reverse-phone/response.error.429.json",
+        "response_error_403": "fixtures/reverse-phone/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/reverse-phone/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/reverse-phone/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/reverse-phone/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/reverse-phone.md",
@@ -89,7 +109,11 @@
         "request": "fixtures/reverse-address/request.valid.json",
         "response_success": "fixtures/reverse-address/response.success.json",
         "response_error_400": "fixtures/reverse-address/response.error.400.json",
-        "response_error_429": "fixtures/reverse-address/response.error.429.json"
+        "response_error_429": "fixtures/reverse-address/response.error.429.json",
+        "response_error_403": "fixtures/reverse-address/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/reverse-address/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/reverse-address/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/reverse-address/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/reverse-address.md",
@@ -105,7 +129,11 @@
         "request": "fixtures/phone-feedback/request.valid.json",
         "response_success": "fixtures/phone-feedback/response.success.json",
         "response_error_400": "fixtures/phone-feedback/response.error.400.json",
-        "response_error_429": "fixtures/phone-feedback/response.error.429.json"
+        "response_error_429": "fixtures/phone-feedback/response.error.429.json",
+        "response_error_403": "fixtures/phone-feedback/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/phone-feedback/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/phone-feedback/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/phone-feedback/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/phone-feedback.md",
@@ -121,7 +149,11 @@
         "request": "fixtures/address-validation/request.valid.json",
         "response_success": "fixtures/address-validation/response.success.json",
         "response_error_400": "fixtures/address-validation/response.error.400.json",
-        "response_error_429": "fixtures/address-validation/response.error.429.json"
+        "response_error_429": "fixtures/address-validation/response.error.429.json",
+        "response_error_403": "fixtures/address-validation/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/address-validation/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/address-validation/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/address-validation/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/address-validation.md",
