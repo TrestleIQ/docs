@@ -11,5 +11,9 @@ Thumbs.db
 .mintlify/
 node_modules/
 
+# Local-only runbooks (purged from history)
+operations/
+
 # Claude Code session metadata
 .claude/
+
