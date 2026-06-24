@@ -139,12 +139,6 @@
                 ]
               }
             ]
-          },
-          {
-            "group": "Reference",
-            "pages": [
-              "guides/errors"
-            ]
           }
         ],
         "default": true
@@ -210,12 +204,6 @@
                   "api-reference-archived/real-contact-api"
                 ]
               }
-            ]
-          },
-          {
-            "group": "Reference",
-            "pages": [
-              "guides/errors"
             ]
           }
         ]
