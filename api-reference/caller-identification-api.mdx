@@ -205,6 +205,10 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
   The postal code of the subscriber address associated with the phone number. If multiple names or addresses are associated with the phone in Trestle database, this postal code hint will be used to rank name/address higher. **Example:** `phone.postal_code_hint=98264`
 </ParamField>
 
+<ParamField query="add_ons" type="string">
+  Request parameter to enable specific add-ons available for this endpoint. Add-ons incur additional charges. Please see [here](https://trestleiq.com/pricing/) for more details. **Example:** `litigator_checks`
+</ParamField>
+
 ## Headers
 
 <ParamField query="x-api-key" body="header" type="string" required>
