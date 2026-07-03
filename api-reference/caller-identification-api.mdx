@@ -173,6 +173,14 @@ import ErrorResponses from '/snippets/error-responses.mdx';
         "name": "InternalError",
         "message": "Could not retrieve entire response"
       },
+      "add_ons": {
+        "litigator_checks": {
+            "phone.is_litigator_risk": false
+        },
+        "spam_checks": {
+            "phone.is_spam": true
+        }
+      },
       "warnings": [
         "Missing Input"
       ]
@@ -206,7 +214,11 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
 </ParamField>
 
 <ParamField query="add_ons" type="string">
-  Request parameter to enable specific add-ons available for this endpoint. Add-ons incur additional charges. Please see [here](https://trestleiq.com/pricing/) for more details. **Example:** `litigator_checks`
+  Request parameter to enable specific add-ons available for this endpoint. Add-ons incur additional charges. Please see [here](https://trestleiq.com/pricing/) for more details.
+  - litigator_checks: to enable TCPA litigator detection checks in the response.
+  - spam_checks: to enable spam and scam detection checks in the response
+   
+   **Example:** `litigator_checks,spam_checks`
 </ParamField>
 
 ## Headers
@@ -358,6 +370,25 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
     </ResponseField>
     <ResponseField name="link_to_person_start_date" type="string or null (LinkToPersonStartDate)">
       The date when the address was first linked to the person.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="add_ons" type="object or null">
+  <Expandable title="Add Ons Object" >
+    <ResponseField name="litigator_checks" type="object">
+      <Expandable title="litigator_checks" >
+        <ResponseField name="phone.is_litigator_risk" type="boolean or null">
+          True if the phone subscriber is a TCPA litigator.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="spam_checks" type="object">
+      <Expandable title="spam_checks Object" >
+        <ResponseField name="phone.is_spam" type="boolean or null">
+          True if the phone number is identified as a spam, scam, or fraudulent caller.
+        </ResponseField>
+      </Expandable>
     </ResponseField>
   </Expandable>
 </ResponseField>
