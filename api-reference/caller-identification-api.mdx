@@ -11,13 +11,13 @@ import ErrorResponses from '/snippets/error-responses.mdx';
   <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&" \
+      --url "https://api.trestleiq.com/3.1/caller_id?phone=2069735100" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
     ```javascript JavaScript
     const response = await fetch(
-      "https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&",
+      "https://api.trestleiq.com/3.1/caller_id?phone=2069735100",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -31,7 +31,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     import axios from "axios";
 
     const { data } = await axios.get(
-      "https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&",
+      "https://api.trestleiq.com/3.1/caller_id?phone=2069735100",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -48,7 +48,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     response = requests.get(
         "https://api.trestleiq.com/3.1/caller_id",
-        params={"phone": "2069735100", "add_ons":"litigator_checks,spam_checks"},
+        params={"phone": "2069735100"},
         headers=headers,
         timeout=30,
     )
@@ -60,7 +60,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&");
+    var response = await client.GetAsync("https://api.trestleiq.com/3.1/caller_id?phone=2069735100");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -75,7 +75,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     )
 
     func main() {
-    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&", nil)
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/caller_id?phone=2069735100", nil)
     	req.Header.Set("x-api-key", "YOUR_API_KEY")
 
     	resp, err := http.DefaultClient.Do(req)
@@ -91,7 +91,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&");
+    $curl = curl_init("https://api.trestleiq.com/3.1/caller_id?phone=2069735100");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -111,7 +111,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
       public static void main(String[] args) throws Exception {
         HttpRequest request =
             HttpRequest.newBuilder()
-                .uri(URI.create("https://api.trestleiq.com/3.1/caller_id?phone=2069735100&add_ons=litigator_checks%2Cspam_checks&"))
+                .uri(URI.create("https://api.trestleiq.com/3.1/caller_id?phone=2069735100"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
@@ -192,7 +192,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 ## Caller ID API 3.1
 
 ```http
-GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]&add_ons=litigator_checks%2Cspam_checks&
+GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
 ```
 
 ## Query Parameters
