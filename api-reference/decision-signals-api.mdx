@@ -249,10 +249,7 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
 ```
 
 <Warning>
-  **Note:** Authentication can be provided either as an `x-api-key` header or as
-  an `api_key` query parameter. One of the two is required. The header is
-  recommended, since query strings are recorded in server access logs and
-  browser history.
+  **Note:** Authentication is provided via the `x-api-key` header.
 </Warning>
 
 ### Primary and secondary use cases
@@ -265,13 +262,6 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
 | Small Business / Merchant Verification | Business Details | Principal Home Details |
 
 ## Query Parameters
-
-### Authentication
-
-<ParamField query="api_key" type="string">
-  Your Trestle API key, as an alternative to the `x-api-key` header. One of the
-  two is required. The header is recommended. **Example:** `api_key=YOUR_API_KEY`
-</ParamField>
 
 ### Transaction context
 
@@ -422,9 +412,8 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
 
 ## Headers
 
-<ParamField header="x-api-key" type="string">
-  Your API key for authentication. Required unless the key is supplied as an
-  `api_key` query parameter. **Example:** `{{ apiKey }}`
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication. **Example:** `{{ apiKey }}`
 </ParamField>
 
 ## Response
