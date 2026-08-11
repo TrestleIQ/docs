@@ -5,13 +5,11 @@ api: "GET /1.0/decision_signals"
 playground: none
 ---
 
-import ErrorResponses from '/snippets/error-responses.mdx';
-
 <Panel>
 <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1" \
+      --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&secondary.name=Vicky%20Kunal&secondary.phone=14259851212&secondary.address.street_line_1=4492%20163rd%20Pl%20SE&secondary.address.city=Bellevue&secondary.address.state_code=WA&secondary.address.postal_code=98006&secondary.email_address=vicky.kunal220@gmail.com&ip_address=47.68.0.1" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
@@ -26,6 +24,13 @@ import ErrorResponses from '/snippets/error-responses.mdx';
       "primary.address.state_code": "WA",
       "primary.address.postal_code": "98225",
       "primary.email_address": "robincooke16@yahoo.com",
+      "secondary.name": "Vicky Kunal",
+      "secondary.phone": "14259851212",
+      "secondary.address.street_line_1": "4492 163rd Pl SE",
+      "secondary.address.city": "Bellevue",
+      "secondary.address.state_code": "WA",
+      "secondary.address.postal_code": "98006",
+      "secondary.email_address": "vicky.kunal220@gmail.com",
       ip_address: "47.68.0.1",
     });
 
@@ -56,6 +61,13 @@ import ErrorResponses from '/snippets/error-responses.mdx';
           "primary.address.state_code": "WA",
           "primary.address.postal_code": "98225",
           "primary.email_address": "robincooke16@yahoo.com",
+          "secondary.name": "Vicky Kunal",
+          "secondary.phone": "14259851212",
+          "secondary.address.street_line_1": "4492 163rd Pl SE",
+          "secondary.address.city": "Bellevue",
+          "secondary.address.state_code": "WA",
+          "secondary.address.postal_code": "98006",
+          "secondary.email_address": "vicky.kunal220@gmail.com",
           ip_address: "47.68.0.1",
         },
         headers: {
@@ -80,6 +92,13 @@ import ErrorResponses from '/snippets/error-responses.mdx';
         "primary.address.state_code": "WA",
         "primary.address.postal_code": "98225",
         "primary.email_address": "robincooke16@yahoo.com",
+        "secondary.name": "Vicky Kunal",
+        "secondary.phone": "14259851212",
+        "secondary.address.street_line_1": "4492 163rd Pl SE",
+        "secondary.address.city": "Bellevue",
+        "secondary.address.state_code": "WA",
+        "secondary.address.postal_code": "98006",
+        "secondary.email_address": "vicky.kunal220@gmail.com",
         "ip_address": "47.68.0.1",
     }
 
@@ -97,7 +116,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
+    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&secondary.name=Vicky%20Kunal&secondary.phone=14259851212&secondary.address.street_line_1=4492%20163rd%20Pl%20SE&secondary.address.city=Bellevue&secondary.address.state_code=WA&secondary.address.postal_code=98006&secondary.email_address=vicky.kunal220@gmail.com&ip_address=47.68.0.1");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -112,7 +131,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     )
 
     func main() {
-     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1", nil)
+     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&secondary.name=Vicky%20Kunal&secondary.phone=14259851212&secondary.address.street_line_1=4492%20163rd%20Pl%20SE&secondary.address.city=Bellevue&secondary.address.state_code=WA&secondary.address.postal_code=98006&secondary.email_address=vicky.kunal220@gmail.com&ip_address=47.68.0.1", nil)
      req.Header.Set("x-api-key", "YOUR_API_KEY")
 
      resp, err := http.DefaultClient.Do(req)
@@ -128,7 +147,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
+    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&secondary.name=Vicky%20Kunal&secondary.phone=14259851212&secondary.address.street_line_1=4492%20163rd%20Pl%20SE&secondary.address.city=Bellevue&secondary.address.state_code=WA&secondary.address.postal_code=98006&secondary.email_address=vicky.kunal220@gmail.com&ip_address=47.68.0.1");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -150,7 +169,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1"))
+                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&secondary.name=Vicky%20Kunal&secondary.phone=14259851212&secondary.address.street_line_1=4492%20163rd%20Pl%20SE&secondary.address.city=Bellevue&secondary.address.state_code=WA&secondary.address.postal_code=98006&secondary.email_address=vicky.kunal220@gmail.com&ip_address=47.68.0.1"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
@@ -249,10 +268,7 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
 ```
 
 <Warning>
-  **Note:** Authentication can be provided either as an `x-api-key` header or as
-  an `api_key` query parameter. One of the two is required. The header is
-  recommended, since query strings are recorded in server access logs and
-  browser history.
+  **Note:** Authentication is provided via the `x-api-key` header.
 </Warning>
 
 ### Primary and secondary use cases
@@ -265,13 +281,6 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
 | Small Business / Merchant Verification | Business Details | Principal Home Details |
 
 ## Query Parameters
-
-### Authentication
-
-<ParamField query="api_key" type="string">
-  Your Trestle API key, as an alternative to the `x-api-key` header. One of the
-  two is required. The header is recommended. **Example:** `api_key=YOUR_API_KEY`
-</ParamField>
 
 ### Transaction context
 
@@ -412,19 +421,10 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
   `ip_address=73.25.97.8`
 </ParamField>
 
-### Sandbox
-
-<ParamField query="is_sandbox" type="boolean">
-  Set to `true` to return pre-stored sandbox responses instead of live
-  enrichment. See [Sandbox](#sandbox) for the available test scenarios.
-  **Example:** `is_sandbox=true`
-</ParamField>
-
 ## Headers
 
-<ParamField header="x-api-key" type="string">
-  Your API key for authentication. Required unless the key is supplied as an
-  `api_key` query parameter. **Example:** `{{ apiKey }}`
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication. **Example:** `{{ apiKey }}`
 </ParamField>
 
 ## Response
@@ -746,8 +746,6 @@ The response contains a block for each input type provided. Blocks are `null` wh
 
 `identity_score` requires a name input (`primary.name` or `primary.business_name`) plus at least one of primary or secondary phone, address, email, or IP address. Providing only a name returns 50, the neutral baseline. For best results, provide as many inputs as possible to maximize signal coverage. A partial address (no street line) contributes no weight to the score.
 
-Positive signals, such as confirmed name matches and well-established identity elements, increase the score, while negative signals decrease it. The score distribution is broadest and most robust when a full set of identity inputs is provided. Recommended cutoff thresholds will depend on the inputs supplied and the risk profile of your traffic.
-
 ## Sandbox
 
 The Decision Signals API supports sandbox mode for integration testing without consuming live enrichment. Add `is_sandbox=true` to the request. Pre-stored responses are returned across all input fields (phone, name, email, address, and IP), and no live API calls are made. Use the inputs below to receive each canned scenario.
@@ -921,44 +919,64 @@ Every warning is aggregated into the root `warnings` list and prefixed by the co
 
 ### Root
 
-<Badge>Missing required input: primary.name (or primary.business_name) is required.</Badge>
-<Badge>Missing required input: transaction_id is required.</Badge>
-<Badge>Missing required input: transaction_time is required.</Badge>
-<Badge>Invalid Input</Badge>
-<Badge>Missing Input</Badge>
+| Warning | Description |
+| --- | --- |
+| Missing required input: primary.name (or primary.business_name) is required. | Neither `primary.name` nor `primary.business_name` was provided. |
+| Missing required input: transaction_id is required. | `transaction_id` was not provided. |
+| Missing required input: transaction_time is required. | `transaction_time` was not provided. |
+| Invalid Input | One or more submitted inputs failed basic format validation. |
+| Missing Input | A required input field was missing from the request. |
 
 ### Phone (primary / secondary)
 
-<Badge>Invalid Phone</Badge>
+| Warning | Description |
+| --- | --- |
+| Invalid Phone | The submitted phone number is syntactically invalid or not associated with a carrier. |
 
 ### Address (primary / secondary)
 
-<Badge>Invalid Address</Badge>
-<Badge>Partial Address</Badge>
-<Badge>Missing unit/apt/suite number</Badge>
-<Badge>Invalid unit/apt/suite number</Badge>
-<Badge>Invalid house/building number</Badge>
-<Badge>Freight Forwarder</Badge>
-<Badge>Partial Error-Could not retrieve entire response</Badge>
+| Warning | Description |
+| --- | --- |
+| Invalid Address | The submitted address could not be validated. |
+| Partial Address | Only partial address inputs were provided (postal code, or city and state without a street). |
+| Missing unit/apt/suite number | The address is a multi-unit building but no unit number was provided. |
+| Invalid unit/apt/suite number | A unit number was provided but could not be validated. |
+| Invalid house/building number | The house or building number is invalid. |
+| Freight Forwarder | The address is a known freight-forwarding or reshipping location. |
+| Partial Error-Could not retrieve entire response | A downstream lookup partially failed, so some address fields may be missing. |
 
 ### Email (primary / secondary)
 
-<Badge>Invalid Email</Badge>
-<Badge>Disposable Email</Badge>
-<Badge>Role Based Email</Badge>
-<Badge>Potential Junk Email</Badge>
-<Badge>Tumbled Email</Badge>
-<Badge>Privacy Email</Badge>
-<Badge>Email is a spam trap</Badge>
-<Badge>Email is a known abuse email address</Badge>
-<Badge>TimeoutError: Timeout getting response for email age score</Badge>
-<Badge>InternalError: Error retrieving the email age score response</Badge>
+| Warning | Description |
+| --- | --- |
+| Invalid Email | The submitted email address is syntactically invalid. |
+| Disposable Email | The email domain is a known disposable or temporary email provider. |
+| Role Based Email | The email appears to be a role-based address, for example `info@` or `admin@`. |
+| Potential Junk Email | The email has characteristics associated with low-quality or junk email. |
+| Tumbled Email | The email address appears to be a tumbled variant of a known address. |
+| Privacy Email | The email is a privacy-relay or alias address, for example Apple Private Relay. |
+| Email is a spam trap | The email is a known spam trap address. |
+| Email is a known abuse email address | The email has been reported for abuse complaints. |
+| TimeoutError: Timeout getting response for email age score | The email age score lookup timed out. |
+| InternalError: Error retrieving the email age score response | The email age score lookup failed unexpectedly. |
 
 ### IP
 
-<Badge>Input IP address is invalid. Please provide a valid IPv4 or IPv6 address</Badge>
-<Badge>Proxy detected</Badge>
-<Badge>Timeout getting response for IP information. Partial response returned.</Badge>
+| Warning | Description |
+| --- | --- |
+| Input IP address is invalid. Please provide a valid IPv4 or IPv6 address | The submitted IP address is not a valid IPv4 or IPv6 address. |
+| Proxy detected | The IP address is associated with a proxy, VPN, or anonymizing service. |
+| Timeout getting response for IP information. Partial response returned. | IP enrichment timed out, so a partial response was returned. |
+
+## Error responses
+
+| HTTP status | Cause |
+| --- | --- |
+| 400 Bad Request | Missing a required parameter or invalid value. |
+| 401 Unauthorized | No API key provided or the API key is invalid. |
+| 403 Forbidden | The API key does not have access to this endpoint, has expired, or has been disabled. |
+| 429 Too Many Requests | The API key has exceeded its rate limit. Retry after the rate limit window resets. |
+| 500 Internal Server Error | An unexpected error occurred. Contact [support@trestleiq.com](mailto:support@trestleiq.com) if the issue persists. |
 
 ## Null handling
 
@@ -981,8 +999,10 @@ Treat null categorical fields such as `name_match`, `is_valid`, and `line_type` 
 - **Email:** Submit the full email address. The API checks validity and email owner name matching.
 - **IP:** Both IPv4 and IPv6 are accepted. Private range IPs such as `10.x.x.x`, `192.168.x.x`, and `127.0.0.1` return `is_valid: false`.
 
+### Score interpretation
+
+An identity score of 50 may be considered a neutral baseline. Positive signals, such as confirmed name matches and well-established identity elements, increase the score, while negative signals decrease it. The score distribution is broadest and most robust when a full set of identity inputs is provided. Recommended cutoff thresholds will depend on the inputs supplied and the risk profile of your traffic.
+
 ### Rate limits
 
 If you receive a 429 response, the request was not processed. Do not retry immediately. Wait until the rate limit window resets before resending, or contact [support@trestleiq.com](mailto:support@trestleiq.com) to update the rate limit available for your API key.
-
-<ErrorResponses />
