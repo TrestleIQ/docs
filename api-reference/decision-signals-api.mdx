@@ -95,7 +95,7 @@ playground: none
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
+    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -110,7 +110,7 @@ playground: none
     )
 
     func main() {
-     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1", nil)
+     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1", nil)
      req.Header.Set("x-api-key", "YOUR_API_KEY")
 
      resp, err := http.DefaultClient.Do(req)
@@ -126,7 +126,7 @@ playground: none
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
+    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -148,7 +148,7 @@ playground: none
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1"))
+                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
