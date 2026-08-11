@@ -248,9 +248,9 @@ The Decision Signals API supports one API request with up to two sets of inputs 
 GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transaction_id]&transaction_time=[insert_transaction_time]&primary.name=[insert_name]&primary.phone=[insert_phone]&primary.email_address=[insert_email]&primary.address.street_line_1=[insert_street_line_1]&primary.address.city=[insert_city]&primary.address.state_code=[insert_state_code]&primary.address.postal_code=[insert_postal_code]&ip_address=[insert_ip_address]
 ```
 
-<Note>
-  **Note:** Authentication is provided via the `x-api-key` header.
-</Note>
+<Warning>
+  **Note:** Authentication must be provided via the `x-api-key` header.
+</Warning>
 
 ### Primary and secondary use cases
 
@@ -531,13 +531,7 @@ The response contains a block for each input type provided. Blocks are `null` wh
   </Expandable>
 </ResponseField>
 
-<Note>
-  **Partial address:** If an address is submitted without a street line (postal
-  code only, or city and state only), the block is still returned with
-  `is_valid`, `name_match`, `type`, and `is_forwarder` all set to null. A partial
-  address contributes no weight to `identity_score`. The block is only null when
-  no address input was submitted at all.
-</Note>
+**Partial address:** If an address is submitted without a street line (postal code only, or city and state only), the block is still returned with `is_valid`, `name_match`, `type`, and `is_forwarder` all set to null. A partial address contributes no weight to `identity_score`. The block is only null when no address input was submitted at all.
 
 <ResponseField name="primary_email_address_checks" type="object or null">
   Email check results for the primary email. Null when no primary email was
@@ -656,11 +650,7 @@ Positive signals, such as confirmed name matches and well-established identity e
 
 The Decision Signals API supports sandbox mode for integration testing without consuming live enrichment. Add `is_sandbox=true` to the request. Pre-stored responses are returned across all input fields (phone, name, email, address, and IP), and no live API calls are made. Use the inputs below to receive each canned scenario.
 
-<Note>
-  The canned response is keyed by the test scenario, so a sandbox response may
-  include blocks (for example, address or IP) even if those inputs were not part
-  of the request.
-</Note>
+**Note:** The canned response is keyed by the test scenario, so a sandbox response may include blocks (for example, address or IP) even if those inputs were not part of the request.
 
 ### Sandbox 1 — high trust score
 
