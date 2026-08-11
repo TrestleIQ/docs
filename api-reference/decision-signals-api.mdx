@@ -1,0 +1,896 @@
+---
+title: "Decision Signals API"
+description: "Decision Signals API returns 70+ data signals and network insights in a single query, providing match statuses, validity flags, enriched metadata, and distance calculations across name, email, phone, address, and IP."
+api: "GET /1.0/decision_signals"
+playground: none
+---
+
+import ErrorResponses from '/snippets/error-responses.mdx';
+
+<Panel>
+<RequestExample>
+    ```bash cURL
+    curl --request GET \
+      --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.address.street_line_1=2205%20J%20St&primary.address.city=Bellingham&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1" \
+      --header "x-api-key: YOUR_API_KEY"
+    ```
+
+    ```javascript JavaScript
+    const params = new URLSearchParams({
+      transaction_id: "txn_123",
+      transaction_time: "2026-06-15T10:00",
+      "primary.name": "Robin Cooke",
+      "primary.phone": "13606769260",
+      "primary.address.street_line_1": "2205 J St",
+      "primary.address.city": "Bellingham",
+      "primary.address.state_code": "WA",
+      "primary.address.postal_code": "98225",
+      "primary.email_address": "robincooke16@yahoo.com",
+      ip_address: "47.68.0.1",
+    });
+
+    const response = await fetch(
+      `https://api.trestleiq.com/1.0/decision_signals?${params}`,
+      {
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    const data = await response.json();
+    ```
+
+    ```javascript Node.js
+    import axios from "axios";
+
+    const { data } = await axios.get(
+      "https://api.trestleiq.com/1.0/decision_signals",
+      {
+        params: {
+          transaction_id: "txn_123",
+          transaction_time: "2026-06-15T10:00",
+          "primary.name": "Robin Cooke",
+          "primary.phone": "13606769260",
+          "primary.address.street_line_1": "2205 J St",
+          "primary.address.city": "Bellingham",
+          "primary.address.state_code": "WA",
+          "primary.address.postal_code": "98225",
+          "primary.email_address": "robincooke16@yahoo.com",
+          ip_address: "47.68.0.1",
+        },
+        headers: {
+          "x-api-key": "YOUR_API_KEY",
+        },
+      }
+    );
+    console.log(data);
+    ```
+
+    ```python Python
+    import requests
+
+    headers = {"x-api-key": "YOUR_API_KEY"}
+    params = {
+        "transaction_id": "txn_123",
+        "transaction_time": "2026-06-15T10:00",
+        "primary.name": "Robin Cooke",
+        "primary.phone": "13606769260",
+        "primary.address.street_line_1": "2205 J St",
+        "primary.address.city": "Bellingham",
+        "primary.address.state_code": "WA",
+        "primary.address.postal_code": "98225",
+        "primary.email_address": "robincooke16@yahoo.com",
+        "ip_address": "47.68.0.1",
+    }
+
+    response = requests.get(
+        "https://api.trestleiq.com/1.0/decision_signals",
+        params=params,
+        headers=headers,
+        timeout=30,
+    )
+    data = response.json()
+    print(data)
+    ```
+
+    ```csharp C#
+    using var client = new HttpClient();
+    client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
+
+    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
+    var body = await response.Content.ReadAsStringAsync();
+    Console.WriteLine(body);
+    ```
+
+    ```go Go
+    package main
+
+    import (
+     "fmt"
+     "io"
+     "net/http"
+    )
+
+    func main() {
+     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1", nil)
+     req.Header.Set("x-api-key", "YOUR_API_KEY")
+
+     resp, err := http.DefaultClient.Do(req)
+     if err != nil {
+      panic(err)
+     }
+     defer resp.Body.Close()
+
+     body, _ := io.ReadAll(resp.Body)
+     fmt.Println(string(body))
+    }
+    ```
+
+    ```php PHP
+    <?php
+    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1");
+    curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    echo $response;
+    ```
+
+    ```java Java
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
+
+    public class DecisionSignalsExample {
+      public static void main(String[] args) throws Exception {
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(
+                    URI.create(
+                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=Robin%20Cooke&primary.phone=13606769260&primary.email_address=robincooke16@yahoo.com&ip_address=47.68.0.1"))
+                .header("x-api-key", "YOUR_API_KEY")
+                .GET()
+                .build();
+
+        HttpResponse<String> response =
+            HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+        System.out.println(response.body());
+      }
+    }
+    ```
+
+  </RequestExample>
+  <ResponseExample>
+    ```json Response Example
+    {
+      "identity_score": 78,
+      "primary_phone_checks": {
+        "is_valid": true,
+        "country_code": "US",
+        "is_commercial": false,
+        "line_type": "Mobile",
+        "carrier": "Verizon Wireless",
+        "is_prepaid": false,
+        "name_match": true,
+        "address_match": "No Match"
+      },
+      "secondary_phone_checks": {
+        "is_valid": true,
+        "country_code": "US",
+        "is_commercial": false,
+        "line_type": "Mobile",
+        "carrier": "Verizon Wireless",
+        "is_prepaid": false,
+        "name_match": true,
+        "address_match": "Match"
+      },
+      "primary_address_checks": {
+        "is_valid": true,
+        "is_commercial": false,
+        "is_forwarder": false,
+        "type": "Single Unit",
+        "name_match": true
+      },
+      "secondary_address_checks": {
+        "is_valid": true,
+        "is_commercial": false,
+        "is_forwarder": false,
+        "type": "Single Unit",
+        "name_match": true,
+        "distance_from_primary_address": 2181
+      },
+      "primary_email_address_checks": {
+        "is_valid": true,
+        "is_disposable": false,
+        "email_age_score": 100,
+        "email_domain_creation_days": 11460,
+        "name_match": true
+      },
+      "secondary_email_address_checks": {
+        "is_valid": true,
+        "is_disposable": false,
+        "email_age_score": 40,
+        "email_domain_creation_days": 11257,
+        "name_match": true
+      },
+      "ip_address_checks": {
+        "is_valid": true,
+        "trust_score": 90,
+        "connection_type": "Residential",
+        "geolocation": {
+          "postal_code": "40549",
+          "city_name": "Düsseldorf",
+          "subdivision": "NW",
+          "country_code": "DE"
+        },
+        "distance_from_primary_address": 4906,
+        "distance_from_secondary_address": 4969,
+        "distance_from_primary_phone": 4906,
+        "distance_from_secondary_phone": 5491
+      },
+      "warnings": [],
+      "errors": []
+    }
+    ```
+  </ResponseExample>
+</Panel>
+
+## Decision Signals 1.0
+
+In a single query, the Decision Signals API returns 70+ data signals and network insights to provide match statuses, validity flags, enriched metadata, and distance calculations between the key identity data inputs of name, email, phone, address, and IP.
+
+The Decision Signals API supports one API request with up to two sets of inputs (primary and secondary) for name, phone, address, and email, but only one IP address. You should submit specific parameters based on the amount of data you want to cross-check and validate, and we will populate the API return with components that correspond to the inputs provided.
+
+```http
+GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transaction_id]&transaction_time=[insert_transaction_time]&primary.name=[insert_name]&primary.phone=[insert_phone]&primary.email_address=[insert_email]&primary.address.street_line_1=[insert_street_line_1]&primary.address.city=[insert_city]&primary.address.state_code=[insert_state_code]&primary.address.postal_code=[insert_postal_code]&ip_address=[insert_ip_address]
+```
+
+<Note>
+  **Note:** Authentication is provided via the `x-api-key` header.
+</Note>
+
+### Primary and secondary use cases
+
+| Industry | Primary | Secondary |
+| --- | --- | --- |
+| Originations / Account Signup | Home Details | Work Details |
+| Underwriting | Applicant 1 Details | Applicant 2 Details |
+| eCommerce / Card Not Present | Billing Details | Shipping Details |
+| Small Business / Merchant Verification | Business Details | Principal Home Details |
+
+## Query Parameters
+
+### Transaction context
+
+<ParamField query="transaction_id" type="string" required>
+  Caller-supplied correlation ID for the transaction. **Example:**
+  `transaction_id=txn_123`
+</ParamField>
+
+<ParamField query="transaction_time" type="string" required>
+  UTC timestamp for the transaction, in `YYYY-MM-DD HH:MM` or ISO 8601 format.
+  **Example:** `transaction_time=2026-06-15T10:00`
+</ParamField>
+
+### Identity inputs
+
+<ParamField query="primary.name" type="string" required>
+  Full legal name of the primary person. Either `primary.name` or
+  `primary.business_name` is required. **Example:** `primary.name=Robin Cooke`
+</ParamField>
+
+<ParamField query="primary.business_name" type="string" required>
+  Full legal name of the primary business. Either `primary.name` or
+  `primary.business_name` is required. **Example:**
+  `primary.business_name=The Golden Company`
+</ParamField>
+
+<ParamField query="secondary.name" type="string">
+  Full legal name of the secondary person. **Example:**
+  `secondary.name=Vicky Kunal`
+</ParamField>
+
+<ParamField query="secondary.business_name" type="string">
+  Full legal name of the secondary business. **Example:**
+  `secondary.business_name=The Silver Company`
+</ParamField>
+
+### Phone inputs
+
+<ParamField query="primary.phone" type="string">
+  Primary phone number. Accepted formats: `+12065551234`, `12065551234`,
+  `2065551234`, `(206) 555-1234`, `206-555-1234`. E.164 format is recommended.
+  **Example:** `primary.phone=13606769260`
+</ParamField>
+
+<ParamField query="primary.phone.country_hint" type="string (ISO-3166-2)">
+  The ISO-3166 alpha-2 country code associated with the primary phone. Defaults
+  to `US` if not provided. **Example:** `primary.phone.country_hint=US`
+</ParamField>
+
+<ParamField query="secondary.phone" type="string">
+  Secondary phone number. Same accepted formats as the primary phone.
+  **Example:** `secondary.phone=14259851212`
+</ParamField>
+
+<ParamField query="secondary.phone.country_hint" type="string (ISO-3166-2)">
+  The ISO-3166 alpha-2 country code associated with the secondary phone.
+  **Example:** `secondary.phone.country_hint=US`
+</ParamField>
+
+### Address inputs
+
+<ParamField query="primary.address.street_line_1" type="string">
+  The first line of the primary street address. **Example:**
+  `primary.address.street_line_1=12843 NE 91st St`
+</ParamField>
+
+<ParamField query="primary.address.street_line_2" type="string">
+  The second line of the primary street address. **Example:**
+  `primary.address.street_line_2=Apt 4B`
+</ParamField>
+
+<ParamField query="primary.address.city" type="string">
+  The city name of the primary address. **Example:**
+  `primary.address.city=Bellingham`
+</ParamField>
+
+<ParamField query="primary.address.state_code" type="string">
+  The two-letter state or province code of the primary address. **Example:**
+  `primary.address.state_code=WA`
+</ParamField>
+
+<ParamField query="primary.address.postal_code" type="string">
+  The postal or ZIP code of the primary address. **Example:**
+  `primary.address.postal_code=98033`
+</ParamField>
+
+<ParamField query="primary.address.country_code" type="string (ISO-3166-2)">
+  The ISO-3166 alpha-2 country code of the primary address. **Example:**
+  `primary.address.country_code=US`
+</ParamField>
+
+<ParamField query="secondary.address.street_line_1" type="string">
+  The first line of the secondary street address. **Example:**
+  `secondary.address.street_line_1=4492 163rd Pl SE`
+</ParamField>
+
+<ParamField query="secondary.address.street_line_2" type="string">
+  The second line of the secondary street address. **Example:**
+  `secondary.address.street_line_2=Suite 200`
+</ParamField>
+
+<ParamField query="secondary.address.city" type="string">
+  The city name of the secondary address. **Example:**
+  `secondary.address.city=Bellevue`
+</ParamField>
+
+<ParamField query="secondary.address.state_code" type="string">
+  The two-letter state or province code of the secondary address. **Example:**
+  `secondary.address.state_code=WA`
+</ParamField>
+
+<ParamField query="secondary.address.postal_code" type="string">
+  The postal or ZIP code of the secondary address. **Example:**
+  `secondary.address.postal_code=98006`
+</ParamField>
+
+<ParamField query="secondary.address.country_code" type="string (ISO-3166-2)">
+  The ISO-3166 alpha-2 country code of the secondary address. **Example:**
+  `secondary.address.country_code=US`
+</ParamField>
+
+### Email inputs
+
+<ParamField query="primary.email_address" type="string">
+  The primary email address. **Example:**
+  `primary.email_address=john.doe@gmail.com`
+</ParamField>
+
+<ParamField query="secondary.email_address" type="string">
+  The secondary email address. **Example:**
+  `secondary.email_address=jane.doe@gmail.com`
+</ParamField>
+
+### IP input
+
+<ParamField query="ip_address" type="string">
+  The IPv4 or IPv6 address associated with the transaction. **Example:**
+  `ip_address=73.25.97.8`
+</ParamField>
+
+### Sandbox
+
+<ParamField query="is_sandbox" type="boolean">
+  Set to `true` to return pre-stored sandbox responses instead of live
+  enrichment. See [Sandbox](#sandbox) for the available test scenarios.
+  **Example:** `is_sandbox=true`
+</ParamField>
+
+## Headers
+
+<ParamField header="x-api-key" type="string" required>
+  Your API key for authentication. **Example:** `{{ apiKey }}`
+</ParamField>
+
+## Response
+
+The response contains a block for each input type provided. Blocks are `null` when the corresponding input was not submitted. Per-check warnings and errors are consolidated into a single `warnings` / `errors` list at the root, with each entry prefixed by the component it came from (for example, `"Primary Email: Disposable Email"`).
+
+<ResponseField name="identity_score" type="integer">
+  A composite trust score from 0 to 100, where 100 is the safest and 0 is the
+  riskiest. This field is never null. See [Identity
+  score](#identity-score) for how the score is derived and how to interpret it.
+</ResponseField>
+
+<ResponseField name="primary_phone_checks" type="object or null">
+  Phone check results for the primary phone. Null when no primary phone was
+  submitted.
+  <Expandable title="phone checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the phone number is valid and associated with a carrier. Null when
+      the phone could not be validated.
+    </ResponseField>
+    <ResponseField name="country_code" type="string or null">
+      The ISO-3166 alpha-2 country code of the phone number, for example `US` or
+      `GB`.
+    </ResponseField>
+    <ResponseField name="is_commercial" type="boolean or null">
+      True if the phone number is registered to a business.
+    </ResponseField>
+    <ResponseField name="line_type" type="string or null">
+      The line type of the phone number. Possible values:
+      - `Mobile` - Wireless phone line
+      - `Landline` - Traditional wired phone line
+      - `FixedVOIP` - VOIP number connected to a physical address
+      - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address
+      - `Premium` - Caller pays a premium for the call
+      - `TollFree` - Callee pays for call
+      - `Voicemail` - Voicemail-only service
+      - `Other` - Line type is unclear
+    </ResponseField>
+    <ResponseField name="carrier" type="string or null">
+      The carrier name at the MVNO level.
+    </ResponseField>
+    <ResponseField name="is_prepaid" type="boolean or null">
+      True if the phone is associated with a prepaid account.
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      True if the subscriber name matches the input name, false if it does not,
+      and null if no name data was found.
+    </ResponseField>
+    <ResponseField name="address_match" type="string or null">
+      The match status between the phone's registered location and the input
+      address. Possible values:
+      - `Match`
+      - `Street Match`
+      - `Postal Match`
+      - `City State Match`
+      - `Metro Match`
+      - `No Match`
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="secondary_phone_checks" type="object or null">
+  Phone check results for the secondary phone. Contains the same fields as
+  `primary_phone_checks`. Null when no secondary phone was submitted.
+</ResponseField>
+
+<ResponseField name="primary_address_checks" type="object or null">
+  Address check results for the primary address. Null when no primary address
+  was submitted.
+  <Expandable title="address checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the address was validated to at least the street level. False if
+      it was validated but is not deliverable. Null when the address service
+      could not resolve it, or for a partial address.
+    </ResponseField>
+    <ResponseField name="is_commercial" type="boolean or null">
+      True if the address is a business address.
+    </ResponseField>
+    <ResponseField name="is_forwarder" type="boolean or null">
+      True if the address is a known freight-forwarding or reshipping location.
+      Null when `is_valid` is not true, as this field is only meaningful for a
+      validated address.
+    </ResponseField>
+    <ResponseField name="type" type="string or null">
+      The address type. Null when `is_valid` is not true, as this field is only
+      meaningful for a validated address. Possible values:
+      - `Single Unit`
+      - `Multi Unit`
+      - `PO Box`
+      - `Firm`
+      - `General Delivery`
+      - `Rural Route`
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      True if the resident name matches the input name, false if it does not,
+      and null if no name data was found or the address is partial.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="secondary_address_checks" type="object or null">
+  Address check results for the secondary address. Contains the same fields as
+  `primary_address_checks`, plus the two fields below. Null when no secondary
+  address was submitted.
+  <Expandable title="secondary-only fields" defaultOpen>
+    <ResponseField name="distance_from_primary_address" type="integer or null">
+      The distance in miles between the primary and secondary address. Present
+      only when non-null.
+    </ResponseField>
+    <ResponseField name="linked_to_primary_resident" type="boolean or null">
+      True if the secondary address is associated with the primary resident.
+      Present only when non-null. This field is reserved and currently always
+      returns null.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<Note>
+  **Partial address:** If an address is submitted without a street line (postal
+  code only, or city and state only), the block is still returned with
+  `is_valid`, `name_match`, `type`, and `is_forwarder` all set to null. A partial
+  address contributes no weight to `identity_score`. The block is only null when
+  no address input was submitted at all.
+</Note>
+
+<ResponseField name="primary_email_address_checks" type="object or null">
+  Email check results for the primary email. Null when no primary email was
+  submitted.
+  <Expandable title="email checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the email address is syntactically valid.
+    </ResponseField>
+    <ResponseField name="is_disposable" type="boolean or null">
+      True if the email domain is a known disposable or temporary provider.
+    </ResponseField>
+    <ResponseField name="email_age_score" type="integer or null">
+      A 0 to 100 score indicating how established the email is, where 100 is the
+      oldest and most trusted.
+    </ResponseField>
+    <ResponseField name="email_domain_creation_days" type="integer or null">
+      The number of days since the email domain was first registered. Sourced
+      from domain-registration (whois) data. Null when the domain is not found or
+      the lookup times out.
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      True if the registered email owner matches the input name, false if it does
+      not, and null if no name data was found.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="secondary_email_address_checks" type="object or null">
+  Email check results for the secondary email. Contains the same fields as
+  `primary_email_address_checks`. Null when no secondary email was submitted.
+</ResponseField>
+
+<ResponseField name="ip_address_checks" type="object or null">
+  IP check results. Null when no IP address was submitted.
+  <Expandable title="ip_address_checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the IP address is a valid, publicly routable address. Private and
+      loopback addresses return false.
+    </ResponseField>
+    <ResponseField name="trust_score" type="integer or null">
+      An IP trust score from 0 to 100, where 100 is the most trusted and 0 is the
+      most suspicious.
+    </ResponseField>
+    <ResponseField name="connection_type" type="string or null">
+      The connection type of the IP address. Examples include `Residential`,
+      `Mobile`, `Hosting`, `VPN`, `Business VPN`, `Government VPN`,
+      `Education VPN`, `Hosting VPN`, `Proxy`, `Tor`, `Anycast`,
+      `Privacy Relay`, and `Satellite`.
+    </ResponseField>
+    <ResponseField name="geolocation" type="object or null">
+      The geographic location of the IP address. Null sub-fields are omitted.
+      <Expandable title="geolocation object" defaultOpen>
+        <ResponseField name="postal_code" type="string or null">
+          The postal code of the IP location.
+        </ResponseField>
+        <ResponseField name="city_name" type="string or null">
+          The city name of the IP location.
+        </ResponseField>
+        <ResponseField name="subdivision" type="string or null">
+          The state, province, or region of the IP location.
+        </ResponseField>
+        <ResponseField name="country_name" type="string or null">
+          The country name of the IP location.
+        </ResponseField>
+        <ResponseField name="country_code" type="string or null">
+          The ISO-3166 alpha-2 country code of the IP location.
+        </ResponseField>
+        <ResponseField name="continent_code" type="string or null">
+          The continent code of the IP location.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+    <ResponseField name="distance_from_primary_address" type="integer or null">
+      The distance in miles between the IP geolocation and the primary address.
+    </ResponseField>
+    <ResponseField name="distance_from_secondary_address" type="integer or null">
+      The distance in miles between the IP geolocation and the secondary address.
+    </ResponseField>
+    <ResponseField name="distance_from_primary_phone" type="integer or null">
+      The distance in miles between the IP geolocation and the address of the
+      person associated with the primary phone.
+    </ResponseField>
+    <ResponseField name="distance_from_secondary_phone" type="integer or null">
+      The distance in miles between the IP geolocation and the address of the
+      person associated with the secondary phone.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="warnings" type="string[]">
+  All warnings from every sub-check, plus root-level warnings, aggregated here
+  and prefixed by component. See [Warnings reference](#warnings-reference).
+</ResponseField>
+
+<ResponseField name="errors" type="string[]">
+  All errors from every sub-check, aggregated here.
+</ResponseField>
+
+## Identity score
+
+`identity_score` is a composite score from 0 to 100, derived from the phone, email, address, and IP signals. 100 is the safest and 0 is the riskiest. The score is additive: each valid, matching signal contributes positively and each mismatch or invalid signal contributes negatively from a neutral midpoint of 50.
+
+| Score | Interpretation |
+| --- | --- |
+| 80–100 | High trust. Strong positive signals across inputs. |
+| 60–79 | Moderate trust. Most signals align. |
+| 50–59 | Neutral baseline. No strong positive or negative signals. |
+| 30–49 | Below baseline. One or more negative signals present. |
+| 0–29 | Low trust. Multiple significant risk signals detected. |
+
+`identity_score` requires a name input (`primary.name` or `primary.business_name`) plus at least one of primary or secondary phone, address, email, or IP address. Providing only a name returns 50, the neutral baseline. For best results, provide as many inputs as possible to maximize signal coverage. A partial address (no street line) contributes no weight to the score.
+
+Positive signals, such as confirmed name matches and well-established identity elements, increase the score, while negative signals decrease it. The score distribution is broadest and most robust when a full set of identity inputs is provided. Recommended cutoff thresholds will depend on the inputs supplied and the risk profile of your traffic.
+
+## Sandbox
+
+The Decision Signals API supports sandbox mode for integration testing without consuming live enrichment. Add `is_sandbox=true` to the request. Pre-stored responses are returned across all input fields (phone, name, email, address, and IP), and no live API calls are made. Use the inputs below to receive each canned scenario.
+
+<Note>
+  The canned response is keyed by the test scenario, so a sandbox response may
+  include blocks (for example, address or IP) even if those inputs were not part
+  of the request.
+</Note>
+
+### Sandbox 1 — high trust score
+
+```bash
+curl --request GET \
+  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-pos-1&transaction_time=2026-06-23%2010:00&primary.name=Jon%20Snow&primary.phone=%2B13005550201&primary.email_address=jsnow@got.com&secondary.name=Arya%20Stark&secondary.phone=%2B13005550202&secondary.email_address=astark@got.com&is_sandbox=true" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+```json
+{
+  "identity_score": 95,
+  "primary_phone_checks": {
+    "is_valid": true,
+    "country_code": "US",
+    "is_commercial": false,
+    "line_type": "Mobile",
+    "carrier": "AT&T Wireless",
+    "is_prepaid": false,
+    "name_match": true,
+    "address_match": "Match"
+  },
+  "secondary_phone_checks": {
+    "is_valid": true,
+    "country_code": "US",
+    "is_commercial": false,
+    "line_type": "Mobile",
+    "carrier": "T-Mobile USA",
+    "is_prepaid": false,
+    "name_match": true,
+    "address_match": "Match"
+  },
+  "primary_address_checks": {
+    "is_valid": true,
+    "is_commercial": false,
+    "is_forwarder": false,
+    "type": "Single Unit",
+    "name_match": true
+  },
+  "secondary_address_checks": {
+    "is_valid": true,
+    "is_commercial": false,
+    "is_forwarder": false,
+    "type": "Single Unit",
+    "name_match": true
+  },
+  "primary_email_address_checks": {
+    "is_valid": true,
+    "is_disposable": false,
+    "email_age_score": 95,
+    "email_domain_creation_days": 10000,
+    "name_match": true
+  },
+  "secondary_email_address_checks": {
+    "is_valid": true,
+    "is_disposable": false,
+    "email_age_score": 90,
+    "email_domain_creation_days": 8000,
+    "name_match": true
+  },
+  "ip_address_checks": {
+    "is_valid": true,
+    "trust_score": 92,
+    "connection_type": null,
+    "geolocation": {
+      "subdivision": "Washington",
+      "country_name": "United States",
+      "country_code": "US"
+    },
+    "distance_from_primary_address": 10,
+    "distance_from_secondary_address": null,
+    "distance_from_primary_phone": null,
+    "distance_from_secondary_phone": null
+  },
+  "warnings": [],
+  "errors": []
+}
+```
+
+### Sandbox 2 — low trust score
+
+```bash
+curl --request GET \
+  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-neg-1&transaction_time=2026-06-23%2010:00&primary.name=Night%20King&primary.phone=%2B13005550204&primary.email_address=shady@mailnator.com&secondary.name=White%20Walker&secondary.phone=%2B13005550205&secondary.email_address=spam@mailnator.com&is_sandbox=true" \
+  --header "x-api-key: YOUR_API_KEY"
+```
+
+```json
+{
+  "identity_score": 20,
+  "primary_phone_checks": {
+    "is_valid": true,
+    "country_code": "US",
+    "is_commercial": false,
+    "line_type": "NonFixedVOIP",
+    "carrier": "IP Horizon LLC",
+    "is_prepaid": true,
+    "name_match": false,
+    "address_match": "No Match"
+  },
+  "secondary_phone_checks": {
+    "is_valid": true,
+    "country_code": "US",
+    "is_commercial": false,
+    "line_type": "NonFixedVOIP",
+    "carrier": "Bandwidth.com",
+    "is_prepaid": true,
+    "name_match": false,
+    "address_match": "No Match"
+  },
+  "primary_address_checks": {
+    "is_valid": true,
+    "is_commercial": false,
+    "is_forwarder": false,
+    "type": "Single Unit",
+    "name_match": false
+  },
+  "secondary_address_checks": {
+    "is_valid": true,
+    "is_commercial": false,
+    "is_forwarder": true,
+    "type": "Single Unit",
+    "name_match": false
+  },
+  "primary_email_address_checks": {
+    "is_valid": true,
+    "is_disposable": true,
+    "email_age_score": 5,
+    "email_domain_creation_days": 30,
+    "name_match": false
+  },
+  "secondary_email_address_checks": {
+    "is_valid": true,
+    "is_disposable": true,
+    "email_age_score": 8,
+    "email_domain_creation_days": 45,
+    "name_match": false
+  },
+  "ip_address_checks": {
+    "is_valid": true,
+    "trust_score": 12,
+    "connection_type": null,
+    "geolocation": {
+      "subdivision": "Bavaria",
+      "country_name": "Germany",
+      "country_code": "DE"
+    },
+    "distance_from_primary_address": 3200,
+    "distance_from_secondary_address": null,
+    "distance_from_primary_phone": null,
+    "distance_from_secondary_phone": null
+  },
+  "warnings": [
+    "Secondary Address: Freight Forwarder",
+    "Primary Email: Disposable Email",
+    "Secondary Email: Disposable Email",
+    "IP: Proxy detected"
+  ],
+  "errors": []
+}
+```
+
+## Warnings reference
+
+Every warning is aggregated into the root `warnings` list and prefixed by the component it came from, for example `"Primary Email: Disposable Email"` or `"IP: Proxy detected"`.
+
+### Root
+
+<Badge>Missing required input: primary.name (or primary.business_name) is required.</Badge>
+<Badge>Missing required input: transaction_id is required.</Badge>
+<Badge>Missing required input: transaction_time is required.</Badge>
+<Badge>Invalid Input</Badge>
+<Badge>Missing Input</Badge>
+
+### Phone (primary / secondary)
+
+<Badge>Invalid Phone</Badge>
+
+### Address (primary / secondary)
+
+<Badge>Invalid Address</Badge>
+<Badge>Partial Address</Badge>
+<Badge>Missing unit/apt/suite number</Badge>
+<Badge>Invalid unit/apt/suite number</Badge>
+<Badge>Invalid house/building number</Badge>
+<Badge>Freight Forwarder</Badge>
+<Badge>Partial Error-Could not retrieve entire response</Badge>
+
+### Email (primary / secondary)
+
+<Badge>Invalid Email</Badge>
+<Badge>Disposable Email</Badge>
+<Badge>Role Based Email</Badge>
+<Badge>Potential Junk Email</Badge>
+<Badge>Tumbled Email</Badge>
+<Badge>Privacy Email</Badge>
+<Badge>Email is a spam trap</Badge>
+<Badge>Email is a known abuse email address</Badge>
+<Badge>TimeoutError: Timeout getting response for email age score</Badge>
+<Badge>InternalError: Error retrieving the email age score response</Badge>
+
+### IP
+
+<Badge>Input IP address is invalid. Please provide a valid IPv4 or IPv6 address</Badge>
+<Badge>Proxy detected</Badge>
+<Badge>Timeout getting response for IP information. Partial response returned.</Badge>
+
+## Null handling
+
+All response fields may return null. Common reasons:
+
+- **Input not provided:** The corresponding input (phone, address, email, or IP) was not submitted.
+- **Input invalid:** The submitted value could not be validated, for example a fake phone number or a malformed IP.
+- **Data unavailable:** Trestle's data sources do not have coverage for this input.
+- **Reserved field:** Some fields are reserved for future use and always return null.
+
+Treat null categorical fields such as `name_match`, `is_valid`, and `line_type` as a distinct value in your risk model. Do not impute them with a default value.
+
+## Best practices
+
+### Input recommendations
+
+- **Name:** Submit the full name in `primary.name`. Do not pass placeholder values such as `N/A` or `NONE`; leave the parameter empty instead.
+- **Phone:** E.164 format is recommended, for example `+12065551234`. Include `phone.country_hint` for non-US numbers.
+- **Address:** Include `state_code` and `postal_code` for the best validation results. For a street-level result, submit `street_line_1` plus at least one of city, state, or postal code. A submitted address is always echoed back as a block and is never null, so you can see every attribute. Only a completely absent address yields a null block.
+- **Email:** Submit the full email address. The API checks validity and email owner name matching.
+- **IP:** Both IPv4 and IPv6 are accepted. Private range IPs such as `10.x.x.x`, `192.168.x.x`, and `127.0.0.1` return `is_valid: false`.
+
+### Rate limits
+
+If you receive a 429 response, the request was not processed. Do not retry immediately. Wait until the rate limit window resets before resending, or contact [support@trestleiq.com](mailto:support@trestleiq.com) to update the rate limit available for your API key.
+
+<ErrorResponses />

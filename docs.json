@@ -137,6 +137,13 @@
                 "pages": [
                   "api-reference/phone-feedback-api"
                 ]
+              },
+              {
+                "group": "Decision Signals API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/decision-signals-api"
+                ]
               }
             ]
           },
