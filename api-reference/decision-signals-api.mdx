@@ -5,8 +5,6 @@ api: "GET /1.0/decision_signals"
 playground: none
 ---
 
-import ErrorResponses from '/snippets/error-responses.mdx';
-
 <Panel>
 <RequestExample>
     ```bash cURL
@@ -402,14 +400,6 @@ GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transa
   `ip_address=73.25.97.8`
 </ParamField>
 
-### Sandbox
-
-<ParamField query="is_sandbox" type="boolean">
-  Set to `true` to return pre-stored sandbox responses instead of live
-  enrichment. See [Sandbox](#sandbox) for the available test scenarios.
-  **Example:** `is_sandbox=true`
-</ParamField>
-
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
@@ -735,8 +725,6 @@ The response contains a block for each input type provided. Blocks are `null` wh
 
 `identity_score` requires a name input (`primary.name` or `primary.business_name`) plus at least one of primary or secondary phone, address, email, or IP address. Providing only a name returns 50, the neutral baseline. For best results, provide as many inputs as possible to maximize signal coverage. A partial address (no street line) contributes no weight to the score.
 
-Positive signals, such as confirmed name matches and well-established identity elements, increase the score, while negative signals decrease it. The score distribution is broadest and most robust when a full set of identity inputs is provided. Recommended cutoff thresholds will depend on the inputs supplied and the risk profile of your traffic.
-
 ## Sandbox
 
 The Decision Signals API supports sandbox mode for integration testing without consuming live enrichment. Add `is_sandbox=true` to the request. Pre-stored responses are returned across all input fields (phone, name, email, address, and IP), and no live API calls are made. Use the inputs below to receive each canned scenario.
@@ -949,6 +937,16 @@ Every warning is aggregated into the root `warnings` list and prefixed by the co
 <Badge>Proxy detected</Badge>
 <Badge>Timeout getting response for IP information. Partial response returned.</Badge>
 
+## Error responses
+
+| HTTP status | Cause |
+| --- | --- |
+| 400 Bad Request | Missing a required parameter or invalid value. |
+| 401 Unauthorized | No API key provided or the API key is invalid. |
+| 403 Forbidden | The API key does not have access to this endpoint, has expired, or has been disabled. |
+| 429 Too Many Requests | The API key has exceeded its rate limit. Retry after the rate limit window resets. |
+| 500 Internal Server Error | An unexpected error occurred. Contact [support@trestleiq.com](mailto:support@trestleiq.com) if the issue persists. |
+
 ## Null handling
 
 All response fields may return null. Common reasons:
@@ -970,8 +968,10 @@ Treat null categorical fields such as `name_match`, `is_valid`, and `line_type` 
 - **Email:** Submit the full email address. The API checks validity and email owner name matching.
 - **IP:** Both IPv4 and IPv6 are accepted. Private range IPs such as `10.x.x.x`, `192.168.x.x`, and `127.0.0.1` return `is_valid: false`.
 
+### Score interpretation
+
+An identity score of 50 may be considered a neutral baseline. Positive signals, such as confirmed name matches and well-established identity elements, increase the score, while negative signals decrease it. The score distribution is broadest and most robust when a full set of identity inputs is provided. Recommended cutoff thresholds will depend on the inputs supplied and the risk profile of your traffic.
+
 ### Rate limits
 
 If you receive a 429 response, the request was not processed. Do not retry immediately. Wait until the rate limit window resets before resending, or contact [support@trestleiq.com](mailto:support@trestleiq.com) to update the rate limit available for your API key.
-
-<ErrorResponses />
