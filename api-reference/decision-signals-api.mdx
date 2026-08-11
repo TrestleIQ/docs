@@ -487,8 +487,52 @@ The response contains a block for each input type provided. Blocks are `null` wh
 </ResponseField>
 
 <ResponseField name="secondary_phone_checks" type="object or null">
-  Phone check results for the secondary phone. Contains the same fields as
-  `primary_phone_checks`. Null when no secondary phone was submitted.
+  Phone check results for the secondary phone. Null when no secondary phone was
+  submitted.
+  <Expandable title="phone checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the phone number is valid and associated with a carrier. Null when
+      the phone could not be validated.
+    </ResponseField>
+    <ResponseField name="country_code" type="string or null">
+      The ISO-3166 alpha-2 country code of the phone number, for example `US` or
+      `GB`.
+    </ResponseField>
+    <ResponseField name="is_commercial" type="boolean or null">
+      True if the phone number is registered to a business.
+    </ResponseField>
+    <ResponseField name="line_type" type="string or null">
+      The line type of the phone number. Possible values:
+      - `Mobile` - Wireless phone line
+      - `Landline` - Traditional wired phone line
+      - `FixedVOIP` - VOIP number connected to a physical address
+      - `NonFixedVOIP` - VOIP number unconnected to a fixed physical address
+      - `Premium` - Caller pays a premium for the call
+      - `TollFree` - Callee pays for call
+      - `Voicemail` - Voicemail-only service
+      - `Other` - Line type is unclear
+    </ResponseField>
+    <ResponseField name="carrier" type="string or null">
+      The carrier name at the MVNO level.
+    </ResponseField>
+    <ResponseField name="is_prepaid" type="boolean or null">
+      True if the phone is associated with a prepaid account.
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      True if the subscriber name matches the input name, false if it does not,
+      and null if no name data was found.
+    </ResponseField>
+    <ResponseField name="address_match" type="string or null">
+      The match status between the phone's registered location and the input
+      address. Possible values:
+      - `Match`
+      - `Street Match`
+      - `Postal Match`
+      - `City State Match`
+      - `Metro Match`
+      - `No Match`
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="primary_address_checks" type="object or null">
@@ -526,18 +570,44 @@ The response contains a block for each input type provided. Blocks are `null` wh
 </ResponseField>
 
 <ResponseField name="secondary_address_checks" type="object or null">
-  Address check results for the secondary address. Contains the same fields as
-  `primary_address_checks`, plus the two fields below. Null when no secondary
+  Address check results for the secondary address. Null when no secondary
   address was submitted.
-  <Expandable title="secondary-only fields" defaultOpen>
+  <Expandable title="address checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the address was validated to at least the street level. False if
+      it was validated but is not deliverable. Null when the address service
+      could not resolve it, or for a partial address.
+    </ResponseField>
+    <ResponseField name="is_commercial" type="boolean or null">
+      True if the address is a business address.
+    </ResponseField>
+    <ResponseField name="is_forwarder" type="boolean or null">
+      True if the address is a known freight-forwarding or reshipping location.
+      Null when `is_valid` is not true, as this field is only meaningful for a
+      validated address.
+    </ResponseField>
+    <ResponseField name="type" type="string or null">
+      The address type. Null when `is_valid` is not true, as this field is only
+      meaningful for a validated address. Possible values:
+      - `Single Unit`
+      - `Multi Unit`
+      - `PO Box`
+      - `Firm`
+      - `General Delivery`
+      - `Rural Route`
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      True if the resident name matches the input name, false if it does not,
+      and null if no name data was found or the address is partial.
+    </ResponseField>
     <ResponseField name="distance_from_primary_address" type="integer or null">
-      The distance in miles between the primary and secondary address. Present
-      only when non-null.
+      The distance in miles between the primary and secondary address. Returned
+      for the secondary address only, and present only when non-null.
     </ResponseField>
     <ResponseField name="linked_to_primary_resident" type="boolean or null">
       True if the secondary address is associated with the primary resident.
-      Present only when non-null. This field is reserved and currently always
-      returns null.
+      Returned for the secondary address only, and present only when non-null.
+      This field is reserved and currently always returns null.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -571,8 +641,29 @@ The response contains a block for each input type provided. Blocks are `null` wh
 </ResponseField>
 
 <ResponseField name="secondary_email_address_checks" type="object or null">
-  Email check results for the secondary email. Contains the same fields as
-  `primary_email_address_checks`. Null when no secondary email was submitted.
+  Email check results for the secondary email. Null when no secondary email was
+  submitted.
+  <Expandable title="email checks object" defaultOpen>
+    <ResponseField name="is_valid" type="boolean or null">
+      True if the email address is syntactically valid.
+    </ResponseField>
+    <ResponseField name="is_disposable" type="boolean or null">
+      True if the email domain is a known disposable or temporary provider.
+    </ResponseField>
+    <ResponseField name="email_age_score" type="integer or null">
+      A 0 to 100 score indicating how established the email is, where 100 is the
+      oldest and most trusted.
+    </ResponseField>
+    <ResponseField name="email_domain_creation_days" type="integer or null">
+      The number of days since the email domain was first registered. Sourced
+      from domain-registration (whois) data. Null when the domain is not found or
+      the lookup times out.
+    </ResponseField>
+    <ResponseField name="name_match" type="boolean or null">
+      True if the registered email owner matches the input name, false if it does
+      not, and null if no name data was found.
+    </ResponseField>
+  </Expandable>
 </ResponseField>
 
 <ResponseField name="ip_address_checks" type="object or null">
