@@ -919,44 +919,54 @@ Every warning is aggregated into the root `warnings` list and prefixed by the co
 
 ### Root
 
-<Badge>Missing required input: primary.name (or primary.business_name) is required.</Badge>
-<Badge>Missing required input: transaction_id is required.</Badge>
-<Badge>Missing required input: transaction_time is required.</Badge>
-<Badge>Invalid Input</Badge>
-<Badge>Missing Input</Badge>
+| Warning | Description |
+| --- | --- |
+| Missing required input: primary.name (or primary.business_name) is required. | Neither `primary.name` nor `primary.business_name` was provided. |
+| Missing required input: transaction_id is required. | `transaction_id` was not provided. |
+| Missing required input: transaction_time is required. | `transaction_time` was not provided. |
+| Invalid Input | One or more submitted inputs failed basic format validation. |
+| Missing Input | A required input field was missing from the request. |
 
 ### Phone (primary / secondary)
 
-<Badge>Invalid Phone</Badge>
+| Warning | Description |
+| --- | --- |
+| Invalid Phone | The submitted phone number is syntactically invalid or not associated with a carrier. |
 
 ### Address (primary / secondary)
 
-<Badge>Invalid Address</Badge>
-<Badge>Partial Address</Badge>
-<Badge>Missing unit/apt/suite number</Badge>
-<Badge>Invalid unit/apt/suite number</Badge>
-<Badge>Invalid house/building number</Badge>
-<Badge>Freight Forwarder</Badge>
-<Badge>Partial Error-Could not retrieve entire response</Badge>
+| Warning | Description |
+| --- | --- |
+| Invalid Address | The submitted address could not be validated. |
+| Partial Address | Only partial address inputs were provided (postal code, or city and state without a street). |
+| Missing unit/apt/suite number | The address is a multi-unit building but no unit number was provided. |
+| Invalid unit/apt/suite number | A unit number was provided but could not be validated. |
+| Invalid house/building number | The house or building number is invalid. |
+| Freight Forwarder | The address is a known freight-forwarding or reshipping location. |
+| Partial Error-Could not retrieve entire response | A downstream lookup partially failed, so some address fields may be missing. |
 
 ### Email (primary / secondary)
 
-<Badge>Invalid Email</Badge>
-<Badge>Disposable Email</Badge>
-<Badge>Role Based Email</Badge>
-<Badge>Potential Junk Email</Badge>
-<Badge>Tumbled Email</Badge>
-<Badge>Privacy Email</Badge>
-<Badge>Email is a spam trap</Badge>
-<Badge>Email is a known abuse email address</Badge>
-<Badge>TimeoutError: Timeout getting response for email age score</Badge>
-<Badge>InternalError: Error retrieving the email age score response</Badge>
+| Warning | Description |
+| --- | --- |
+| Invalid Email | The submitted email address is syntactically invalid. |
+| Disposable Email | The email domain is a known disposable or temporary email provider. |
+| Role Based Email | The email appears to be a role-based address, for example `info@` or `admin@`. |
+| Potential Junk Email | The email has characteristics associated with low-quality or junk email. |
+| Tumbled Email | The email address appears to be a tumbled variant of a known address. |
+| Privacy Email | The email is a privacy-relay or alias address, for example Apple Private Relay. |
+| Email is a spam trap | The email is a known spam trap address. |
+| Email is a known abuse email address | The email has been reported for abuse complaints. |
+| TimeoutError: Timeout getting response for email age score | The email age score lookup timed out. |
+| InternalError: Error retrieving the email age score response | The email age score lookup failed unexpectedly. |
 
 ### IP
 
-<Badge>Input IP address is invalid. Please provide a valid IPv4 or IPv6 address</Badge>
-<Badge>Proxy detected</Badge>
-<Badge>Timeout getting response for IP information. Partial response returned.</Badge>
+| Warning | Description |
+| --- | --- |
+| Input IP address is invalid. Please provide a valid IPv4 or IPv6 address | The submitted IP address is not a valid IPv4 or IPv6 address. |
+| Proxy detected | The IP address is associated with a proxy, VPN, or anonymizing service. |
+| Timeout getting response for IP information. Partial response returned. | IP enrichment timed out, so a partial response was returned. |
 
 ## Error responses
 
