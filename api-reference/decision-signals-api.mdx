@@ -186,6 +186,7 @@ playground: none
     ```json Response Example
     {
       "identity_score": 78,
+      "upcoming_identity_score": null,
       "primary_phone_checks": {
         "is_valid": true,
         "country_code": "US",
@@ -435,6 +436,11 @@ The response contains a block for each input type provided. Blocks are `null` wh
   A composite trust score from 0 to 100, where 100 is the safest and 0 is the
   riskiest. This field is never null. See [Identity
   score](#identity-score) for how the score is derived and how to interpret it.
+</ResponseField>
+
+<ResponseField name="upcoming_identity_score" type="null">
+  Reserved for a forthcoming ML-based identity score model. Always returns
+  `null` today.
 </ResponseField>
 
 <ResponseField name="primary_phone_checks" type="object or null">
@@ -756,19 +762,20 @@ The Decision Signals API supports sandbox mode for integration testing without c
 
 ```bash
 curl --request GET \
-  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-pos-1&transaction_time=2026-06-23%2010:00&primary.name=Jon%20Snow&primary.phone=%2B13005550201&primary.email_address=jsnow@got.com&secondary.name=Arya%20Stark&secondary.phone=%2B13005550202&secondary.email_address=astark@got.com&is_sandbox=true" \
+  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-pos-1&transaction_time=2026-06-23%2010:00&primary.name=Jon%20Snow&primary.phone=%2B13005550201&primary.address.street_line_1=103%20Main%20Doors&primary.address.city=Kings%20Landing&primary.address.state_code=WA&primary.address.postal_code=98101&primary.email_address=jsnow@got.com&ip_address=192.0.2.1&secondary.name=Arya%20Stark&secondary.phone=%2B13005550202&secondary.address.street_line_1=980%20Kingsroad%20Way&secondary.address.city=Winterfell&secondary.address.state_code=WA&secondary.address.postal_code=99988&secondary.email_address=astark@got.com&is_sandbox=true" \
   --header "x-api-key: YOUR_API_KEY"
 ```
 
 ```json
 {
-  "identity_score": 95,
+  "identity_score": 88,
+  "upcoming_identity_score": null,
   "primary_phone_checks": {
     "is_valid": true,
     "country_code": "US",
     "is_commercial": false,
     "line_type": "Mobile",
-    "carrier": "AT&T Wireless",
+    "carrier": "Verizon Wireless",
     "is_prepaid": false,
     "name_match": true,
     "address_match": "Match"
@@ -778,7 +785,7 @@ curl --request GET \
     "country_code": "US",
     "is_commercial": false,
     "line_type": "Mobile",
-    "carrier": "T-Mobile USA",
+    "carrier": "AT&T",
     "is_prepaid": false,
     "name_match": true,
     "address_match": "Match"
@@ -795,20 +802,22 @@ curl --request GET \
     "is_commercial": false,
     "is_forwarder": false,
     "type": "Single Unit",
-    "name_match": true
+    "name_match": true,
+    "distance_from_primary_address": 1450,
+    "linked_to_primary_resident": false
   },
   "primary_email_address_checks": {
     "is_valid": true,
     "is_disposable": false,
-    "email_age_score": 95,
-    "email_domain_creation_days": 10000,
+    "email_age_score": 90,
+    "email_domain_creation_days": 5000,
     "name_match": true
   },
   "secondary_email_address_checks": {
     "is_valid": true,
     "is_disposable": false,
-    "email_age_score": 90,
-    "email_domain_creation_days": 8000,
+    "email_age_score": 85,
+    "email_domain_creation_days": 5000,
     "name_match": true
   },
   "ip_address_checks": {
@@ -816,11 +825,12 @@ curl --request GET \
     "trust_score": 92,
     "connection_type": null,
     "geolocation": {
-      "subdivision": "Washington",
-      "country_name": "United States",
+      "postal_code": "98101",
+      "city_name": "Kings Landing",
+      "subdivision": "WA",
       "country_code": "US"
     },
-    "distance_from_primary_address": 10,
+    "distance_from_primary_address": 0,
     "distance_from_secondary_address": null,
     "distance_from_primary_phone": null,
     "distance_from_secondary_phone": null
@@ -834,25 +844,26 @@ curl --request GET \
 
 ```bash
 curl --request GET \
-  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-neg-1&transaction_time=2026-06-23%2010:00&primary.name=Night%20King&primary.phone=%2B13005550204&primary.email_address=shady@mailnator.com&secondary.name=White%20Walker&secondary.phone=%2B13005550205&secondary.email_address=spam@mailnator.com&is_sandbox=true" \
+  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-neg-1&transaction_time=2026-06-23%2010:00&primary.name=Night%20King&primary.phone=%2B13005550204&primary.address.street_line_1=103%20Main%20Doors&primary.address.city=Kings%20Landing&primary.address.state_code=WA&primary.address.postal_code=98101&primary.email_address=shady@mailnator.com&ip_address=192.0.2.2&secondary.name=White%20Walker&secondary.phone=%2B13005550205&secondary.address.street_line_1=100%20Casterly%20Rock%20Ave&secondary.address.city=Lannisport&secondary.address.state_code=CA&secondary.address.postal_code=98402&secondary.email_address=spam@mailnator.com&is_sandbox=true" \
   --header "x-api-key: YOUR_API_KEY"
 ```
 
 ```json
 {
-  "identity_score": 20,
+  "identity_score": 8,
+  "upcoming_identity_score": null,
   "primary_phone_checks": {
-    "is_valid": true,
+    "is_valid": false,
     "country_code": "US",
     "is_commercial": false,
     "line_type": "NonFixedVOIP",
-    "carrier": "IP Horizon LLC",
+    "carrier": "Bandwidth.com",
     "is_prepaid": true,
     "name_match": false,
     "address_match": "No Match"
   },
   "secondary_phone_checks": {
-    "is_valid": true,
+    "is_valid": false,
     "country_code": "US",
     "is_commercial": false,
     "line_type": "NonFixedVOIP",
@@ -871,9 +882,11 @@ curl --request GET \
   "secondary_address_checks": {
     "is_valid": true,
     "is_commercial": false,
-    "is_forwarder": true,
+    "is_forwarder": false,
     "type": "Single Unit",
-    "name_match": false
+    "name_match": false,
+    "distance_from_primary_address": 780,
+    "linked_to_primary_resident": false
   },
   "primary_email_address_checks": {
     "is_valid": true,
@@ -885,29 +898,26 @@ curl --request GET \
   "secondary_email_address_checks": {
     "is_valid": true,
     "is_disposable": true,
-    "email_age_score": 8,
-    "email_domain_creation_days": 45,
+    "email_age_score": 5,
+    "email_domain_creation_days": 30,
     "name_match": false
   },
   "ip_address_checks": {
     "is_valid": true,
-    "trust_score": 12,
+    "trust_score": 10,
     "connection_type": null,
     "geolocation": {
-      "subdivision": "Bavaria",
-      "country_name": "Germany",
-      "country_code": "DE"
+      "city_name": "Unknown",
+      "country_code": "US"
     },
-    "distance_from_primary_address": 3200,
+    "distance_from_primary_address": 9999,
     "distance_from_secondary_address": null,
     "distance_from_primary_phone": null,
     "distance_from_secondary_phone": null
   },
   "warnings": [
-    "Secondary Address: Freight Forwarder",
-    "Primary Email: Disposable Email",
-    "Secondary Email: Disposable Email",
-    "IP: Proxy detected"
+    "Primary Phone: Invalid Phone",
+    "Primary Email: Disposable Email"
   ],
   "errors": []
 }
@@ -998,6 +1008,24 @@ Treat null categorical fields such as `name_match`, `is_valid`, and `line_type` 
 - **Address:** Include `state_code` and `postal_code` for the best validation results. For a street-level result, submit `street_line_1` plus at least one of city, state, or postal code. A submitted address is always echoed back as a block and is never null, so you can see every attribute. Only a completely absent address yields a null block.
 - **Email:** Submit the full email address. The API checks validity and email owner name matching.
 - **IP:** Both IPv4 and IPv6 are accepted. Private range IPs such as `10.x.x.x`, `192.168.x.x`, and `127.0.0.1` return `is_valid: false`.
+- **Timestamp:** Time zones must be in UTC. The following formats are valid:
+  - `YYYY-MM-DD`
+  - `YYYY-MM-DD HH:MM`
+  - `YYYY-MM-DD HH:MM:SS`
+  - `YYYY-MM-DD HH:MM:SS:ss`
+  - `YYYY-MM-DDTHH:MM`
+  - `YYYY-MM-DDTHH:MM:SS`
+  - `YYYY-MM-DDTHH:MM:SS:ss`
+  - `YYYY-MM-DDTHH:MM:SS-00:00` (other negative UTC offsets)
+  - `YYYY-MM-DDTHH:MMZ`
+  - `YYYY-MM-DDTHH:MM:SSZ`
+  - `YYYY-MM-DDTHH:MM:SS:ssZ`
+
+  The following formats are **not** valid:
+  - `YYYYMMDDTHHMM`
+  - `YYYYMMDDTHHMMZ`
+  - `MM-DD-YYYY`
+  - `YYYY-MM-DDTHH:MM:SS+0:00` (other positive UTC offsets)
 
 ### Score interpretation
 
