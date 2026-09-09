@@ -39,14 +39,19 @@ No automated tests are configured. Validate changes by running `mint dev` and re
 
 ## Site-wide scripts
 
-- `docs.json`'s `headTags` array injects `<script>` tags into `<head>` before
-  page render — undocumented in Mintlify's public schema but the only
-  mechanism that runs synchronously (vs. a `.js` file dropped in the content
-  root, which auto-loads but only after the page becomes interactive).
-- Order in the array is the render order. Hu-manity consent
-  (`hu-options.js`, `hu-banner.min.js`) must stay first, ahead of
-  `leadfeeder.js` and any future tracking script, or its autoblocking
-  can't intercept them.
+- Any `.js` file in the repo root's content directory (e.g. `scripts/*.js`)
+  auto-loads on every page. This runs **after the page becomes interactive**,
+  and with **no guaranteed order** between multiple files — confirmed against
+  the live rendered site and Mintlify's own docs/issue tracker
+  (mintlify/discussions#5087). Mintlify has no supported mechanism for
+  synchronous or load-order-guaranteed `<head>` injection.
+- `docs.json`'s `headTags` array does **not** do this — verified it's absent
+  entirely from the live page's rendered output/hydration payload. Don't add
+  entries there expecting real `<head>` placement; it appears to be inert.
+- Because load order can't be guaranteed, any script that must only run under
+  certain conditions (e.g. consent) has to gate itself at runtime rather than
+  relying on being loaded first — see the comments in `scripts/leadfeeder.js`
+  and `scripts/hu-options.js` for the pattern.
 
 ## Navigation Updates
 
