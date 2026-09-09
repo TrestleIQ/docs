@@ -37,6 +37,17 @@ No automated tests are configured. Validate changes by running `mint dev` and re
 - File names use kebab-case matching navigation entries
 - 2-space indentation in JSON and MDX
 
+## Site-wide scripts
+
+- `docs.json`'s `headTags` array injects `<script>` tags into `<head>` before
+  page render — undocumented in Mintlify's public schema but the only
+  mechanism that runs synchronously (vs. a `.js` file dropped in the content
+  root, which auto-loads but only after the page becomes interactive).
+- Order in the array is the render order. Hu-manity consent
+  (`hu-options.js`, `hu-banner.min.js`) must stay first, ahead of
+  `leadfeeder.js` and any future tracking script, or its autoblocking
+  can't intercept them.
+
 ## Navigation Updates
 
 Edit the `navigation` section in `docs.json` to add pages. The site uses versioning:

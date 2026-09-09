@@ -57,6 +57,20 @@
     {
       "tag": "script",
       "attributes": {
+        "src": "/scripts/hu-options.js"
+      }
+    },
+    {
+      "tag": "script",
+      "attributes": {
+        "src": "https://cdn.hu-manity.co/hu-banner.min.js",
+        "type": "text/javascript",
+        "charset": "utf-8"
+      }
+    },
+    {
+      "tag": "script",
+      "attributes": {
         "src": "/scripts/leadfeeder.js"
       }
     },
