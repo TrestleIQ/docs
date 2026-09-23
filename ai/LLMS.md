@@ -81,10 +81,10 @@ Canonical request/response JSON under `fixtures/<product>/`:
 - `request.valid.json`
 - `response.success.json`
 - `response.error.400.json`
-- `response.error.403.json` — `INVALID_API_KEY` (invalid, revoked, or missing key)
-- `response.error.403.missing_api_key.json` — `MISSING_API_KEY` (non-existent route or unsupported method)
-- `response.error.403.forbidden.json` — `FORBIDDEN` (disabled, expired, or no product access)
+- `response.error.403.json` — `AUTHENTICATION_FAILED` (missing, malformed, invalid, revoked, disabled, expired, or unauthorized key)
+- `response.error.403.missing_api_key.json` — `AUTHENTICATION_FAILED` (variant: `x-api-key` header absent)
+- `response.error.403.forbidden.json` — `AUTHENTICATION_FAILED` (variant: key inactive/expired or no product/version access)
 - `response.error.429.json` — `RATE_LIMIT_EXCEEDED` (QPS limit)
 - `response.error.429.quota.json` — `QUOTA_EXCEEDED` (billing-period quota)
 
-Gateway `4XX`/`429` errors return a structured body: `{ "errorCode", "message", "hint" }`.
+Gateway `4XX`/`429` errors return a structured body: `{ "errorCode", "message", "hint" }`. For `403`, `hint` is an array of remediation strings; all authentication failures return the single `AUTHENTICATION_FAILED` code.
