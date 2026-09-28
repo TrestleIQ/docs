@@ -49,6 +49,19 @@ paths:
           description: >
             Comma-separated add-ons to enable. Options: `litigator_checks`.
             Additional charges apply.
+        - name: source_id
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 255
+          description: >
+            Optional tag you choose (for example a campaign or CRM ID). It is returned
+            as `source_id` in the response and included in query-analysis and batch CSV
+            exports. Up to 255 characters; letters, numbers, spaces and `. _ : -` only;
+            must not start with `=`, `+`, `-` or `@`. An invalid value never fails the
+            request: the response returns `source_id: null` and adds a message to
+            `warnings`.
       responses:
         "200":
           description: Successful response
@@ -178,3 +191,10 @@ components:
           type: array
           items:
             type: string
+        source_id:
+          type: [string, "null"]
+          description: >
+            The `source_id` you sent, or null when none was sent or it was rejected.
+            Rejection messages: `Could not store source_id. 255 character limit exceeded`,
+            `Could not store source_id. Value contains prohibited characters`,
+            `Could not store source_id. Value cannot start with =, +, - or @`.
