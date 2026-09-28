@@ -100,7 +100,6 @@ paths:
           required: false
           schema:
             type: string
-            maxLength: 255
           description: >
             Optional tag you choose (for example a campaign or CRM ID). It is returned
             as `source_id` in the response and included in query-analysis and batch CSV
