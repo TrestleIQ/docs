@@ -195,4 +195,4 @@ components:
           description: >
             The `source_id` you sent, or null when none was sent or it was rejected.
             Rejection messages: `Could not store source_id. 255 character limit exceeded`, or
-            `Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with =, +, -, or @.`
+            `Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with -.`
