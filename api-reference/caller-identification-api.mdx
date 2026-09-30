@@ -222,6 +222,12 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
    **Example:** `litigator_checks,spam_checks`
 </ParamField>
 
+<ParamField query="source_id" type="string">
+  Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
+
+  Allowed characters: letters, numbers, spaces, and `. _ - : / | #`. The value cannot begin with `-`. If the value exceeds 255 characters or contains other characters, the query is still processed and returns a 200 response, but `source_id` is not stored: the response returns `source_id: null` with a warning. The value is included in query analysis and batch response CSVs. **Example:** `source_id=crm:lead_42`
+</ParamField>
+
 ## Headers
 
 <ParamField query="x-api-key" body="header" type="string" required>
@@ -410,7 +416,11 @@ GET https://api.trestleiq.com/3.1/caller_id?phone=[insert_phone_number]
 <ResponseField name="warnings" type="string[]">
   Warnings returned as part of the response, if applicable.\
   \
-  Enum: <Badge>Invalid Input</Badge> <Badge>International number. Not authorized</Badge> <Badge>Missing Input</Badge>
+  Enum: <Badge>Invalid Input</Badge> <Badge>International number. Not authorized</Badge> <Badge>Missing Input</Badge> <Badge>Could not store source_id. 255 character limit exceeded</Badge> <Badge>Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with -.</Badge>
+</ResponseField>
+
+<ResponseField name="source_id" type="string or null">
+  The `source_id` sent with the request. `null` when none was sent or the value could not be stored.
 </ResponseField>
 
 <ErrorResponses />

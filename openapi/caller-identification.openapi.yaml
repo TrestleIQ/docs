@@ -60,12 +60,12 @@ paths:
           schema:
             type: string
           description: >
-            Optional tag you choose (for example a campaign or CRM ID). It is returned
-            as `source_id` in the response and included in query-analysis and batch CSV
-            exports. Up to 255 characters; letters, numbers, spaces and `. _ - : / | #` only;
-            must not start with `=`, `+`, `-` or `@`. An invalid value never fails the
-            request: the response returns `source_id: null` and adds a message to
-            `warnings`.
+            Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
+            Allowed characters: letters, numbers, spaces and `. _ - : / | #`; the value
+            cannot begin with `-`. It is returned as `source_id` in the response and
+            included in query analysis and batch response CSVs. An invalid value never
+            fails the request: the query returns 200, `source_id` is not stored, and the
+            response returns `source_id: null` with a message in `warnings`.
       responses:
         "200":
           description: Successful response
@@ -342,7 +342,7 @@ components:
         source_id:
           type: [string, "null"]
           description: >
-            The `source_id` you sent, or null when none was sent or it was rejected.
+            The `source_id` sent with the request, or null when none was sent or the value could not be stored.
             Rejection messages: `Could not store source_id. 255 character limit exceeded`, or
             `Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with -.`
 
