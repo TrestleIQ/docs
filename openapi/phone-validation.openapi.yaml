@@ -60,7 +60,7 @@ paths:
             cannot begin with `-`. It is returned as `source_id` in the response and
             included in query analysis and batch response CSVs. An invalid value never
             fails the request: the query returns 200, `source_id` is not stored, and the
-            response returns `source_id: null` with a message in `warnings`.
+            response omits `source_id` and adds a message to `warnings`.
       responses:
         "200":
           description: Successful response
@@ -191,8 +191,9 @@ components:
           items:
             type: string
         source_id:
-          type: [string, "null"]
+          type: string
           description: >
-            The `source_id` sent with the request, or null when none was sent or the value could not be stored.
+            The `source_id` sent with the request. Only included when a valid `source_id`
+            was sent; omitted otherwise.
             Rejection messages: `Could not store source_id. 255 character limit exceeded`, or
             `Could not store source_id. Use only letters, numbers, and . _ - : / | #. The value cannot begin with -.`
