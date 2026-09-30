@@ -259,7 +259,7 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 <ParamField query="source_id" type="string">
   Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
 
-  Allowed characters: letters, numbers, spaces, and `. _ - : / | #`. The value cannot begin with `-`. If the value exceeds 255 characters or contains other characters, the query is still processed and returns a 200 response, but `source_id` is not stored: the response returns `source_id: null` with a warning. The value is included in query analysis and batch response CSVs. **Example:** `source_id=crm:lead_42`
+  Allowed characters: letters, numbers, and `. _ - : / | #` (no spaces). The value cannot begin with `-`. If the value exceeds 255 characters or contains other characters, the query is still processed and returns a 200 response, but `source_id` is not stored: the response returns `source_id: null` with a warning. The value is included in query analysis and batch response CSVs. **Example:** `source_id=crm:lead_42`
 </ParamField>
 
 ## Headers
@@ -422,7 +422,7 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 <Badge>Input IP address is invalid. Please provide a valid IPv4 or IPv6 address</Badge>
 <Badge>Timeout getting response for IP information. Partial response returned</Badge>
 <Badge>Could not store source_id. 255 character limit exceeded</Badge>
-<Badge>Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with -.</Badge>
+<Badge>Could not store source_id. Use only letters, numbers, and . _ - : / | #. The value cannot begin with -.</Badge>
 
 </ResponseField>
 

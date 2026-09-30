@@ -102,7 +102,7 @@ paths:
             type: string
           description: >
             Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
-            Allowed characters: letters, numbers, spaces and `. _ - : / | #`; the value
+            Allowed characters: letters, numbers and `. _ - : / | #` (no spaces); the value
             cannot begin with `-`. It is returned as `source_id` in the response and
             included in query analysis and batch response CSVs. An invalid value never
             fails the request: the query returns 200, `source_id` is not stored, and the
@@ -261,7 +261,7 @@ components:
           description: >
             The `source_id` sent with the request, or null when none was sent or the value could not be stored.
             Rejection messages: `Could not store source_id. 255 character limit exceeded`, or
-            `Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with -.`
+            `Could not store source_id. Use only letters, numbers, and . _ - : / | #. The value cannot begin with -.`
         errors:
           type: [object, "null"]
           properties:
