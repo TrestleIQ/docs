@@ -1,5 +1,8 @@
 {
-  "errorCode": "FORBIDDEN",
-  "message": "Access denied. Your API key may be disabled, expired, or not authorized for this product.",
-  "hint": "Contact support with your API key reference."
+  "errorCode": "AUTHENTICATION_FAILED",
+  "message": "The request could not be authenticated.",
+  "hint": [
+    "Confirm that the API key is active and has not been revoked, disabled, or expired.",
+    "Confirm that the API key has access to the requested product and product version."
+  ]
 }

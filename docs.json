@@ -82,6 +82,35 @@
             "group": "API Reference",
             "pages": [
               {
+                "group": "Phone Validation API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/phone-validation-api"
+                ]
+              },
+              {
+                "group": "Address Validation API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/address-validation-api"
+                ]
+              },
+              {
+                "group": "Real Contact API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/real-contact-api",
+                  "api-reference/real-contact-api-v1-1"
+                ]
+              },
+              {
+                "group": "Decision Signals API",
+                "expanded": false,
+                "pages": [
+                  "api-reference/decision-signals-api"
+                ]
+              },
+              {
                 "group": "Reverse Phone API",
                 "expanded": false,
                 "pages": [
@@ -103,32 +132,10 @@
                 ]
               },
               {
-                "group": "Phone Validation API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/phone-validation-api"
-                ]
-              },
-              {
                 "group": "Reverse Address API",
                 "expanded": false,
                 "pages": [
                   "api-reference/reverse-address-api"
-                ]
-              },
-              {
-                "group": "Real Contact API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/real-contact-api",
-                  "api-reference/real-contact-api-v1-1"
-                ]
-              },
-              {
-                "group": "Address Validation API",
-                "expanded": false,
-                "pages": [
-                  "api-reference/address-validation-api"
                 ]
               },
               {

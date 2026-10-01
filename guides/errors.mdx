@@ -8,7 +8,7 @@ description: "HTTP error codes returned by Trestle APIs and how to handle them."
 | Status | Name | When it occurs |
 |---|---|---|
 | `400` | Bad Request | Malformed request, missing required parameters, or invalid parameter values |
-| `403` | Forbidden | Invalid, missing, expired, or disabled API key; missing product access; unknown endpoint path or unsupported HTTP method |
+| `403` | Forbidden | Missing or malformed x-api-key header, missing product or version access inactive, revoked or disabled API key |
 | `429` | Too Many Requests | QPS rate limit or monthly quota exceeded |
 | `500` | Internal Server Error | Unexpected server-side error |
 
@@ -18,17 +18,19 @@ All `4XX` and `429` errors return a structured JSON body with three fields: a ma
 
 ```json
 {
-  "errorCode": "INVALID_API_KEY",
-  "message": "The API key provided is invalid or has been revoked.",
-  "hint": "Verify your x-api-key header value or contact support."
+  "errorCode": "AUTHENTICATION_FAILED",
+  "message": "The request could not be authenticated.",
+  "hint": [
+    "Verify that the 'x-api-key' header is present and correctly formatted, with no extra spaces.",
+    "Confirm that the API key has access to the requested product and product version.",
+    "Confirm that the API key is active and has not been revoked or disabled."
+  ]
 }
 ```
 
 | errorCode | Status | When it occurs |
 |---|---|---|
-| `INVALID_API_KEY` | `403` | API key is invalid, revoked, or missing from the request |
-| `MISSING_API_KEY` | `403` | Request hit a non-existent endpoint path or unsupported HTTP method |
-| `FORBIDDEN` | `403` | API key is disabled, expired, or not authorized for this product |
+| `AUTHENTICATION_FAILED` | `403` | API key is missing, malformed, invalid, revoked, disabled, expired, or not authorized for the requested product/version |
 | `QUOTA_EXCEEDED` | `429` | Billing-period quota exhausted |
 | `RATE_LIMIT_EXCEEDED` | `429` | QPS rate limit exceeded |
 
@@ -49,14 +51,13 @@ The request is understood, but the server is refusing to fulfill it.
 
 | Subtype | errorCode | Cause | Fix |
 |---|---|---|---|
-| Invalid API Key | `INVALID_API_KEY` | Key is incorrect or deactivated | Check for trailing spaces or character errors in the key |
-| API Key Missing | `INVALID_API_KEY` | `x-api-key` header not included | Add the header to your request |
-| API Key Disabled | `FORBIDDEN` | Key is inactive (portal issue) | Check wallet balance or contact Trestle support |
-| No Product Access | `FORBIDDEN` | Key not enabled for this product/version | Enable the product in the portal or contact support |
-| API Key Expired | `FORBIDDEN` | Key reached end-of-life (trial users) | Renew or upgrade in the portal |
-| Unknown Endpoint | `MISSING_API_KEY` | Endpoint path does not exist or HTTP method is unsupported | Check the endpoint URL and API version against the API reference |
+| Invalid API Key | `AUTHENTICATION_FAILED` | Key is incorrect or deactivated | Check for trailing spaces or character errors in the key |
+| API Key Missing | `AUTHENTICATION_FAILED` | `x-api-key` header not included | Add the header to your request |
+| API Key Disabled | `AUTHENTICATION_FAILED` | Key is inactive (portal issue) | Check wallet balance or contact Trestle support |
+| No Product Access | `AUTHENTICATION_FAILED` | Key not enabled for this product/version | Enable the product in the portal or contact support |
+| API Key Expired | `AUTHENTICATION_FAILED` | Key reached end-of-life (trial users) | Renew or upgrade in the portal |
 
-A missing `x-api-key` header returns `INVALID_API_KEY`, not `MISSING_API_KEY`. The `MISSING_API_KEY` code appears only when the request targets a non-existent endpoint path or an unsupported HTTP method.
+A missing, incorrect, inactive, or expired `x-api-key`, or one not enabled for the requested product or version, returns `AUTHENTICATION_FAILED`.
 
 ## 429 Too Many Requests
 

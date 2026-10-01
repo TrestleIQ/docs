@@ -11,19 +11,19 @@
 
   The request is understood, but the server is refusing to fulfill it. Error responses include an `errorCode` field identifying the cause:
 
-  - **Invalid API Key** (`INVALID_API_KEY`): The key is incorrect, deactivated, or missing from the request.
+  - **Invalid API Key** (`AUTHENTICATION_FAILED`): The key is incorrect, deactivated, or missing from the request.
 
     Check for: Trailing spaces, syntax errors, incorrect character counts, or a missing `x-api-key` header.
 
-  - **API Key Disabled (Portal Issue)** (`FORBIDDEN`): The key is inactive.
+  - **API Key Disabled (Portal Issue)** (`AUTHENTICATION_FAILED`): The key is inactive.
 
     Check for: Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
 
-  - **API Key does not have Product Access (Portal Issue)** (`FORBIDDEN`): The API key is active, but it is not enabled for this product or API version.
+  - **API Key does not have Product Access (Portal Issue)** (`AUTHENTICATION_FAILED`): The API key is active, but it is not enabled for this product or API version.
 
     Check for: Incorrect endpoint, incorrect API version, or missing product access on the key.
 
-  - **API Key Expired** (`FORBIDDEN`): The key has reached its end-of-life (primarily affects Trial users).
+  - **API Key Expired** (`AUTHENTICATION_FAILED`): The key has reached its end-of-life (primarily affects Trial users).
 
   ### 429 Too Many Requests
 
