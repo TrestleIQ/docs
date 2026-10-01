@@ -256,6 +256,10 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 
 </ParamField>
 
+<ParamField query="source_id" type="string">
+  Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
+</ParamField>
+
 ## Headers
 
 <ParamField header="x-api-key" type="string" required>
@@ -415,6 +419,8 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 <Badge>TimeoutError: Timeout getting a response from the email server for email deliverability check</Badge>
 <Badge>Input IP address is invalid. Please provide a valid IPv4 or IPv6 address</Badge>
 <Badge>Timeout getting response for IP information. Partial response returned</Badge>
+<Badge>Could not store source_id. 255 character limit exceeded</Badge>
+<Badge>Could not store source_id. Use only letters, numbers, and . _ - : / | #. The value cannot begin with -.</Badge>
 
 </ResponseField>
 

@@ -95,6 +95,13 @@ paths:
           schema:
             type: string
           description: The business name to search. Example `The Golden Company`
+        - name: source_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
       responses:
         "200":
           description: Successful response

@@ -54,6 +54,13 @@ paths:
             type: string
           description: >
             Postal code hint to rank name/address results.
+        - name: source_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
       responses:
         "200":
           description: Successful response

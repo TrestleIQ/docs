@@ -49,6 +49,13 @@ paths:
           description: >
             Comma-separated add-ons to enable. Options: `litigator_checks`.
             Additional charges apply.
+        - name: source_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
       responses:
         "200":
           description: Successful response
