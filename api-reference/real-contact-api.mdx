@@ -258,8 +258,6 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 
 <ParamField query="source_id" type="string">
   Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
-
-  Allowed characters: letters, numbers, and `. _ - : / | #` (no spaces). The value cannot begin with `-`. If the value exceeds 255 characters or contains other characters, the query is still processed and returns a 200 response, but `source_id` is not stored: the response omits `source_id` and includes a warning. The value is included in query analysis and batch response CSVs. **Example:** `source_id=crm:lead_42`
 </ParamField>
 
 ## Headers
@@ -424,10 +422,6 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 <Badge>Could not store source_id. 255 character limit exceeded</Badge>
 <Badge>Could not store source_id. Use only letters, numbers, and . _ - : / | #. The value cannot begin with -.</Badge>
 
-</ResponseField>
-
-<ResponseField name="source_id" type="string">
-  The `source_id` sent with the request. Only included when a valid `source_id` was sent; omitted otherwise.
 </ResponseField>
 
 <ErrorResponses />
