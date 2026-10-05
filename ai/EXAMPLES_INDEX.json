@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-06-11",
+  "updated": "2026-10-06",
   "endpoints": [
     {
       "product": "Real Contact API",
@@ -161,6 +161,26 @@
         "python": "examples/python/address-validation.md"
       },
       "inline_examples_in_docs": "api-reference/address-validation-api.mdx"
+    },
+    {
+      "product": "Decision Signals API",
+      "endpoint": "GET /1.0/decision_signals",
+      "fixtures": {
+        "request": "fixtures/decision-signals/request.valid.json",
+        "response_success": "fixtures/decision-signals/response.success.json",
+        "response_error_400": "fixtures/decision-signals/response.error.400.json",
+        "response_error_429": "fixtures/decision-signals/response.error.429.json",
+        "response_error_403": "fixtures/decision-signals/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/decision-signals/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/decision-signals/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/decision-signals/response.error.429.quota.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/decision-signals.md",
+        "javascript": "examples/javascript/decision-signals.md",
+        "python": "examples/python/decision-signals.md"
+      },
+      "inline_examples_in_docs": "api-reference/decision-signals-api.mdx"
     }
   ]
 }

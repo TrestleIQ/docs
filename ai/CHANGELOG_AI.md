@@ -6,6 +6,17 @@ Format: ISO 8601 dates. Status: `current` | `deprecated` | `removed`.
 
 ---
 
+## 2026-10-06 — Decision Signals API added to AI-readable docs (docs only, no API changes)
+
+### non-breaking
+
+- Added `GET /1.0/decision_signals` (Decision Signals API v1.0) to `ai/LLMS.md`, `ai/PRODUCT_MATRIX.md`, `ai/API_CATALOG.json`, `ai/EXAMPLES_INDEX.json`, and `ai/TAXONOMY.json`.
+- Added `openapi/decision-signals.openapi.yaml`, `fixtures/decision-signals/`, and `examples/{curl,javascript,python}/decision-signals.md`.
+- AI-readable files, specs, fixtures, and examples are now linked at `https://docs.trestleiq.com/<path>` instead of GitHub URLs.
+- Added Address Validation API to the current-versions table below (previously missing).
+
+---
+
 ## 2026-05-19 — Repository refactor (docs only, no API changes)
 
 ### non-breaking
@@ -30,6 +41,8 @@ Format: ISO 8601 dates. Status: `current` | `deprecated` | `removed`.
 | Reverse Phone API | v3.2 | `GET /3.2/phone` | current |
 | Reverse Address API | v3.1 | `GET /3.1/location` | current |
 | Phone Feedback API | v1.0 | `POST /1.0/phone_feedback` | current |
+| Address Validation API | v3.0 | `GET /3.0/location_intel` | current |
+| Decision Signals API | v1.0 | `GET /1.0/decision_signals` | current |
 
 ---
 

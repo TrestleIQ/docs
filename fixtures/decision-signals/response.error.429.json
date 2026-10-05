@@ -1,0 +1,5 @@
+{
+  "errorCode": "RATE_LIMIT_EXCEEDED",
+  "message": "You are sending requests too quickly.",
+  "hint": "Implement exponential backoff and retry."
+}

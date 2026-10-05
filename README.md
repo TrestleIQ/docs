@@ -32,6 +32,7 @@ All Trestle APIs are RESTful and return responses in JSON format. API calls are 
 | Reverse Address API | v3.1 | GET | `https://api.trestleiq.com/3.1/location` | `x-api-key` | [openapi/reverse-address.openapi.yaml](openapi/reverse-address.openapi.yaml) | GA |
 | Phone Feedback API | v1.0 | POST | `https://api.trestleiq.com/1.0/phone_feedback` | `x-api-key` | [openapi/phone-feedback.openapi.yaml](openapi/phone-feedback.openapi.yaml) | GA |
 | Address Validation API | v3.0 | GET | `https://api.trestleiq.com/3.0/location_intel` | `x-api-key` | [openapi/address-validation.openapi.yaml](openapi/address-validation.openapi.yaml) | GA |
+| Decision Signals API | v1.0 | GET | `https://api.trestleiq.com/1.0/decision_signals` | `x-api-key` | [openapi/decision-signals.openapi.yaml](openapi/decision-signals.openapi.yaml) | GA |
 
 ---
 
@@ -53,6 +54,7 @@ All Trestle APIs are RESTful and return responses in JSON format. API calls are 
 | Look up residents at a street address | Reverse Address API |
 | Validate and normalize a US street address | Address Validation API |
 | Submit live-call feedback about a phone number | Phone Feedback API |
+| Cross-check name, phone, address, email, and IP to prevent fraud | Decision Signals API |
 
 ### 3. Send your first request
 
@@ -101,6 +103,8 @@ docs/
 - **[ai/API_CATALOG.json](ai/API_CATALOG.json)** — Machine-readable endpoint catalog
 - **[openapi/](openapi/)** — OpenAPI 3.1 specs for all products
 - **[fixtures/](fixtures/)** — Canonical JSON examples for testing
+
+Files under `ai/`, `openapi/`, `fixtures/`, and `examples/`, plus `llms.txt` and `llms-full.txt`, are publicly served at `https://docs.trestleiq.com/<path>` (e.g. `https://docs.trestleiq.com/ai/API_CATALOG.json`). Link AI-facing files there, not to GitHub.
 
 ---
 
