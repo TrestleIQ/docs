@@ -136,6 +136,24 @@
     "add_ons": []
   },
   {
+    "product": "Decision Signals API",
+    "version": "1.0",
+    "method": "GET",
+    "path": "/1.0/decision_signals",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/1.0/decision_signals",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/decision-signals.openapi.yaml",
+    "docs_path": "api-reference/decision-signals-api.mdx",
+    "fixtures_path": "fixtures/decision-signals/",
+    "status": "GA",
+    "description": "Fraud prevention and identity verification: cross-checks name, phone, address, email, and IP for a primary and optional secondary input set in one call. Returns per-input validity and match checks, distances between inputs, and a 0-100 identity_score. Requires primary.name or primary.business_name (see required_one_of). Not for FCRA eligibility decisions or automated decisions with legal effects on individuals.",
+    "required_params": ["transaction_id", "transaction_time"],
+    "required_one_of": [["primary.name", "primary.business_name"]],
+    "optional_params": ["secondary.name", "secondary.business_name", "primary.phone", "primary.phone.country_hint", "secondary.phone", "secondary.phone.country_hint", "primary.address.street_line_1", "primary.address.street_line_2", "primary.address.city", "primary.address.state_code", "primary.address.postal_code", "primary.address.country_code", "secondary.address.street_line_1", "secondary.address.street_line_2", "secondary.address.city", "secondary.address.state_code", "secondary.address.postal_code", "secondary.address.country_code", "primary.email_address", "secondary.email_address", "ip_address", "is_sandbox"],
+    "add_ons": []
+  },
+  {
     "product": "Real Contact API",
     "version": "1.1",
     "method": "GET",

@@ -18,7 +18,8 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 OUT="llms-full.txt"
-RAW="https://raw.githubusercontent.com/TrestleIQ/docs/main"
+# Repo files are publicly served from the docs site at their repo path.
+BASE="https://docs.trestleiq.com"
 
 {
   echo "# Trestle Identity APIs — Full LLM Reference"
@@ -82,10 +83,12 @@ RAW="https://raw.githubusercontent.com/TrestleIQ/docs/main"
   echo
   for f in openapi/*.openapi.yaml; do
     name=$(basename "$f" .openapi.yaml)
-    echo "- $name: $RAW/$f"
+    echo "- $name: $BASE/$f"
   done
   echo
-  echo "Shared components: https://github.com/TrestleIQ/docs/tree/main/openapi/common"
+  for f in openapi/common/*.yaml; do
+    echo "- shared $(basename "$f" .yaml): $BASE/$f"
+  done
   echo
   echo "---"
   echo
@@ -95,7 +98,7 @@ RAW="https://raw.githubusercontent.com/TrestleIQ/docs/main"
     p=$(basename "$d")
     echo "### $p"
     for f in "$d"*.json; do
-      echo "- $(basename "$f"): $RAW/$f"
+      echo "- $(basename "$f"): $BASE/$f"
     done
     echo
   done
@@ -103,9 +106,14 @@ RAW="https://raw.githubusercontent.com/TrestleIQ/docs/main"
   echo
   echo "## 9. Code samples"
   echo
-  echo "- curl: https://github.com/TrestleIQ/docs/tree/main/examples/curl"
-  echo "- JavaScript: https://github.com/TrestleIQ/docs/tree/main/examples/javascript"
-  echo "- Python: https://github.com/TrestleIQ/docs/tree/main/examples/python"
+  for d in examples/*/; do
+    lang=$(basename "$d")
+    echo "### $lang"
+    for f in "$d"*.md; do
+      echo "- $(basename "$f" .md): $BASE/$f"
+    done
+    echo
+  done
   echo
   echo "---"
   echo

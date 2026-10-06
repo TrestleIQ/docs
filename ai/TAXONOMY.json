@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated": "2026-05-19",
+  "updated": "2026-10-06",
   "description": "Controlled vocabulary for Trestle API entities and fields. Use this for consistent field naming in AI-generated code and documentation.",
   "entity_types": {
     "Phone": {
@@ -36,23 +36,23 @@
       "type": "string",
       "values": ["Landline", "Mobile", "FixedVOIP", "NonFixedVOIP", "Premium", "TollFree", "Voicemail", "Other"],
       "meaning": "The type of phone line/service.",
-      "apis": ["Phone Validation API", "Reverse Phone API", "Caller Identification API", "Smart CNAM API", "Real Contact API"]
+      "apis": ["Phone Validation API", "Reverse Phone API", "Caller Identification API", "Smart CNAM API", "Real Contact API", "Decision Signals API"]
     },
     "is_valid": {
       "type": "boolean",
-      "meaning": "True if the phone number (or email/address depending on context) is structurally valid.",
+      "meaning": "True if the phone number (or email/address depending on context) is structurally valid. In Decision Signals: phone = valid and carrier-associated; address = validated to at least street level; email = syntactically valid; IP = valid and publicly routable.",
       "apis": ["all"]
     },
     "name_match": {
       "type": "boolean",
-      "meaning": "True if the provided name matches the name on record for the phone/email/address.",
-      "apis": ["Real Contact API"]
+      "meaning": "True if the provided name matches the name on record for the phone/email/address. Null if no name data was found.",
+      "apis": ["Real Contact API", "Decision Signals API"]
     },
     "trust_score": {
       "type": "integer",
       "range": "0-100",
       "meaning": "IP Trust Score. Higher = more legitimate. Factors in VPN/proxy usage, network type, geographic signals.",
-      "apis": ["Real Contact API"]
+      "apis": ["Real Contact API", "Decision Signals API"]
     },
     "ip_distance_to_address": {
       "type": "integer",
@@ -88,6 +88,74 @@
       "type": "boolean",
       "meaning": "Whether the live call confirmed the number belongs to the intended person.",
       "apis": ["Phone Feedback API"]
+    },
+    "input_set": {
+      "type": "string",
+      "values": ["primary", "secondary"],
+      "meaning": "Prefix grouping one party's inputs in a single request, e.g. primary.name, primary.phone, secondary.address.city. Each submitted input returns a <set>_<input>_checks block (e.g. secondary_phone_checks); blocks for inputs not sent are null. Typical pairings: home/work, billing/shipping, business/principal. Only one ip_address is accepted per request.",
+      "apis": ["Decision Signals API"]
+    },
+    "transaction_id": {
+      "type": "string",
+      "meaning": "Required caller-supplied correlation ID for the transaction being checked.",
+      "apis": ["Decision Signals API"]
+    },
+    "transaction_time": {
+      "type": "string",
+      "meaning": "Required UTC timestamp of the transaction, YYYY-MM-DD HH:MM or ISO 8601. Positive UTC offsets and compact forms (YYYYMMDDTHHMM) are rejected.",
+      "apis": ["Decision Signals API"]
+    },
+    "identity_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "Composite trust score across phone, address, email, and IP checks. 50 = neutral baseline; 80+ = high trust; under 30 = multiple risk signals. Never null. A name alone returns 50; a partial address adds no weight.",
+      "apis": ["Decision Signals API"]
+    },
+    "address_match": {
+      "type": "string",
+      "values": ["Match", "Street Match", "Postal Match", "City State Match", "Metro Match", "No Match"],
+      "meaning": "How closely the phone's registered location matches the input address, from exact to none.",
+      "apis": ["Decision Signals API"]
+    },
+    "address_checks.type": {
+      "type": "string",
+      "values": ["Single Unit", "Multi Unit", "PO Box", "Firm", "General Delivery", "Rural Route"],
+      "meaning": "Address type in Decision Signals address checks. Spaced values; not the same field or values as delivery_point (SingleUnit, MultiUnit, ...). Null unless is_valid is true.",
+      "apis": ["Decision Signals API"]
+    },
+    "is_forwarder": {
+      "type": "boolean",
+      "meaning": "True if the address is a known freight-forwarding or reshipping location. Null unless the address is valid.",
+      "apis": ["Decision Signals API"]
+    },
+    "is_disposable": {
+      "type": "boolean",
+      "meaning": "True if the email domain is a known disposable or temporary provider.",
+      "apis": ["Decision Signals API"]
+    },
+    "email_age_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "How established an email address is. 100 = oldest and most trusted.",
+      "apis": ["Decision Signals API"]
+    },
+    "email_domain_creation_days": {
+      "type": "integer",
+      "unit": "days",
+      "meaning": "Days since the email domain was first registered (whois). Null when the domain is not found or the lookup times out.",
+      "apis": ["Decision Signals API"]
+    },
+    "connection_type": {
+      "type": "string",
+      "values": ["Residential", "Mobile", "Hosting", "VPN", "Business VPN", "Government VPN", "Education VPN", "Hosting VPN", "Proxy", "Tor", "Anycast", "Privacy Relay", "Satellite"],
+      "meaning": "Network type of an IP address. Open list; new values may appear.",
+      "apis": ["Decision Signals API"]
+    },
+    "distance_from_*": {
+      "type": "integer",
+      "unit": "miles",
+      "meaning": "Distance between two inputs. Fields: secondary_address_checks.distance_from_primary_address, and ip_address_checks.distance_from_primary_address / distance_from_secondary_address / distance_from_primary_phone / distance_from_secondary_phone. Null when unavailable; secondary_address_checks.distance_from_primary_address is omitted when null.",
+      "apis": ["Decision Signals API"]
     }
   },
   "common_warnings": {
@@ -99,6 +167,13 @@
     "Disposable Email": "The email appears to be from a disposable email service.",
     "Undeliverable Email": "The email address cannot receive mail.",
     "International number. Not authorized": "The phone number is international and the key is not authorized for international lookups.",
-    "Lead is a Litigator. Must not be contacted.": "The phone subscriber is a known TCPA litigator."
+    "Lead is a Litigator. Must not be contacted.": "The phone subscriber is a known TCPA litigator.",
+    "Partial Address": "Only partial address inputs were provided (postal code, or city and state without a street).",
+    "Freight Forwarder": "The address is a known freight-forwarding or reshipping location.",
+    "Role Based Email": "The email is a role-based address, for example info@ or admin@.",
+    "Proxy detected": "The IP address is associated with a proxy, VPN, or anonymizing service."
+  },
+  "warning_format_notes": {
+    "Decision Signals API": "Warnings from every check are aggregated into the root warnings array and prefixed by component, e.g. \"Primary Phone: Invalid Phone\", \"Secondary Email: Disposable Email\", \"IP: Proxy detected\". Errors are aggregated into a root errors array of strings, not an error object."
   }
 }

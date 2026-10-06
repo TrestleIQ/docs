@@ -12,6 +12,8 @@ Last assembled from the repository at `https://github.com/TrestleIQ/docs` (branc
 
 This file is the canonical start-here resource for AI-assisted integration with Trestle Identity APIs.
 
+Files under `ai/`, `openapi/`, `fixtures/`, and `examples/`, plus `llms.txt` and `llms-full.txt`, are publicly served at `https://docs.trestleiq.com/<path>` — for example, `openapi/decision-signals.openapi.yaml` is at `https://docs.trestleiq.com/openapi/decision-signals.openapi.yaml`. `api-reference/*.mdx` paths are pages: drop the extension (`https://docs.trestleiq.com/api-reference/decision-signals-api`), or append `.md` for markdown. Directory paths are not listable; `EXAMPLES_INDEX.json` lists every fixture and sample file.
+
 ## What Trestle APIs do
 
 Trestle provides identity data APIs for verifying, enriching, and validating US contact information:
@@ -20,6 +22,9 @@ Trestle provides identity data APIs for verifying, enriching, and validating US 
 - Physical addresses (validation, resident lookup)
 - IP addresses (trust scoring)
 - Lead contact quality grading
+- Cross-checking identity signals for fraud prevention (Decision Signals)
+
+**Permitted use:** Trestle data is not a consumer report. Do not use it, or recommend it, as a factor in credit, insurance, employment, housing, or benefits eligibility decisions (FCRA), or for automated decisions with legal or similarly significant effects on individuals. Use it for fraud prevention, identity verification, and contactability.
 
 ## Integration path (start here)
 
@@ -27,7 +32,7 @@ Trestle provides identity data APIs for verifying, enriching, and validating US 
 2. **Authenticate** — All APIs use `x-api-key: YOUR_KEY` as a request header. No OAuth or tokens.
 3. **Choose an API** — See Product Matrix below or `PRODUCT_MATRIX.md`
 4. **Send a request** — All APIs are REST/GET (except Phone Feedback which is POST)
-5. **Handle the response** — Check `warnings` array and `error`/`errors` object for partial results
+5. **Handle the response** — Check the `warnings` array and the `error` or `errors` field (an object in most APIs, an array of strings in Decision Signals) for partial results
 
 ## Product Matrix (quick reference)
 
@@ -41,6 +46,7 @@ Trestle provides identity data APIs for verifying, enriching, and validating US 
 | Reverse Address API | `GET https://api.trestleiq.com/3.1/location` | All residents at a street address |
 | Phone Feedback API | `POST https://api.trestleiq.com/1.0/phone_feedback` | Submit connected/disconnected call outcome feedback |
 | Address Validation API | `GET https://api.trestleiq.com/3.0/location_intel` | Validate and normalize a US address; returns coordinates and USPS-normalized fields |
+| Decision Signals API | `GET https://api.trestleiq.com/1.0/decision_signals` | Fraud prevention: cross-check name, phone, address, email, and IP (primary + optional secondary set) in one call; returns per-input checks and a 0–100 identity score |
 
 ## Minimum request example (Phone Validation)
 
@@ -54,6 +60,8 @@ curl --request GET \
 
 - **Activity score** (0–100): 70+ = likely connected; 30- = likely disconnected; present in Phone Validation and Real Contact APIs.
 - **Contact grade** (A–F): Lead quality signal in Real Contact API. A = high quality, F = bad lead.
+- **Identity score** (0–100): Composite trust score in Decision Signals API. 50 = neutral baseline; higher = safer. Never null.
+- **Primary / secondary input sets** (Decision Signals only): Query params are prefixed `primary.` or `secondary.` (e.g. `primary.phone`, `secondary.address.city`). Each submitted input returns a matching `<set>_<input>_checks` block; blocks for inputs not sent are `null`. The IP has no set prefix: one `ip_address` in, one `ip_address_checks` block out. `transaction_id`, `transaction_time`, and either `primary.name` or `primary.business_name` are required.
 - **Partial responses**: A `200` can include an `error` or `errors` field with `InternalError` — data is still usable but incomplete.
 - **Warnings**: Non-fatal flags about input quality or data gaps. Never prevent a response.
 - **Rate limits**: 429 = either QPS exceeded (retry with backoff) or monthly quota exhausted (upgrade plan).
@@ -80,6 +88,7 @@ Each product has a standalone OpenAPI 3.1 YAML spec:
 - `openapi/reverse-address.openapi.yaml`
 - `openapi/phone-feedback.openapi.yaml`
 - `openapi/address-validation.openapi.yaml`
+- `openapi/decision-signals.openapi.yaml`
 
 Archived specs: `openapi/archived/`
 
@@ -91,7 +100,13 @@ Canonical request/response JSON under `fixtures/<product>/`:
 - `request.valid.json`
 - `response.success.json`
 - `response.error.400.json`
-- `response.error.429.json`
+- `response.error.403.json` — `AUTHENTICATION_FAILED` (missing, malformed, invalid, revoked, disabled, expired, or unauthorized key)
+- `response.error.403.missing_api_key.json` — `AUTHENTICATION_FAILED` (variant: `x-api-key` header absent)
+- `response.error.403.forbidden.json` — `AUTHENTICATION_FAILED` (variant: key inactive/expired or no product/version access)
+- `response.error.429.json` — `RATE_LIMIT_EXCEEDED` (QPS limit)
+- `response.error.429.quota.json` — `QUOTA_EXCEEDED` (billing-period quota)
+
+Gateway `4XX`/`429` errors return a structured body: `{ "errorCode", "message", "hint" }`. For `403`, `hint` is an array of remediation strings; all authentication failures return the single `AUTHENTICATION_FAILED` code.
 
 ---
 
@@ -101,7 +116,7 @@ Canonical request/response JSON under `fixtures/<product>/`:
 
 Canonical reference for all Trestle API products. Matches the README.md Product Matrix.
 
-Last updated: 2026-05-19
+Last updated: 2026-10-06
 
 | Product | Version | Method | Path | Base URL | Auth Header | OpenAPI Spec | Docs Page | Fixtures | Status |
 |---|---|---|---|---|---|---|---|---|---|
@@ -113,6 +128,7 @@ Last updated: 2026-05-19
 | Reverse Address API | v3.1 | GET | `/3.1/location` | `https://api.trestleiq.com` | `x-api-key` | `openapi/reverse-address.openapi.yaml` | `api-reference/reverse-address-api.mdx` | `fixtures/reverse-address/` | GA |
 | Phone Feedback API | v1.0 | POST | `/1.0/phone_feedback` | `https://api.trestleiq.com` | `x-api-key` | `openapi/phone-feedback.openapi.yaml` | `api-reference/phone-feedback-api.mdx` | `fixtures/phone-feedback/` | GA |
 | Address Validation API | v3.0 | GET | `/3.0/location_intel` | `https://api.trestleiq.com` | `x-api-key` | `openapi/address-validation.openapi.yaml` | `api-reference/address-validation-api.mdx` | `fixtures/address-validation/` | GA |
+| Decision Signals API | v1.0 | GET | `/1.0/decision_signals` | `https://api.trestleiq.com` | `x-api-key` | `openapi/decision-signals.openapi.yaml` | `api-reference/decision-signals-api.mdx` | `fixtures/decision-signals/` | GA |
 
 ## Deprecated / archived versions
 
@@ -125,6 +141,8 @@ Last updated: 2026-05-19
 - All endpoints are under base URL `https://api.trestleiq.com`.
 - All endpoints authenticate via `x-api-key` header. No query-parameter auth is supported (deprecated in v2.0+).
 - Phone Feedback is the only POST endpoint; all others use GET.
+- Decision Signals takes up to two input sets (`primary.*`, `secondary.*`) for name, phone, address, and email, plus one `ip_address`. It supports `is_sandbox=true` for canned test responses.
+- OpenAPI Spec and Fixtures paths are publicly served at `https://docs.trestleiq.com/<path>` (fixture directories are not listable; see `EXAMPLES_INDEX.json`). Docs Page paths are pages: drop `.mdx` (`https://docs.trestleiq.com/api-reference/<page>`).
 - Add-ons (extra charges) are available for Real Contact (litigator_checks, email_checks_age, email_checks_deliverability) and Phone Validation (litigator_checks).
 
 ---
@@ -134,7 +152,7 @@ Last updated: 2026-05-19
 ```json
 {
   "version": "1.0",
-  "updated": "2026-05-19",
+  "updated": "2026-10-06",
   "description": "Controlled vocabulary for Trestle API entities and fields. Use this for consistent field naming in AI-generated code and documentation.",
   "entity_types": {
     "Phone": {
@@ -170,23 +188,23 @@ Last updated: 2026-05-19
       "type": "string",
       "values": ["Landline", "Mobile", "FixedVOIP", "NonFixedVOIP", "Premium", "TollFree", "Voicemail", "Other"],
       "meaning": "The type of phone line/service.",
-      "apis": ["Phone Validation API", "Reverse Phone API", "Caller Identification API", "Smart CNAM API", "Real Contact API"]
+      "apis": ["Phone Validation API", "Reverse Phone API", "Caller Identification API", "Smart CNAM API", "Real Contact API", "Decision Signals API"]
     },
     "is_valid": {
       "type": "boolean",
-      "meaning": "True if the phone number (or email/address depending on context) is structurally valid.",
+      "meaning": "True if the phone number (or email/address depending on context) is structurally valid. In Decision Signals: phone = valid and carrier-associated; address = validated to at least street level; email = syntactically valid; IP = valid and publicly routable.",
       "apis": ["all"]
     },
     "name_match": {
       "type": "boolean",
-      "meaning": "True if the provided name matches the name on record for the phone/email/address.",
-      "apis": ["Real Contact API"]
+      "meaning": "True if the provided name matches the name on record for the phone/email/address. Null if no name data was found.",
+      "apis": ["Real Contact API", "Decision Signals API"]
     },
     "trust_score": {
       "type": "integer",
       "range": "0-100",
       "meaning": "IP Trust Score. Higher = more legitimate. Factors in VPN/proxy usage, network type, geographic signals.",
-      "apis": ["Real Contact API"]
+      "apis": ["Real Contact API", "Decision Signals API"]
     },
     "ip_distance_to_address": {
       "type": "integer",
@@ -222,6 +240,74 @@ Last updated: 2026-05-19
       "type": "boolean",
       "meaning": "Whether the live call confirmed the number belongs to the intended person.",
       "apis": ["Phone Feedback API"]
+    },
+    "input_set": {
+      "type": "string",
+      "values": ["primary", "secondary"],
+      "meaning": "Prefix grouping one party's inputs in a single request, e.g. primary.name, primary.phone, secondary.address.city. Each submitted input returns a <set>_<input>_checks block (e.g. secondary_phone_checks); blocks for inputs not sent are null. Typical pairings: home/work, billing/shipping, business/principal. Only one ip_address is accepted per request.",
+      "apis": ["Decision Signals API"]
+    },
+    "transaction_id": {
+      "type": "string",
+      "meaning": "Required caller-supplied correlation ID for the transaction being checked.",
+      "apis": ["Decision Signals API"]
+    },
+    "transaction_time": {
+      "type": "string",
+      "meaning": "Required UTC timestamp of the transaction, YYYY-MM-DD HH:MM or ISO 8601. Positive UTC offsets and compact forms (YYYYMMDDTHHMM) are rejected.",
+      "apis": ["Decision Signals API"]
+    },
+    "identity_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "Composite trust score across phone, address, email, and IP checks. 50 = neutral baseline; 80+ = high trust; under 30 = multiple risk signals. Never null. A name alone returns 50; a partial address adds no weight.",
+      "apis": ["Decision Signals API"]
+    },
+    "address_match": {
+      "type": "string",
+      "values": ["Match", "Street Match", "Postal Match", "City State Match", "Metro Match", "No Match"],
+      "meaning": "How closely the phone's registered location matches the input address, from exact to none.",
+      "apis": ["Decision Signals API"]
+    },
+    "address_checks.type": {
+      "type": "string",
+      "values": ["Single Unit", "Multi Unit", "PO Box", "Firm", "General Delivery", "Rural Route"],
+      "meaning": "Address type in Decision Signals address checks. Spaced values; not the same field or values as delivery_point (SingleUnit, MultiUnit, ...). Null unless is_valid is true.",
+      "apis": ["Decision Signals API"]
+    },
+    "is_forwarder": {
+      "type": "boolean",
+      "meaning": "True if the address is a known freight-forwarding or reshipping location. Null unless the address is valid.",
+      "apis": ["Decision Signals API"]
+    },
+    "is_disposable": {
+      "type": "boolean",
+      "meaning": "True if the email domain is a known disposable or temporary provider.",
+      "apis": ["Decision Signals API"]
+    },
+    "email_age_score": {
+      "type": "integer",
+      "range": "0-100",
+      "meaning": "How established an email address is. 100 = oldest and most trusted.",
+      "apis": ["Decision Signals API"]
+    },
+    "email_domain_creation_days": {
+      "type": "integer",
+      "unit": "days",
+      "meaning": "Days since the email domain was first registered (whois). Null when the domain is not found or the lookup times out.",
+      "apis": ["Decision Signals API"]
+    },
+    "connection_type": {
+      "type": "string",
+      "values": ["Residential", "Mobile", "Hosting", "VPN", "Business VPN", "Government VPN", "Education VPN", "Hosting VPN", "Proxy", "Tor", "Anycast", "Privacy Relay", "Satellite"],
+      "meaning": "Network type of an IP address. Open list; new values may appear.",
+      "apis": ["Decision Signals API"]
+    },
+    "distance_from_*": {
+      "type": "integer",
+      "unit": "miles",
+      "meaning": "Distance between two inputs. Fields: secondary_address_checks.distance_from_primary_address, and ip_address_checks.distance_from_primary_address / distance_from_secondary_address / distance_from_primary_phone / distance_from_secondary_phone. Null when unavailable; secondary_address_checks.distance_from_primary_address is omitted when null.",
+      "apis": ["Decision Signals API"]
     }
   },
   "common_warnings": {
@@ -233,7 +319,14 @@ Last updated: 2026-05-19
     "Disposable Email": "The email appears to be from a disposable email service.",
     "Undeliverable Email": "The email address cannot receive mail.",
     "International number. Not authorized": "The phone number is international and the key is not authorized for international lookups.",
-    "Lead is a Litigator. Must not be contacted.": "The phone subscriber is a known TCPA litigator."
+    "Lead is a Litigator. Must not be contacted.": "The phone subscriber is a known TCPA litigator.",
+    "Partial Address": "Only partial address inputs were provided (postal code, or city and state without a street).",
+    "Freight Forwarder": "The address is a known freight-forwarding or reshipping location.",
+    "Role Based Email": "The email is a role-based address, for example info@ or admin@.",
+    "Proxy detected": "The IP address is associated with a proxy, VPN, or anonymizing service."
+  },
+  "warning_format_notes": {
+    "Decision Signals API": "Warnings from every check are aggregated into the root warnings array and prefixed by component, e.g. \"Primary Phone: Invalid Phone\", \"Secondary Email: Disposable Email\", \"IP: Proxy detected\". Errors are aggregated into a root errors array of strings, not an error object."
   }
 }
 
@@ -274,7 +367,7 @@ Last updated: 2026-05-19
     "docs_path": "api-reference/caller-identification-api.mdx",
     "fixtures_path": "fixtures/caller-identification/",
     "status": "GA",
-    "description": "Returns the highest-ranked owner of a phone number with demographics, current address, and alternate phones.",
+    "description": "Returns the highest-ranked owner of a phone number with demographics, current address.",
     "required_params": ["phone"],
     "optional_params": ["phone.country_hint", "phone.name_hint", "phone.postal_code_hint"],
     "add_ons": []
@@ -382,6 +475,24 @@ Last updated: 2026-05-19
     "add_ons": []
   },
   {
+    "product": "Decision Signals API",
+    "version": "1.0",
+    "method": "GET",
+    "path": "/1.0/decision_signals",
+    "base_url": "https://api.trestleiq.com",
+    "full_url": "https://api.trestleiq.com/1.0/decision_signals",
+    "auth_header": "x-api-key",
+    "spec_path": "openapi/decision-signals.openapi.yaml",
+    "docs_path": "api-reference/decision-signals-api.mdx",
+    "fixtures_path": "fixtures/decision-signals/",
+    "status": "GA",
+    "description": "Fraud prevention and identity verification: cross-checks name, phone, address, email, and IP for a primary and optional secondary input set in one call. Returns per-input validity and match checks, distances between inputs, and a 0-100 identity_score. Requires primary.name or primary.business_name (see required_one_of). Not for FCRA eligibility decisions or automated decisions with legal effects on individuals.",
+    "required_params": ["transaction_id", "transaction_time"],
+    "required_one_of": [["primary.name", "primary.business_name"]],
+    "optional_params": ["secondary.name", "secondary.business_name", "primary.phone", "primary.phone.country_hint", "secondary.phone", "secondary.phone.country_hint", "primary.address.street_line_1", "primary.address.street_line_2", "primary.address.city", "primary.address.state_code", "primary.address.postal_code", "primary.address.country_code", "secondary.address.street_line_1", "secondary.address.street_line_2", "secondary.address.city", "secondary.address.state_code", "secondary.address.postal_code", "secondary.address.country_code", "primary.email_address", "secondary.email_address", "ip_address", "is_sandbox"],
+    "add_ons": []
+  },
+  {
     "product": "Real Contact API",
     "version": "1.1",
     "method": "GET",
@@ -410,7 +521,7 @@ Last updated: 2026-05-19
 ```json
 {
   "version": "1.0",
-  "updated": "2026-05-19",
+  "updated": "2026-10-06",
   "endpoints": [
     {
       "product": "Real Contact API",
@@ -419,7 +530,11 @@ Last updated: 2026-05-19
         "request": "fixtures/real-contact/request.valid.json",
         "response_success": "fixtures/real-contact/response.success.json",
         "response_error_400": "fixtures/real-contact/response.error.400.json",
-        "response_error_429": "fixtures/real-contact/response.error.429.json"
+        "response_error_429": "fixtures/real-contact/response.error.429.json",
+        "response_error_403": "fixtures/real-contact/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/real-contact/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/real-contact/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/real-contact/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/real-contact.md",
@@ -435,7 +550,11 @@ Last updated: 2026-05-19
         "request": "fixtures/caller-identification/request.valid.json",
         "response_success": "fixtures/caller-identification/response.success.json",
         "response_error_400": "fixtures/caller-identification/response.error.400.json",
-        "response_error_429": "fixtures/caller-identification/response.error.429.json"
+        "response_error_429": "fixtures/caller-identification/response.error.429.json",
+        "response_error_403": "fixtures/caller-identification/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/caller-identification/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/caller-identification/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/caller-identification/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/caller-identification.md",
@@ -451,7 +570,11 @@ Last updated: 2026-05-19
         "request": "fixtures/smart-cnam/request.valid.json",
         "response_success": "fixtures/smart-cnam/response.success.json",
         "response_error_400": "fixtures/smart-cnam/response.error.400.json",
-        "response_error_429": "fixtures/smart-cnam/response.error.429.json"
+        "response_error_429": "fixtures/smart-cnam/response.error.429.json",
+        "response_error_403": "fixtures/smart-cnam/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/smart-cnam/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/smart-cnam/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/smart-cnam/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/smart-cnam.md",
@@ -467,7 +590,11 @@ Last updated: 2026-05-19
         "request": "fixtures/phone-validation/request.valid.json",
         "response_success": "fixtures/phone-validation/response.success.json",
         "response_error_400": "fixtures/phone-validation/response.error.400.json",
-        "response_error_429": "fixtures/phone-validation/response.error.429.json"
+        "response_error_429": "fixtures/phone-validation/response.error.429.json",
+        "response_error_403": "fixtures/phone-validation/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/phone-validation/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/phone-validation/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/phone-validation/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/phone-validation.md",
@@ -483,7 +610,11 @@ Last updated: 2026-05-19
         "request": "fixtures/reverse-phone/request.valid.json",
         "response_success": "fixtures/reverse-phone/response.success.json",
         "response_error_400": "fixtures/reverse-phone/response.error.400.json",
-        "response_error_429": "fixtures/reverse-phone/response.error.429.json"
+        "response_error_429": "fixtures/reverse-phone/response.error.429.json",
+        "response_error_403": "fixtures/reverse-phone/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/reverse-phone/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/reverse-phone/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/reverse-phone/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/reverse-phone.md",
@@ -499,7 +630,11 @@ Last updated: 2026-05-19
         "request": "fixtures/reverse-address/request.valid.json",
         "response_success": "fixtures/reverse-address/response.success.json",
         "response_error_400": "fixtures/reverse-address/response.error.400.json",
-        "response_error_429": "fixtures/reverse-address/response.error.429.json"
+        "response_error_429": "fixtures/reverse-address/response.error.429.json",
+        "response_error_403": "fixtures/reverse-address/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/reverse-address/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/reverse-address/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/reverse-address/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/reverse-address.md",
@@ -515,7 +650,11 @@ Last updated: 2026-05-19
         "request": "fixtures/phone-feedback/request.valid.json",
         "response_success": "fixtures/phone-feedback/response.success.json",
         "response_error_400": "fixtures/phone-feedback/response.error.400.json",
-        "response_error_429": "fixtures/phone-feedback/response.error.429.json"
+        "response_error_429": "fixtures/phone-feedback/response.error.429.json",
+        "response_error_403": "fixtures/phone-feedback/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/phone-feedback/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/phone-feedback/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/phone-feedback/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/phone-feedback.md",
@@ -531,7 +670,11 @@ Last updated: 2026-05-19
         "request": "fixtures/address-validation/request.valid.json",
         "response_success": "fixtures/address-validation/response.success.json",
         "response_error_400": "fixtures/address-validation/response.error.400.json",
-        "response_error_429": "fixtures/address-validation/response.error.429.json"
+        "response_error_429": "fixtures/address-validation/response.error.429.json",
+        "response_error_403": "fixtures/address-validation/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/address-validation/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/address-validation/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/address-validation/response.error.429.quota.json"
       },
       "code_samples": {
         "curl": "examples/curl/address-validation.md",
@@ -539,6 +682,26 @@ Last updated: 2026-05-19
         "python": "examples/python/address-validation.md"
       },
       "inline_examples_in_docs": "api-reference/address-validation-api.mdx"
+    },
+    {
+      "product": "Decision Signals API",
+      "endpoint": "GET /1.0/decision_signals",
+      "fixtures": {
+        "request": "fixtures/decision-signals/request.valid.json",
+        "response_success": "fixtures/decision-signals/response.success.json",
+        "response_error_400": "fixtures/decision-signals/response.error.400.json",
+        "response_error_429": "fixtures/decision-signals/response.error.429.json",
+        "response_error_403": "fixtures/decision-signals/response.error.403.json",
+        "response_error_403_missing_api_key": "fixtures/decision-signals/response.error.403.missing_api_key.json",
+        "response_error_403_forbidden": "fixtures/decision-signals/response.error.403.forbidden.json",
+        "response_error_429_quota": "fixtures/decision-signals/response.error.429.quota.json"
+      },
+      "code_samples": {
+        "curl": "examples/curl/decision-signals.md",
+        "javascript": "examples/javascript/decision-signals.md",
+        "python": "examples/python/decision-signals.md"
+      },
+      "inline_examples_in_docs": "api-reference/decision-signals-api.mdx"
     }
   ]
 }
@@ -558,7 +721,7 @@ Trestle Support: [support@trestleiq.com](mailto:support@trestleiq.com) | URL: [h
 
 All API requests should be made to:
 
-```
+```text
 https://api.trestleiq.com
 ```
 
@@ -573,12 +736,14 @@ Here's a brief overview of Trestle's APIs:
 ### Validation and Verification APIs
 
 - [Phone Validation API](https://trestleiq.com/phone-validation-api/): Validates an input phone number and returns real-time metadata signals like carrier, line type, prepaid status, and phone activity. TCPA litigator checks available as an add-on.
+- [**Address Validation API**](https://trestleiq.com/address-validation-api/): Validate and normalize addresses, and determine latitude and longitude. Improve deliverability, ensure address accuracy, and identify risk signals with real-time address validation.
 - [Real Contact API](https://trestleiq.com/real-contact-api/): Verify the contactability and consistency of an identity profile across name, email, phone number, physical address, and IP address. Returns powerful metadata, name match results, and contact grades. Available with add-ons for email deliverability, email age, and TCPA litigator checks.
+- [**Decision Signals API**](https://trestleiq.com/decision-signals-api/): Verify user identity to support automated risk decisioning. It aggregates name, phone, address, email, and IP data for primary and secondary sets in a single API request, checking for inconsistent or risky signals and enabling confident identity approval and rejection decisions.
 
 ### Enrichment APIs
 
 - [Reverse Phone API](https://trestleiq.com/reverse-phone-api/): Trestle’s most robust enrichment API. Validates an input phone, provides relevant metadata, and returns **all potential phone owners** along with each owner’s linked addresses.
-- [Caller Identification API](https://trestleiq.com/caller-identification-api/): Designed for use cases where only the top associated identity is needed, the Caller Identification API validates the phone, provides real-time metadata, and returns **only the** **highest ranked phone owner** along with their current address and alternate phone numbers.
+- [Caller Identification API](https://trestleiq.com/caller-identification-api/): Designed for use cases where only the top associated identity is needed, the Caller Identification API validates the phone, provides real-time metadata, and returns **only the** **highest ranked phone owner** along with their current address.
 - [Smart CNAM API](https://trestleiq.com/smart-cnam-api/): Designed for use cases where only name data is needed, the Smart CNAM API validates the phone number and returns the **top associated name**.
 - [Reverse Address API](https://trestleiq.com/reverse-address-api/): Validates an input address, returns relevant metadata, and returns all identities currently linked to the address with demographic data, associated people, and historical addresses for each linked identity.
 - [Phone Feedback API](https://trestleiq.com/phone-feedback-api/): Offers a method of providing feedback to Trestle about dialed numbers for their connected/disconnected status and confirmation of right party contact.
@@ -887,11 +1052,31 @@ Log in to the [Developer Portal](https://portal.trestleiq.com) to view current u
 | Status | Name | When it occurs |
 |---|---|---|
 | `400` | Bad Request | Malformed request, missing required parameters, or invalid parameter values |
-| `401` | Unauthorized | Missing `x-api-key` header |
-| `403` | Forbidden | Invalid, expired, or disabled API key; missing product access |
-| `404` | Not Found | Endpoint path is incorrect |
+| `403` | Forbidden | Missing or malformed x-api-key header, missing product or version access inactive, revoked or disabled API key |
 | `429` | Too Many Requests | QPS rate limit or monthly quota exceeded |
 | `500` | Internal Server Error | Unexpected server-side error |
+
+## Error response format
+
+All `4XX` and `429` errors return a structured JSON body with three fields: a machine-readable `errorCode`, a human-readable `message`, and a `hint` suggesting how to resolve the issue.
+
+```json
+{
+  "errorCode": "AUTHENTICATION_FAILED",
+  "message": "The request could not be authenticated.",
+  "hint": [
+    "Verify that the 'x-api-key' header is present and correctly formatted, with no extra spaces.",
+    "Confirm that the API key has access to the requested product and product version.",
+    "Confirm that the API key is active and has not been revoked or disabled."
+  ]
+}
+```
+
+| errorCode | Status | When it occurs |
+|---|---|---|
+| `AUTHENTICATION_FAILED` | `403` | API key is missing, malformed, invalid, revoked, disabled, expired, or not authorized for the requested product/version |
+| `QUOTA_EXCEEDED` | `429` | Billing-period quota exhausted |
+| `RATE_LIMIT_EXCEEDED` | `429` | QPS rate limit exceeded |
 
 ## 400 Bad Request
 
@@ -908,13 +1093,15 @@ The server cannot process the request due to a client-side error.
 
 The request is understood, but the server is refusing to fulfill it.
 
-| Subtype | Cause | Fix |
-|---|---|---|
-| Invalid API Key | Key is incorrect or deactivated | Check for trailing spaces or character errors in the key |
-| API Key Missing | `x-api-key` header not included | Add the header to your request |
-| API Key Disabled | Key is inactive (portal issue) | Check wallet balance or contact Trestle support |
-| No Product Access | Key not enabled for this product/version | Enable the product in the portal or contact support |
-| API Key Expired | Key reached end-of-life (trial users) | Renew or upgrade in the portal |
+| Subtype | errorCode | Cause | Fix |
+|---|---|---|---|
+| Invalid API Key | `AUTHENTICATION_FAILED` | Key is incorrect or deactivated | Check for trailing spaces or character errors in the key |
+| API Key Missing | `AUTHENTICATION_FAILED` | `x-api-key` header not included | Add the header to your request |
+| API Key Disabled | `AUTHENTICATION_FAILED` | Key is inactive (portal issue) | Check wallet balance or contact Trestle support |
+| No Product Access | `AUTHENTICATION_FAILED` | Key not enabled for this product/version | Enable the product in the portal or contact support |
+| API Key Expired | `AUTHENTICATION_FAILED` | Key reached end-of-life (trial users) | Renew or upgrade in the portal |
+
+A missing, incorrect, inactive, or expired `x-api-key`, or one not enabled for the requested product or version, returns `AUTHENTICATION_FAILED`.
 
 ## 429 Too Many Requests
 
@@ -957,77 +1144,153 @@ Common warning values vary by API — see the `warnings` field documentation on 
 
 ## 7. OpenAPI specs (fetch raw YAML for each product)
 
-- address-validation: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/address-validation.openapi.yaml
-- caller-identification: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/caller-identification.openapi.yaml
-- phone-feedback: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/phone-feedback.openapi.yaml
-- phone-validation: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/phone-validation.openapi.yaml
-- real-contact-v1-1: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/real-contact-v1-1.openapi.yaml
-- real-contact: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/real-contact.openapi.yaml
-- reverse-address: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/reverse-address.openapi.yaml
-- reverse-phone: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/reverse-phone.openapi.yaml
-- smart-cnam: https://raw.githubusercontent.com/TrestleIQ/docs/main/openapi/smart-cnam.openapi.yaml
+- address-validation: https://docs.trestleiq.com/openapi/address-validation.openapi.yaml
+- caller-identification: https://docs.trestleiq.com/openapi/caller-identification.openapi.yaml
+- decision-signals: https://docs.trestleiq.com/openapi/decision-signals.openapi.yaml
+- phone-feedback: https://docs.trestleiq.com/openapi/phone-feedback.openapi.yaml
+- phone-validation: https://docs.trestleiq.com/openapi/phone-validation.openapi.yaml
+- real-contact-v1-1: https://docs.trestleiq.com/openapi/real-contact-v1-1.openapi.yaml
+- real-contact: https://docs.trestleiq.com/openapi/real-contact.openapi.yaml
+- reverse-address: https://docs.trestleiq.com/openapi/reverse-address.openapi.yaml
+- reverse-phone: https://docs.trestleiq.com/openapi/reverse-phone.openapi.yaml
+- smart-cnam: https://docs.trestleiq.com/openapi/smart-cnam.openapi.yaml
 
-Shared components: https://github.com/TrestleIQ/docs/tree/main/openapi/common
+- shared components.parameters: https://docs.trestleiq.com/openapi/common/components.parameters.yaml
+- shared components.responses: https://docs.trestleiq.com/openapi/common/components.responses.yaml
+- shared components.schemas: https://docs.trestleiq.com/openapi/common/components.schemas.yaml
+- shared components.security: https://docs.trestleiq.com/openapi/common/components.security.yaml
 
 ---
 
 ## 8. Fixtures (canonical request/response JSON per product)
 
 ### address-validation
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/address-validation/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/address-validation/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/address-validation/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/address-validation/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/address-validation/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/address-validation/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/address-validation/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/address-validation/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/address-validation/response.success.json
 
 ### caller-identification
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/caller-identification/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/caller-identification/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/caller-identification/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/caller-identification/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/caller-identification/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/caller-identification/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/caller-identification/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/caller-identification/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/caller-identification/response.success.json
+
+### decision-signals
+- request.valid.json: https://docs.trestleiq.com/fixtures/decision-signals/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/decision-signals/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/decision-signals/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/decision-signals/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/decision-signals/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/decision-signals/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/decision-signals/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/decision-signals/response.success.json
 
 ### phone-feedback
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-feedback/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/phone-feedback/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/phone-feedback/response.success.json
 
 ### phone-validation
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/phone-validation/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/phone-validation/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/phone-validation/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/phone-validation/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/phone-validation/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/phone-validation/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/phone-validation/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/phone-validation/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/phone-validation/response.success.json
 
 ### real-contact
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/real-contact/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/real-contact/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/real-contact/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/real-contact/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/real-contact/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/real-contact/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/real-contact/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/real-contact/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/real-contact/response.success.json
 
 ### reverse-address
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-address/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/reverse-address/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/reverse-address/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/reverse-address/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/reverse-address/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/reverse-address/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/reverse-address/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/reverse-address/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/reverse-address/response.success.json
 
 ### reverse-phone
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/reverse-phone/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/reverse-phone/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/reverse-phone/response.success.json
 
 ### smart-cnam
-- request.valid.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/request.valid.json
-- response.error.400.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/response.error.400.json
-- response.error.429.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/response.error.429.json
-- response.success.json: https://raw.githubusercontent.com/TrestleIQ/docs/main/fixtures/smart-cnam/response.success.json
+- request.valid.json: https://docs.trestleiq.com/fixtures/smart-cnam/request.valid.json
+- response.error.400.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.error.400.json
+- response.error.403.forbidden.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.error.403.forbidden.json
+- response.error.403.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.error.403.json
+- response.error.403.missing_api_key.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.error.403.missing_api_key.json
+- response.error.429.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.error.429.json
+- response.error.429.quota.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.error.429.quota.json
+- response.success.json: https://docs.trestleiq.com/fixtures/smart-cnam/response.success.json
 
 ---
 
 ## 9. Code samples
 
-- curl: https://github.com/TrestleIQ/docs/tree/main/examples/curl
-- JavaScript: https://github.com/TrestleIQ/docs/tree/main/examples/javascript
-- Python: https://github.com/TrestleIQ/docs/tree/main/examples/python
+### curl
+- address-validation: https://docs.trestleiq.com/examples/curl/address-validation.md
+- caller-identification: https://docs.trestleiq.com/examples/curl/caller-identification.md
+- decision-signals: https://docs.trestleiq.com/examples/curl/decision-signals.md
+- phone-feedback: https://docs.trestleiq.com/examples/curl/phone-feedback.md
+- phone-validation: https://docs.trestleiq.com/examples/curl/phone-validation.md
+- real-contact: https://docs.trestleiq.com/examples/curl/real-contact.md
+- reverse-address: https://docs.trestleiq.com/examples/curl/reverse-address.md
+- reverse-phone: https://docs.trestleiq.com/examples/curl/reverse-phone.md
+- smart-cnam: https://docs.trestleiq.com/examples/curl/smart-cnam.md
+
+### javascript
+- address-validation: https://docs.trestleiq.com/examples/javascript/address-validation.md
+- caller-identification: https://docs.trestleiq.com/examples/javascript/caller-identification.md
+- decision-signals: https://docs.trestleiq.com/examples/javascript/decision-signals.md
+- phone-feedback: https://docs.trestleiq.com/examples/javascript/phone-feedback.md
+- phone-validation: https://docs.trestleiq.com/examples/javascript/phone-validation.md
+- real-contact: https://docs.trestleiq.com/examples/javascript/real-contact.md
+- reverse-address: https://docs.trestleiq.com/examples/javascript/reverse-address.md
+- reverse-phone: https://docs.trestleiq.com/examples/javascript/reverse-phone.md
+- smart-cnam: https://docs.trestleiq.com/examples/javascript/smart-cnam.md
+
+### python
+- address-validation: https://docs.trestleiq.com/examples/python/address-validation.md
+- caller-identification: https://docs.trestleiq.com/examples/python/caller-identification.md
+- decision-signals: https://docs.trestleiq.com/examples/python/decision-signals.md
+- phone-feedback: https://docs.trestleiq.com/examples/python/phone-feedback.md
+- phone-validation: https://docs.trestleiq.com/examples/python/phone-validation.md
+- real-contact: https://docs.trestleiq.com/examples/python/real-contact.md
+- reverse-address: https://docs.trestleiq.com/examples/python/reverse-address.md
+- reverse-phone: https://docs.trestleiq.com/examples/python/reverse-phone.md
+- smart-cnam: https://docs.trestleiq.com/examples/python/smart-cnam.md
+
 
 ---
 
@@ -1038,6 +1301,17 @@ Shared components: https://github.com/TrestleIQ/docs/tree/main/openapi/common
 This file is structured for deterministic parsing by AI agents. Each version entry includes `breaking` and `non-breaking` sections, migration notes, and replacement endpoints.
 
 Format: ISO 8601 dates. Status: `current` | `deprecated` | `removed`.
+
+---
+
+## 2026-10-06 — Decision Signals API added to AI-readable docs (docs only, no API changes)
+
+### non-breaking
+
+- Added `GET /1.0/decision_signals` (Decision Signals API v1.0) to `ai/LLMS.md`, `ai/PRODUCT_MATRIX.md`, `ai/API_CATALOG.json`, `ai/EXAMPLES_INDEX.json`, and `ai/TAXONOMY.json`.
+- Added `openapi/decision-signals.openapi.yaml`, `fixtures/decision-signals/`, and `examples/{curl,javascript,python}/decision-signals.md`.
+- AI-readable files, specs, fixtures, and examples are now linked at `https://docs.trestleiq.com/<path>` instead of GitHub URLs.
+- Added Address Validation API to the current-versions table below (previously missing).
 
 ---
 
@@ -1065,6 +1339,8 @@ Format: ISO 8601 dates. Status: `current` | `deprecated` | `removed`.
 | Reverse Phone API | v3.2 | `GET /3.2/phone` | current |
 | Reverse Address API | v3.1 | `GET /3.1/location` | current |
 | Phone Feedback API | v1.0 | `POST /1.0/phone_feedback` | current |
+| Address Validation API | v3.0 | `GET /3.0/location_intel` | current |
+| Decision Signals API | v1.0 | `GET /1.0/decision_signals` | current |
 
 ---
 

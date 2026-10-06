@@ -2,7 +2,7 @@
 
 Canonical reference for all Trestle API products. Matches the README.md Product Matrix.
 
-Last updated: 2026-05-19
+Last updated: 2026-10-06
 
 | Product | Version | Method | Path | Base URL | Auth Header | OpenAPI Spec | Docs Page | Fixtures | Status |
 |---|---|---|---|---|---|---|---|---|---|
@@ -14,6 +14,7 @@ Last updated: 2026-05-19
 | Reverse Address API | v3.1 | GET | `/3.1/location` | `https://api.trestleiq.com` | `x-api-key` | `openapi/reverse-address.openapi.yaml` | `api-reference/reverse-address-api.mdx` | `fixtures/reverse-address/` | GA |
 | Phone Feedback API | v1.0 | POST | `/1.0/phone_feedback` | `https://api.trestleiq.com` | `x-api-key` | `openapi/phone-feedback.openapi.yaml` | `api-reference/phone-feedback-api.mdx` | `fixtures/phone-feedback/` | GA |
 | Address Validation API | v3.0 | GET | `/3.0/location_intel` | `https://api.trestleiq.com` | `x-api-key` | `openapi/address-validation.openapi.yaml` | `api-reference/address-validation-api.mdx` | `fixtures/address-validation/` | GA |
+| Decision Signals API | v1.0 | GET | `/1.0/decision_signals` | `https://api.trestleiq.com` | `x-api-key` | `openapi/decision-signals.openapi.yaml` | `api-reference/decision-signals-api.mdx` | `fixtures/decision-signals/` | GA |
 
 ## Deprecated / archived versions
 
@@ -26,4 +27,6 @@ Last updated: 2026-05-19
 - All endpoints are under base URL `https://api.trestleiq.com`.
 - All endpoints authenticate via `x-api-key` header. No query-parameter auth is supported (deprecated in v2.0+).
 - Phone Feedback is the only POST endpoint; all others use GET.
+- Decision Signals takes up to two input sets (`primary.*`, `secondary.*`) for name, phone, address, and email, plus one `ip_address`. It supports `is_sandbox=true` for canned test responses.
+- OpenAPI Spec and Fixtures paths are publicly served at `https://docs.trestleiq.com/<path>` (fixture directories are not listable; see `EXAMPLES_INDEX.json`). Docs Page paths are pages: drop `.mdx` (`https://docs.trestleiq.com/api-reference/<page>`).
 - Add-ons (extra charges) are available for Real Contact (litigator_checks, email_checks_age, email_checks_deliverability) and Phone Validation (litigator_checks).

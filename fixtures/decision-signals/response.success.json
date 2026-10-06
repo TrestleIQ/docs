@@ -1,0 +1,71 @@
+{
+  "identity_score": 88,
+  "upcoming_identity_score": null,
+  "primary_phone_checks": {
+    "is_valid": true,
+    "country_code": "US",
+    "is_commercial": false,
+    "line_type": "Mobile",
+    "carrier": "Verizon Wireless",
+    "is_prepaid": false,
+    "name_match": true,
+    "address_match": "Match"
+  },
+  "secondary_phone_checks": {
+    "is_valid": true,
+    "country_code": "US",
+    "is_commercial": false,
+    "line_type": "Mobile",
+    "carrier": "AT&T",
+    "is_prepaid": false,
+    "name_match": true,
+    "address_match": "Match"
+  },
+  "primary_address_checks": {
+    "is_valid": true,
+    "is_commercial": false,
+    "is_forwarder": false,
+    "type": "Single Unit",
+    "name_match": true
+  },
+  "secondary_address_checks": {
+    "is_valid": true,
+    "is_commercial": false,
+    "is_forwarder": false,
+    "type": "Single Unit",
+    "name_match": true,
+    "distance_from_primary_address": 1450,
+    "linked_to_primary_resident": false
+  },
+  "primary_email_address_checks": {
+    "is_valid": true,
+    "is_disposable": false,
+    "email_age_score": 90,
+    "email_domain_creation_days": 5000,
+    "name_match": true
+  },
+  "secondary_email_address_checks": {
+    "is_valid": true,
+    "is_disposable": false,
+    "email_age_score": 85,
+    "email_domain_creation_days": 5000,
+    "name_match": true
+  },
+  "ip_address_checks": {
+    "is_valid": true,
+    "trust_score": 92,
+    "connection_type": null,
+    "geolocation": {
+      "postal_code": "98101",
+      "city_name": "Kings Landing",
+      "subdivision": "WA",
+      "country_code": "US"
+    },
+    "distance_from_primary_address": 0,
+    "distance_from_secondary_address": null,
+    "distance_from_primary_phone": null,
+    "distance_from_secondary_phone": null
+  },
+  "warnings": [],
+  "errors": []
+}

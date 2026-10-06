@@ -1,0 +1,593 @@
+openapi: 3.1.0
+info:
+  title: Decision Signals API
+  version: "1.0"
+  description: >
+    Decision Signals API returns 70+ identity signals in a single query: match
+    statuses, validity flags, enriched metadata, and distance calculations
+    across name, phone, address, email, and IP, plus a composite 0-100
+    `identity_score`. One request accepts up to two input sets (`primary.*` and
+    `secondary.*`) for name, phone, address, and email, and one IP address.
+    Intended for fraud prevention and identity verification. Trestle data is
+    not a consumer report: do not use it as a factor in credit, insurance,
+    employment, housing, or benefits eligibility decisions (FCRA), or for
+    automated decisions with legal or similarly significant effects on
+    individuals.
+  contact:
+    email: support@trestleiq.com
+    url: https://trestleiq.com/contact/
+
+servers:
+  - url: https://api.trestleiq.com
+    description: Production
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /1.0/decision_signals:
+    get:
+      operationId: getDecisionSignals
+      summary: Cross-check identity signals for a transaction
+      description: >
+        Validates and cross-checks the submitted name, phone, address, email,
+        and IP inputs. The response contains a check block for each input
+        provided; a block is `null` when its input was not submitted. Warnings
+        and errors from every check are aggregated into the root `warnings` and
+        `errors` lists, each entry prefixed by its component (for example,
+        `Primary Email: Disposable Email`). Either `primary.name` or
+        `primary.business_name` is required.
+      parameters:
+        - name: transaction_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Caller-supplied correlation ID for the transaction. Example `txn_123`
+        - name: transaction_time
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >
+            UTC timestamp for the transaction, in `YYYY-MM-DD HH:MM` or ISO 8601
+            format. Positive UTC offsets and compact formats such as
+            `YYYYMMDDTHHMM` are rejected. Example `2026-06-15T10:00`
+        - name: primary.name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Full legal name of the primary person. Either `primary.name` or
+            `primary.business_name` is required. Example `Robin Cooke`
+        - name: primary.business_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Full legal name of the primary business. Either `primary.name` or
+            `primary.business_name` is required. Example `The Golden Company`
+        - name: secondary.name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Full legal name of the secondary person. Example `Vicky Kunal`
+        - name: secondary.business_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Full legal name of the secondary business. Example `The Silver Company`
+        - name: primary.phone
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Primary phone number. Accepted formats: `+12065551234`,
+            `12065551234`, `2065551234`, `(206) 555-1234`, `206-555-1234`. E.164
+            is recommended.
+        - name: primary.phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code for the primary phone. Defaults to `US`.
+        - name: secondary.phone
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Secondary phone number. Same accepted formats as `primary.phone`.
+        - name: secondary.phone.country_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code for the secondary phone.
+        - name: primary.address.street_line_1
+          in: query
+          required: false
+          schema:
+            type: string
+          description: First line of the primary street address. Example `12843 NE 91st St`
+        - name: primary.address.street_line_2
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Second line of the primary street address. Example `Apt 4B`
+        - name: primary.address.city
+          in: query
+          required: false
+          schema:
+            type: string
+          description: City of the primary address. Example `Bellingham`
+        - name: primary.address.state_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Two-letter state or province code of the primary address. Example `WA`
+        - name: primary.address.postal_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Postal or ZIP code of the primary address. Example `98033`
+        - name: primary.address.country_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code of the primary address. Example `US`
+        - name: secondary.address.street_line_1
+          in: query
+          required: false
+          schema:
+            type: string
+          description: First line of the secondary street address. Example `4492 163rd Pl SE`
+        - name: secondary.address.street_line_2
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Second line of the secondary street address. Example `Suite 200`
+        - name: secondary.address.city
+          in: query
+          required: false
+          schema:
+            type: string
+          description: City of the secondary address. Example `Bellevue`
+        - name: secondary.address.state_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Two-letter state or province code of the secondary address. Example `WA`
+        - name: secondary.address.postal_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Postal or ZIP code of the secondary address. Example `98006`
+        - name: secondary.address.country_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code of the secondary address. Example `US`
+        - name: primary.email_address
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Primary email address. Example `john.doe@example.com`
+        - name: secondary.email_address
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Secondary email address. Example `jane.doe@example.com`
+        - name: ip_address
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            IPv4 or IPv6 address associated with the transaction. Private and
+            loopback ranges return `is_valid: false`. Example `73.25.97.8`
+        - name: is_sandbox
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: >
+            When `true`, returns a pre-stored response for a sandbox scenario
+            without live enrichment. See the Sandbox section of the API
+            reference for the inputs that select each scenario.
+      responses:
+        "200":
+          description: >
+            Successful response. Check `warnings` and `errors` for per-check
+            issues; a 200 can carry partial results.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DecisionSignalsResponse'
+              example:
+                identity_score: 88
+                upcoming_identity_score: null
+                primary_phone_checks:
+                  is_valid: true
+                  country_code: US
+                  is_commercial: false
+                  line_type: Mobile
+                  carrier: Verizon Wireless
+                  is_prepaid: false
+                  name_match: true
+                  address_match: Match
+                secondary_phone_checks:
+                  is_valid: true
+                  country_code: US
+                  is_commercial: false
+                  line_type: Mobile
+                  carrier: AT&T
+                  is_prepaid: false
+                  name_match: true
+                  address_match: Match
+                primary_address_checks:
+                  is_valid: true
+                  is_commercial: false
+                  is_forwarder: false
+                  type: Single Unit
+                  name_match: true
+                secondary_address_checks:
+                  is_valid: true
+                  is_commercial: false
+                  is_forwarder: false
+                  type: Single Unit
+                  name_match: true
+                  distance_from_primary_address: 1450
+                  linked_to_primary_resident: false
+                primary_email_address_checks:
+                  is_valid: true
+                  is_disposable: false
+                  email_age_score: 90
+                  email_domain_creation_days: 5000
+                  name_match: true
+                secondary_email_address_checks:
+                  is_valid: true
+                  is_disposable: false
+                  email_age_score: 85
+                  email_domain_creation_days: 5000
+                  name_match: true
+                ip_address_checks:
+                  is_valid: true
+                  trust_score: 92
+                  connection_type: null
+                  geolocation:
+                    postal_code: "98101"
+                    city_name: Kings Landing
+                    subdivision: WA
+                    country_code: US
+                  distance_from_primary_address: 0
+                  distance_from_secondary_address: null
+                  distance_from_primary_phone: null
+                  distance_from_secondary_phone: null
+                warnings: []
+                errors: []
+        "400":
+          $ref: '#/components/responses/400BadRequest'
+        "403":
+          $ref: '#/components/responses/403Forbidden'
+        "429":
+          $ref: '#/components/responses/429TooManyRequests'
+        "500":
+          $ref: '#/components/responses/500InternalServerError'
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: >
+        All Trestle API requests require an API key passed via the `x-api-key`
+        request header. Obtain a key by signing up at
+        https://portal.trestleiq.com/signup.
+
+  responses:
+    400BadRequest:
+      description: >
+        Bad Request. The server cannot process the request due to client-side
+        errors (e.g., missing required parameters, invalid format, malformed URL).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    403Forbidden:
+      description: >
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GatewayErrorResponse'
+    429TooManyRequests:
+      description: >
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GatewayErrorResponse'
+    500InternalServerError:
+      description: >
+        Internal Server Error. An unexpected server-side error occurred. Contact
+        support@trestleiq.com if this persists.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code identifier.
+        message:
+          type: string
+          description: Human-readable description of the error.
+
+    GatewayErrorResponse:
+      type: object
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    DecisionSignalsResponse:
+      type: object
+      properties:
+        identity_score:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: >
+            Composite trust score, 100 safest and 0 riskiest, starting from a
+            neutral baseline of 50. Never null. Requires a name plus at least
+            one phone, address, email, or IP input; a name alone returns 50.
+        upcoming_identity_score:
+          type: "null"
+          description: Reserved for a forthcoming score model. Always `null`.
+        primary_phone_checks:
+          $ref: '#/components/schemas/PhoneChecks'
+        secondary_phone_checks:
+          $ref: '#/components/schemas/PhoneChecks'
+        primary_address_checks:
+          $ref: '#/components/schemas/AddressChecks'
+        secondary_address_checks:
+          $ref: '#/components/schemas/SecondaryAddressChecks'
+        primary_email_address_checks:
+          $ref: '#/components/schemas/EmailChecks'
+        secondary_email_address_checks:
+          $ref: '#/components/schemas/EmailChecks'
+        ip_address_checks:
+          $ref: '#/components/schemas/IpAddressChecks'
+        warnings:
+          type: array
+          items:
+            type: string
+          description: >
+            Warnings from every check plus root-level warnings, each prefixed
+            by its component, e.g. `Primary Phone: Invalid Phone`.
+        errors:
+          type: array
+          items:
+            type: string
+          description: Errors from every check, aggregated.
+
+    PhoneChecks:
+      type: [object, "null"]
+      description: Null when the corresponding phone was not submitted.
+      properties:
+        is_valid:
+          type: [boolean, "null"]
+          description: True if the phone number is valid and associated with a carrier.
+        country_code:
+          type: [string, "null"]
+          description: ISO-3166 alpha-2 country code of the phone number.
+        is_commercial:
+          type: [boolean, "null"]
+          description: True if the phone number is registered to a business.
+        line_type:
+          type: [string, "null"]
+          enum:
+            - Mobile
+            - Landline
+            - FixedVOIP
+            - NonFixedVOIP
+            - Premium
+            - TollFree
+            - Voicemail
+            - Other
+            - null
+        carrier:
+          type: [string, "null"]
+          description: Carrier name at the MVNO level.
+        is_prepaid:
+          type: [boolean, "null"]
+        name_match:
+          type: [boolean, "null"]
+          description: >
+            True if the subscriber name matches the input name, false if not,
+            null if no name data was found.
+        address_match:
+          type: [string, "null"]
+          description: Match status between the phone's registered location and the input address.
+          enum:
+            - Match
+            - Street Match
+            - Postal Match
+            - City State Match
+            - Metro Match
+            - No Match
+            - null
+
+    AddressChecks:
+      type: [object, "null"]
+      description: >
+        Null only when no address input was submitted. A partial address (no
+        street line) still returns the block, with `is_valid`, `name_match`,
+        `type`, and `is_forwarder` set to null.
+      properties:
+        is_valid:
+          type: [boolean, "null"]
+          description: >
+            True if validated to at least the street level, false if validated
+            but not deliverable, null if unresolved or partial.
+        is_commercial:
+          type: [boolean, "null"]
+          description: True if the address is a business address.
+        is_forwarder:
+          type: [boolean, "null"]
+          description: >
+            True if the address is a known freight-forwarding or reshipping
+            location. Null when `is_valid` is not true.
+        type:
+          type: [string, "null"]
+          description: Address type. Null when `is_valid` is not true.
+          enum:
+            - Single Unit
+            - Multi Unit
+            - PO Box
+            - Firm
+            - General Delivery
+            - Rural Route
+            - null
+        name_match:
+          type: [boolean, "null"]
+          description: >
+            True if the resident name matches the input name, false if not, null
+            if no name data was found or the address is partial.
+
+    SecondaryAddressChecks:
+      description: >
+        Address checks for the secondary address, plus fields comparing it with
+        the primary input. Null when no secondary address was submitted.
+      anyOf:
+        - type: "null"
+        - allOf:
+            - $ref: '#/components/schemas/AddressChecks'
+            - type: object
+              properties:
+                distance_from_primary_address:
+                  type: [integer, "null"]
+                  description: Distance in miles from the primary address. Omitted when null.
+                linked_to_primary_resident:
+                  type: [boolean, "null"]
+                  description: >
+                    Reserved. True if the secondary address is associated with
+                    the primary resident. Omitted when null.
+
+    EmailChecks:
+      type: [object, "null"]
+      description: Null when the corresponding email was not submitted.
+      properties:
+        is_valid:
+          type: [boolean, "null"]
+          description: True if the email address is syntactically valid.
+        is_disposable:
+          type: [boolean, "null"]
+          description: True if the domain is a known disposable or temporary provider.
+        email_age_score:
+          type: [integer, "null"]
+          minimum: 0
+          maximum: 100
+          description: How established the email is; 100 is the oldest and most trusted.
+        email_domain_creation_days:
+          type: [integer, "null"]
+          description: Days since the email domain was first registered (whois).
+        name_match:
+          type: [boolean, "null"]
+          description: >
+            True if the registered email owner matches the input name, false if
+            not, null if no name data was found.
+
+    IpAddressChecks:
+      type: [object, "null"]
+      description: Null when no IP address was submitted.
+      properties:
+        is_valid:
+          type: [boolean, "null"]
+          description: >
+            True if the IP is a valid, publicly routable address. Private and
+            loopback addresses return false.
+        trust_score:
+          type: [integer, "null"]
+          minimum: 0
+          maximum: 100
+          description: IP trust score; 100 is the most trusted, 0 the most suspicious.
+        connection_type:
+          type: [string, "null"]
+          description: >
+            Connection type of the IP. Not a closed list; observed values
+            include `Residential`, `Mobile`, `Hosting`, `VPN`, `Business VPN`,
+            `Government VPN`, `Education VPN`, `Hosting VPN`, `Proxy`, `Tor`,
+            `Anycast`, `Privacy Relay`, and `Satellite`.
+        geolocation:
+          $ref: '#/components/schemas/IpGeolocation'
+        distance_from_primary_address:
+          type: [integer, "null"]
+          description: Miles between the IP geolocation and the primary address.
+        distance_from_secondary_address:
+          type: [integer, "null"]
+          description: Miles between the IP geolocation and the secondary address.
+        distance_from_primary_phone:
+          type: [integer, "null"]
+          description: Miles between the IP geolocation and the address of the primary phone's owner.
+        distance_from_secondary_phone:
+          type: [integer, "null"]
+          description: Miles between the IP geolocation and the address of the secondary phone's owner.
+
+    IpGeolocation:
+      type: [object, "null"]
+      description: Geographic location of the IP. Null sub-fields are omitted.
+      properties:
+        postal_code:
+          type: [string, "null"]
+        city_name:
+          type: [string, "null"]
+        subdivision:
+          type: [string, "null"]
+          description: State, province, or region.
+        country_name:
+          type: [string, "null"]
+        country_code:
+          type: [string, "null"]
+          description: ISO-3166 alpha-2 country code.
+        continent_code:
+          type: [string, "null"]
