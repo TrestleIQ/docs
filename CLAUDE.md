@@ -30,13 +30,12 @@ No automated tests are configured. Validate changes by running `mint dev` and re
 - `style.css` - Custom styling
 - `scripts/*.js` - Custom JS. Mintlify auto-includes **every** `.js` file in the repo on every page (inlined into its Next.js payload). It does **not** render `docs.json` `headTags` — the `headTags` entries are inert. Scripts run after the page is interactive, in no guaranteed order, and may re-run on client-side navigation, so each script must be idempotent (a `window.__trestle*` guard).
 
-## Cookie Consent (Hu-manity) — CRITICAL
+## Cookie Consent (Cookiebot) — CRITICAL
 
-- `scripts/hu-options.js` sets `huOptions` and loads `hu-banner.min.js` itself (no `headTags`, no static `<script src>` — neither works on Mintlify). Same appID as portal/www: `trestleiqcom-508b0ac`.
-- **`blocking: false` and no `customPatterns` — do not turn autoblocking on.** Mintlify inlines the *source* of these scripts into its `self.__next_f.push(...)` payload scripts, so a pattern like `lfeeder.com` matches them. Hu-manity then blocks and re-runs Next.js payload scripts on consent (`Unexpected server data: missing bootstrap script`), which can break hydration. Autoblocking can't work here anyway without a load-order guarantee.
-- **Trackers gate themselves.** `scripts/leadfeeder.js` fires only when `consentData.consent === true` and category 4 is granted — via `window.__hu.getVar("consentData")` at load, or the `read-consent.hu` / `set-consent.hu` events Hu-manity dispatches on `document`. Fails closed. Any new tracker script must follow the same pattern.
-- `globalCookie: true` puts `hu-consent` on `.trestleiq.com`, so consent saved on portal/www/docs is shared and the banner isn't re-shown (TRES-6708).
-- One-click save: picking "Essential Only"/"Accept All" in the collapsed banner presses `#hu-cookies-save` (the vendor radios only *select* a level). Kept identical to `developer-portal-ui/public/index.html`; keys off vendor ids from an unversioned CDN script, so re-check after Hu-manity updates.
+- `scripts/cookiebot.js` injects `https://consent.cookiebot.com/uc.js` itself (no `headTags`, no static `<script src>` — neither works on Mintlify). Same cbid as portal/www: `344f6781-6477-4999-8eb5-75ae87b4b5b8`. Which hosts get a banner is set by the domain list in Cookiebot Manager — `docs.trestleiq.com` must be registered there.
+- **No `data-blockingmode="auto"` — do not turn it on.** Mintlify inlines the *source* of these scripts into its `self.__next_f.push(...)` payload scripts, and auto-blocking rewrites matching scripts to `text/plain`. Under Hu-manity that blocked Next.js payload scripts (`Unexpected server data: missing bootstrap script`) and broke hydration; Cookiebot's auto mode does the same rewrite, so assume the same risk. It can't work here anyway without a load-order guarantee.
+- **Trackers gate themselves.** `scripts/leadfeeder.js` fires only when `Cookiebot.consent.marketing === true` and `Cookiebot.consent.method === "explicit"` — checked at load, and again on the `CookiebotOnConsentReady` / `CookiebotOnAccept` events on `window`. Fails closed (implied consent in opt-out regions does not count). Any new tracker script must follow the same pattern.
+- Consent is per-host. Sharing it with portal/www needs **Cross-domain Consent Sharing** (Domain Group) in Cookiebot Manager — not a script attribute; there is no `globalCookie` equivalent (TRES-6708 used one under Hu-manity).
 
 ## Content Conventions
 

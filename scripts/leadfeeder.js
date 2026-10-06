@@ -3,14 +3,14 @@
 // and sends visitor data to Dealfront for lead generation insights.
 // Learn more: https://www.dealfront.com/leadfeeder/
 //
-// Gated on Hu-manity consent for CategoryID 4 (the Leadfeeder customProvider
-// in hu-options.js). Mintlify gives no load-order guarantee between this file
-// and hu-options.js, and Hu-manity autoblocking is off on docs (see the note
-// there), so this script checks consent itself:
-//   - consent already read (returning visitor): window.__hu.getVar
-//   - consent read or saved later: the read-consent.hu / set-consent.hu events
-//     Hu-manity dispatches on document (detail = consent data).
-// Fails closed: no saved consent with category 4 granted, no tracker.
+// Gated on Cookiebot marketing consent (Leadfeeder is a marketing tracker).
+// Mintlify gives no load-order guarantee between this file and cookiebot.js,
+// and Cookiebot auto-blocking is off on docs (see the note there), so this
+// script checks consent itself:
+//   - consent already known (returning visitor): window.Cookiebot.consent
+//   - consent loaded or saved later: the CookiebotOnConsentReady /
+//     CookiebotOnAccept events Cookiebot dispatches on window.
+// Fails closed: no explicit marketing consent, no tracker.
 
 (function () {
   // Guard against Mintlify re-running custom scripts on client-side navigation.
@@ -19,10 +19,12 @@
 
   var fired = false;
 
-  function granted(consent) {
-    // consent === true means a saved choice. Before that, Hu-manity's consent
-    // data holds the banner's pre-selected defaults, which are not consent.
-    return !!(consent && consent.consent === true && consent.categories && consent.categories[4]);
+  function granted() {
+    var cb = window.Cookiebot;
+    // method === "explicit" keeps this fail-closed: Cookiebot can report
+    // marketing === true under implied consent (opt-out regions) before the
+    // visitor has made any choice, which is not consent for this tracker.
+    return !!(cb && cb.consent && cb.consent.marketing === true && cb.consent.method === 'explicit');
   }
 
   function loadTracker(ss, ex) {
@@ -41,19 +43,15 @@
     })(document, 'script');
   }
 
-  function maybeFire(consent) {
-    if (fired || !granted(consent)) return;
+  function maybeFire() {
+    if (fired || !granted()) return;
     fired = true;
     loadTracker('JMvZ8gnoO1ma2pOd');
   }
 
-  function onConsentEvent(e) {
-    maybeFire(e && e.detail);
-  }
-  document.addEventListener('read-consent.hu', onConsentEvent);
-  document.addEventListener('set-consent.hu', onConsentEvent);
+  window.addEventListener('CookiebotOnConsentReady', maybeFire);
+  window.addEventListener('CookiebotOnAccept', maybeFire);
 
-  // Hu-manity may already have read the cookie before this file ran.
-  var hu = window.__hu || window.hu;
-  if (hu && typeof hu.getVar === 'function') maybeFire(hu.getVar('consentData'));
+  // Cookiebot may already have read the cookie before this file ran.
+  maybeFire();
 })();
