@@ -220,7 +220,8 @@ playground: none
         "is_forwarder": false,
         "type": "Single Unit",
         "name_match": true,
-        "distance_from_primary_address": 2181
+        "distance_from_primary_address": 2181,
+        "linked_to_primary_resident": true
       },
       "primary_email_address_checks": {
         "is_valid": true,
@@ -262,7 +263,7 @@ playground: none
 
 In a single query, the Decision Signals API returns 70+ data signals and network insights to provide match statuses, validity flags, enriched metadata, and distance calculations between the key identity data inputs of name, email, phone, address, and IP.
 
-The Decision Signals API supports one API request with up to two sets of inputs (primary and secondary) for name, phone, address, and email, but only one IP address. You should submit specific parameters based on the amount of data you want to cross-check and validate, and we will populate the API return with components that correspond to the inputs provided.
+The Decision Signals API supports one API request with up to two sets of inputs (primary and secondary) for name, phone, address, and email, but only one IP address. Phone, email and IP address checks support international inputs. You should submit specific parameters based on the amount of data you want to cross-check and validate, and we will populate the API return with components that correspond to the inputs provided.
 
 ```http
 GET https://api.trestleiq.com/1.0/decision_signals?transaction_id=[insert_transaction_id]&transaction_time=[insert_transaction_time]&primary.name=[insert_name]&primary.phone=[insert_phone]&primary.email_address=[insert_email]&primary.address.street_line_1=[insert_street_line_1]&primary.address.city=[insert_city]&primary.address.state_code=[insert_state_code]&primary.address.postal_code=[insert_postal_code]&ip_address=[insert_ip_address]
@@ -613,7 +614,6 @@ The response contains a block for each input type provided. Blocks are `null` wh
     <ResponseField name="linked_to_primary_resident" type="boolean or null">
       True if the secondary address is associated with the primary resident.
       Returned for the secondary address only, and present only when non-null.
-      This field is reserved and currently always returns null.
     </ResponseField>
   </Expandable>
 </ResponseField>
@@ -750,7 +750,7 @@ The response contains a block for each input type provided. Blocks are `null` wh
 | 30–49 | Below baseline. One or more negative signals present. |
 | 0–29 | Low trust. Multiple significant risk signals detected. |
 
-`identity_score` requires a name input (`primary.name` or `primary.business_name`) plus at least one of primary or secondary phone, address, email, or IP address. Providing only a name returns 50, the neutral baseline. For best results, provide as many inputs as possible to maximize signal coverage. A partial address (no street line) contributes no weight to the score.
+`identity_score` requires a primary name input (`primary.name` or `primary.business_name`) plus at least one of primary phone or primary email. For best results, provide as many inputs as possible to maximize signal coverage. A partial address (no street line) contributes no weight to the score.
 
 ## Sandbox
 
@@ -758,168 +758,166 @@ The Decision Signals API supports sandbox mode for integration testing without c
 
 **Note:** The canned response is keyed by the test scenario, so a sandbox response may include blocks (for example, address or IP) even if those inputs were not part of the request.
 
-### Sandbox 1 — high trust score
+### Sandbox 1  — high identity score
 
 ```bash
 curl --request GET \
-  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-pos-1&transaction_time=2026-06-23%2010:00&primary.name=Jon%20Snow&primary.phone=%2B13005550201&primary.address.street_line_1=103%20Main%20Doors&primary.address.city=Kings%20Landing&primary.address.state_code=WA&primary.address.postal_code=98101&primary.email_address=jsnow@got.com&ip_address=192.0.2.1&secondary.name=Arya%20Stark&secondary.phone=%2B13005550202&secondary.address.street_line_1=980%20Kingsroad%20Way&secondary.address.city=Winterfell&secondary.address.state_code=WA&secondary.address.postal_code=99988&secondary.email_address=astark@got.com&is_sandbox=true" \
+  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-pos-1&transaction_time=2026-06-23%2010%3A00&primary.name=Jon%20Snow&primary.phone=%2B13005550201&primary.address.street_line_1=103%20Main%20Doors&primary.address.city=Kings%20Landing&primary.address.state_code=WA&primary.address.postal_code=98101&primary.email_address=jsnow%40got.com&ip_address=192.0.2.1&secondary.name=Arya%20Stark&secondary.phone=%2B13005550202&secondary.address.street_line_1=980%20Kingsroad%20Way&secondary.address.city=Winterfell&secondary.address.state_code=WA&secondary.address.postal_code=99988&secondary.email_address=astark%40got.com&is_sandbox=true" \
   --header "x-api-key: YOUR_API_KEY"
 ```
 
 ```json
 {
-  "identity_score": 88,
-  "upcoming_identity_score": null,
-  "primary_phone_checks": {
-    "is_valid": true,
-    "country_code": "US",
-    "is_commercial": false,
-    "line_type": "Mobile",
-    "carrier": "Verizon Wireless",
-    "is_prepaid": false,
-    "name_match": true,
-    "address_match": "Match"
-  },
-  "secondary_phone_checks": {
-    "is_valid": true,
-    "country_code": "US",
-    "is_commercial": false,
-    "line_type": "Mobile",
-    "carrier": "AT&T",
-    "is_prepaid": false,
-    "name_match": true,
-    "address_match": "Match"
-  },
-  "primary_address_checks": {
-    "is_valid": true,
-    "is_commercial": false,
-    "is_forwarder": false,
-    "type": "Single Unit",
-    "name_match": true
-  },
-  "secondary_address_checks": {
-    "is_valid": true,
-    "is_commercial": false,
-    "is_forwarder": false,
-    "type": "Single Unit",
-    "name_match": true,
-    "distance_from_primary_address": 1450,
-    "linked_to_primary_resident": false
-  },
-  "primary_email_address_checks": {
-    "is_valid": true,
-    "is_disposable": false,
-    "email_age_score": 90,
-    "email_domain_creation_days": 5000,
-    "name_match": true
-  },
-  "secondary_email_address_checks": {
-    "is_valid": true,
-    "is_disposable": false,
-    "email_age_score": 85,
-    "email_domain_creation_days": 5000,
-    "name_match": true
-  },
-  "ip_address_checks": {
-    "is_valid": true,
-    "trust_score": 92,
-    "connection_type": null,
-    "geolocation": {
-      "postal_code": "98101",
-      "city_name": "Kings Landing",
-      "subdivision": "WA",
-      "country_code": "US"
+    "identity_score": 95,
+    "upcoming_identity_score": null,
+    "primary_phone_checks": {
+        "is_valid": true,
+        "country_code": "US",
+        "is_commercial": false,
+        "line_type": "Mobile",
+        "carrier": "AT&T Wireless",
+        "is_prepaid": false,
+        "name_match": true,
+        "address_match": "Match"
     },
-    "distance_from_primary_address": 0,
-    "distance_from_secondary_address": null,
-    "distance_from_primary_phone": null,
-    "distance_from_secondary_phone": null
-  },
-  "warnings": [],
-  "errors": []
+    "secondary_phone_checks": {
+        "is_valid": true,
+        "country_code": "US",
+        "is_commercial": false,
+        "line_type": "Mobile",
+        "carrier": "T-Mobile USA",
+        "is_prepaid": false,
+        "name_match": true,
+        "address_match": "Match"
+    },
+    "primary_address_checks": {
+        "is_valid": true,
+        "is_commercial": false,
+        "is_forwarder": false,
+        "type": "Single Unit",
+        "name_match": true
+    },
+    "secondary_address_checks": {
+        "is_valid": true,
+        "is_commercial": false,
+        "is_forwarder": false,
+        "type": "Single Unit",
+        "name_match": true,
+        "linked_to_primary_resident": false
+    },
+    "primary_email_address_checks": {
+        "is_valid": true,
+        "is_disposable": false,
+        "email_age_score": 95,
+        "email_domain_creation_days": 10000,
+        "name_match": true
+    },
+    "secondary_email_address_checks": {
+        "is_valid": true,
+        "is_disposable": false,
+        "email_age_score": 90,
+        "email_domain_creation_days": 8000,
+        "name_match": true
+    },
+    "ip_address_checks": {
+        "is_valid": true,
+        "trust_score": 92,
+        "connection_type": null,
+        "geolocation": {
+            "subdivision": "Washington",
+            "country_code": "US"
+        },
+        "distance_from_primary_address": 10,
+        "distance_from_secondary_address": null,
+        "distance_from_primary_phone": null,
+        "distance_from_secondary_phone": null
+    },
+    "warnings": [],
+    "errors": []
 }
 ```
 
-### Sandbox 2 — low trust score
+### Sandbox 2 — low identity score
 
 ```bash
 curl --request GET \
-  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=kushal-neg-1&transaction_time=2026-06-23%2010:00&primary.name=Night%20King&primary.phone=%2B13005550204&primary.address.street_line_1=103%20Main%20Doors&primary.address.city=Kings%20Landing&primary.address.state_code=WA&primary.address.postal_code=98101&primary.email_address=shady@mailnator.com&ip_address=192.0.2.2&secondary.name=White%20Walker&secondary.phone=%2B13005550205&secondary.address.street_line_1=100%20Casterly%20Rock%20Ave&secondary.address.city=Lannisport&secondary.address.state_code=CA&secondary.address.postal_code=98402&secondary.email_address=spam@mailnator.com&is_sandbox=true" \
+  --url "https://api.trestleiq.com/1.0/decision_signals?transaction_time=2026-06-23%2010%3A00&primary.address.street_line_1=103%20Main%20Doors&primary.address.city=Kings%20Landing&primary.address.state_code=WA&primary.address.postal_code=98101&is_sandbox=true&transaction_id=kushal-neg-1&primary.name=Night%20King&primary.phone=%2B13005550204&primary.email_address=shady%40mailnator.com&ip_address=192.0.2.2&secondary.name=White%20Walker&secondary.phone=%2B13005550205&secondary.address.street_line_1=100%20Casterly%20Rock%20Ave&secondary.address.city=Lannisport&secondary.address.state_code=CA&secondary.address.postal_code=98402&secondary.email_address=spam%40mailnator.com" \
   --header "x-api-key: YOUR_API_KEY"
 ```
 
 ```json
 {
-  "identity_score": 8,
-  "upcoming_identity_score": null,
-  "primary_phone_checks": {
-    "is_valid": false,
-    "country_code": "US",
-    "is_commercial": false,
-    "line_type": "NonFixedVOIP",
-    "carrier": "Bandwidth.com",
-    "is_prepaid": true,
-    "name_match": false,
-    "address_match": "No Match"
-  },
-  "secondary_phone_checks": {
-    "is_valid": false,
-    "country_code": "US",
-    "is_commercial": false,
-    "line_type": "NonFixedVOIP",
-    "carrier": "Bandwidth.com",
-    "is_prepaid": true,
-    "name_match": false,
-    "address_match": "No Match"
-  },
-  "primary_address_checks": {
-    "is_valid": true,
-    "is_commercial": false,
-    "is_forwarder": false,
-    "type": "Single Unit",
-    "name_match": false
-  },
-  "secondary_address_checks": {
-    "is_valid": true,
-    "is_commercial": false,
-    "is_forwarder": false,
-    "type": "Single Unit",
-    "name_match": false,
-    "distance_from_primary_address": 780,
-    "linked_to_primary_resident": false
-  },
-  "primary_email_address_checks": {
-    "is_valid": true,
-    "is_disposable": true,
-    "email_age_score": 5,
-    "email_domain_creation_days": 30,
-    "name_match": false
-  },
-  "secondary_email_address_checks": {
-    "is_valid": true,
-    "is_disposable": true,
-    "email_age_score": 5,
-    "email_domain_creation_days": 30,
-    "name_match": false
-  },
-  "ip_address_checks": {
-    "is_valid": true,
-    "trust_score": 10,
-    "connection_type": null,
-    "geolocation": {
-      "city_name": "Unknown",
-      "country_code": "US"
+    "identity_score": 20,
+    "upcoming_identity_score": null,
+    "primary_phone_checks": {
+        "is_valid": true,
+        "country_code": "US",
+        "is_commercial": false,
+        "line_type": "NonFixedVOIP",
+        "carrier": "IP Horizon LLC",
+        "is_prepaid": true,
+        "name_match": false,
+        "address_match": "No Match"
     },
-    "distance_from_primary_address": 9999,
-    "distance_from_secondary_address": null,
-    "distance_from_primary_phone": null,
-    "distance_from_secondary_phone": null
-  },
-  "warnings": [
-    "Primary Phone: Invalid Phone",
-    "Primary Email: Disposable Email"
-  ],
-  "errors": []
+    "secondary_phone_checks": {
+        "is_valid": true,
+        "country_code": "US",
+        "is_commercial": false,
+        "line_type": "NonFixedVOIP",
+        "carrier": "Bandwidth.com",
+        "is_prepaid": true,
+        "name_match": false,
+        "address_match": "No Match"
+    },
+    "primary_address_checks": {
+        "is_valid": true,
+        "is_commercial": false,
+        "is_forwarder": false,
+        "type": "Single Unit",
+        "name_match": false
+    },
+    "secondary_address_checks": {
+        "is_valid": true,
+        "is_commercial": false,
+        "is_forwarder": true,
+        "type": "Single Unit",
+        "name_match": false,
+        "linked_to_primary_resident": false
+    },
+    "primary_email_address_checks": {
+        "is_valid": true,
+        "is_disposable": true,
+        "email_age_score": 5,
+        "email_domain_creation_days": 30,
+        "name_match": false
+    },
+    "secondary_email_address_checks": {
+        "is_valid": true,
+        "is_disposable": true,
+        "email_age_score": 8,
+        "email_domain_creation_days": 45,
+        "name_match": false
+    },
+    "ip_address_checks": {
+        "is_valid": true,
+        "trust_score": 12,
+        "connection_type": null,
+        "geolocation": {
+            "subdivision": "Bavaria",
+            "country_code": "DE"
+        },
+        "distance_from_primary_address": 3200,
+        "distance_from_secondary_address": null,
+        "distance_from_primary_phone": null,
+        "distance_from_secondary_phone": null
+    },
+    "warnings": [
+        "Secondary Address: Freight Forwarder",
+        "Primary Email: Disposable Email",
+        "Secondary Email: Disposable Email",
+        "IP: Proxy detected"
+    ],
+    "errors": []
 }
 ```
 
