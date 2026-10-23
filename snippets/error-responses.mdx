@@ -9,21 +9,15 @@
 
   ### 403 Forbidden
 
-  The request is understood, but the server is refusing to fulfill it. Error responses include an `errorCode` field identifying the cause:
+  The request is understood, but the server is refusing to fulfill it. Key and access problems return `errorCode` `AUTHENTICATION_FAILED`, with a list of hints:
 
-  - **Invalid API Key** (`INVALID_API_KEY`): The key is incorrect, deactivated, or missing from the request.
+  - **Missing or incorrect key**: Check for a missing `x-api-key` header, trailing spaces, or character errors.
 
-    Check for: Trailing spaces, syntax errors, incorrect character counts, or a missing `x-api-key` header.
+  - **No product access (Portal Issue)**: The key is active but not enabled for this product or API version. Check the endpoint and version.
 
-  - **API Key Disabled (Portal Issue)** (`FORBIDDEN`): The key is inactive.
+  - **Key disabled or expired (Portal Issue)**: Check your self-serve wallet balance, or whether a Trestle Admin deactivated the key. Trial keys expire at end-of-life.
 
-    Check for: Insufficient funds in your self-serve wallet or if a Trestle Admin manually deactivated your API key.
-
-  - **API Key does not have Product Access (Portal Issue)** (`FORBIDDEN`): The API key is active, but it is not enabled for this product or API version.
-
-    Check for: Incorrect endpoint, incorrect API version, or missing product access on the key.
-
-  - **API Key Expired** (`FORBIDDEN`): The key has reached its end-of-life (primarily affects Trial users).
+  An unknown endpoint path returns `403` with `{"message": "Forbidden"}` and no `errorCode`.
 
   ### 429 Too Many Requests
 

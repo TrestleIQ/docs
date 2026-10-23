@@ -23,6 +23,16 @@ AWS limitation: a missing `x-api-key` header fires `INVALID_API_KEY`, not
 `MISSING_AUTHENTICATION_TOKEN` (rendered as `MISSING_API_KEY`) only fires for
 unknown routes/methods. Document actual behavior, not the aspirational mapping.
 
+**Live behaviour differs (observed 2026-10-23, staging and production).** The gateway returns
+`403 {"errorCode":"AUTHENTICATION_FAILED","message":"The request could not be authenticated.","hint":[...3 strings]}`
+for a missing key, an invalid key, **and** a valid key without access to the product/version
+(e.g. `/3.0/caller_id`). An unknown path returns `403 {"message":"Forbidden"}`. `hint` is an
+array. `guides/errors.mdx` and `snippets/error-responses.mdx` now document this. `terraform/modules/api_gateway/gateway_responses.tf`
+still defines the table above, and no indexed repo contains `AUTHENTICATION_FAILED`, so the
+deployed gateway has drifted from Terraform. Open: confirm with infra which one is intended, then
+update the `response.error.403*.json` fixtures (still the old bodies) and `ai/LLMS.md`.
+`QUOTA_EXCEEDED` / `RATE_LIMIT_EXCEEDED` were not re-observed.
+
 `400` errors come from the API backend (validation layer), not the gateway —
 different body shape, see `fixtures/<product>/response.error.400.json`.
 
