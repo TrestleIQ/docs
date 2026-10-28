@@ -11,13 +11,13 @@ import ErrorResponses from '/snippets/error-responses.mdx';
   <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/3.0/location_intel?street_line_1=800%20Bellevue%20Way%20NE&city=Bellevue&state_code=WA&postal_code=98004" \
+      --url "https://api.trestleiq.com/3.0/location_intel?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
     ```javascript JavaScript
     const response = await fetch(
-      "https://api.trestleiq.com/3.0/location_intel?street_line_1=800%20Bellevue%20Way%20NE&city=Bellevue&state_code=WA&postal_code=98004",
+      "https://api.trestleiq.com/3.0/location_intel?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -34,10 +34,11 @@ import ErrorResponses from '/snippets/error-responses.mdx';
       "https://api.trestleiq.com/3.0/location_intel",
       {
         params: {
-          street_line_1: "800 Bellevue Way NE",
-          city: "Bellevue",
+          street_line_1: "100 Syrws St",
+          street_line_2: "Ste 1",
+          city: "Lynden",
           state_code: "WA",
-          postal_code: "98004",
+          postal_code: "98264",
         },
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -52,10 +53,11 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     headers = {"x-api-key": "YOUR_API_KEY"}
     params = {
-        "street_line_1": "800 Bellevue Way NE",
-        "city": "Bellevue",
+        "street_line_1": "100 Syrws St",
+        "street_line_2": "Ste 1",
+        "city": "Lynden",
         "state_code": "WA",
-        "postal_code": "98004",
+        "postal_code": "98264",
     }
 
     response = requests.get(
@@ -73,7 +75,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
     var response = await client.GetAsync(
-      "https://api.trestleiq.com/3.0/location_intel?street_line_1=800%20Bellevue%20Way%20NE&city=Bellevue&state_code=WA&postal_code=98004"
+      "https://api.trestleiq.com/3.0/location_intel?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264"
     );
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
@@ -91,10 +93,11 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     func main() {
     	params := url.Values{}
-    	params.Set("street_line_1", "800 Bellevue Way NE")
-    	params.Set("city", "Bellevue")
+    	params.Set("street_line_1", "100 Syrws St")
+    	params.Set("street_line_2", "Ste 1")
+    	params.Set("city", "Lynden")
     	params.Set("state_code", "WA")
-    	params.Set("postal_code", "98004")
+    	params.Set("postal_code", "98264")
 
     	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.0/location_intel?"+params.Encode(), nil)
     	req.Header.Set("x-api-key", "YOUR_API_KEY")
@@ -113,10 +116,11 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     ```php PHP
     <?php
     $params = http_build_query([
-      "street_line_1" => "800 Bellevue Way NE",
-      "city"          => "Bellevue",
+      "street_line_1" => "100 Syrws St",
+      "street_line_2" => "Ste 1",
+      "city"          => "Lynden",
       "state_code"    => "WA",
-      "postal_code"   => "98004",
+      "postal_code"   => "98264",
     ]);
 
     $curl = curl_init("https://api.trestleiq.com/3.0/location_intel?" . $params);
@@ -141,7 +145,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/3.0/location_intel?street_line_1=800%20Bellevue%20Way%20NE&city=Bellevue&state_code=WA&postal_code=98004"))
+                        "https://api.trestleiq.com/3.0/location_intel?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
@@ -159,16 +163,16 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     {
       "id": "Location.6a3b1c11-76fd-4b25-86bc-5cfb588b4f6b",
       "is_valid": true,
-      "street_line_1": "800 Bellevue Way NE",
+      "street_line_1": "100 Syrws St Ste 1",
       "street_line_2": null,
-      "city": "Bellevue",
-      "postal_code": "98004",
-      "zip4": "4286",
+      "city": "Lynden",
+      "postal_code": "98264",
+      "zip4": "9999",
       "state_code": "WA",
       "country_code": "US",
       "lat_long": {
-        "latitude": 47.6175,
-        "longitude": -122.2017,
+        "latitude": 48.9465,
+        "longitude": -122.4521,
         "accuracy": "RoofTop"
       },
       "error": null,

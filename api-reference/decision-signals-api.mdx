@@ -9,7 +9,7 @@ playground: none
 <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=4259853735&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1" \
+      --url "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=2069735101&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
@@ -18,7 +18,7 @@ playground: none
       transaction_id: "txn_123",
       transaction_time: "2026-06-15T10:00",
       "primary.name": "John Doe",
-      "primary.phone": "4259853735",
+      "primary.phone": "2069735101",
       "primary.address.street_line_1": "10 Main St",
       "primary.address.city": "Lynden",
       "primary.address.state_code": "WA",
@@ -55,7 +55,7 @@ playground: none
           transaction_id: "txn_123",
           transaction_time: "2026-06-15T10:00",
           "primary.name": "John Doe",
-          "primary.phone": "4259853735",
+          "primary.phone": "2069735101",
           "primary.address.street_line_1": "10 Main St",
           "primary.address.city": "Lynden",
           "primary.address.state_code": "WA",
@@ -86,7 +86,7 @@ playground: none
         "transaction_id": "txn_123",
         "transaction_time": "2026-06-15T10:00",
         "primary.name": "John Doe",
-        "primary.phone": "4259853735",
+        "primary.phone": "2069735101",
         "primary.address.street_line_1": "10 Main St",
         "primary.address.city": "Lynden",
         "primary.address.state_code": "WA",
@@ -116,7 +116,7 @@ playground: none
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=4259853735&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1");
+    var response = await client.GetAsync("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=2069735101&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -131,7 +131,7 @@ playground: none
     )
 
     func main() {
-     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=4259853735&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1", nil)
+     req, _ := http.NewRequest("GET", "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=2069735101&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1", nil)
      req.Header.Set("x-api-key", "YOUR_API_KEY")
 
      resp, err := http.DefaultClient.Do(req)
@@ -147,7 +147,7 @@ playground: none
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=4259853735&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1");
+    $curl = curl_init("https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=2069735101&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -169,7 +169,7 @@ playground: none
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=4259853735&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1"))
+                        "https://api.trestleiq.com/1.0/decision_signals?transaction_id=txn_123&transaction_time=2026-06-15T10:00&primary.name=John%20Doe&primary.phone=2069735101&primary.address.street_line_1=10%20Main%20St&primary.address.city=Lynden&primary.address.state_code=WA&primary.address.postal_code=98225&primary.email_address=john.doe@example.com&secondary.name=Waidong%20L%20Syrws&secondary.phone=2069735100&secondary.address.street_line_1=100%20Syrws%20St&secondary.address.city=Lynden&secondary.address.state_code=WA&secondary.address.postal_code=98264&secondary.email_address=waidong220@example.com&ip_address=192.0.0.1"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
