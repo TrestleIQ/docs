@@ -12,7 +12,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=4259853735&email=john.doe@example.com&ip_address=192.0.0.1" \
+      --url "https://api.trestleiq.com/2.0/real_contact?name=John%20Doe&phone=3005550147&email=john.doe@example.com&ip_address=192.0.2.10&add_ons=outbound_intelligence&dial_from_numbers=3015550110%2C3005550122%2C3025550135%2C3005550189%2C3035550141" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
@@ -157,12 +157,18 @@ import ErrorResponses from '/snippets/error-responses.mdx';
         "ip_distance_to_address": 12
       },
       "add_ons": {
-        "litigator_checks": {
-          "phone_is_litigator_risk": false
-        },
-        "email_checks": {
-          "email_age_score": 95,
-          "email_is_deliverable": true
+        "outbound_intelligence": {
+          "carrier": "Verizon Wireless",
+          "recommended_npa": ["300"],
+          "nearest_rate_center": {
+            "name": "Anytown",
+            "state_code": "WA"
+          },
+          "recommended_outbound_numbers": [
+            "3005550122",
+            "3005550189",
+            "3015550110"
+          ]
         }
       },
       "warnings": [],
@@ -251,9 +257,16 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 - email_checks_deliverability: to enable email deliverability checks in the response
 - email_checks_age: to enable email age score in the response
 - litigator_checks: to enable litigator checks in the response
+- outbound_intelligence: to enable carrier and location-based dialing recommendations in the response. Available for US phone numbers on Enterprise API keys only. If your key is not enabled, or the phone number is not a US number, the add-on is ignored without an error and you are not charged for it
 
 **Example:** `add_ons=litigator_checks,email_checks_deliverability`
 
+</ParamField>
+
+<ParamField query="dial_from_numbers" type="string">
+  Optional. Your own outbound phone numbers, separated by commas when querying the API (example: `3005550103,3005550104`) and pipe-separated for Batch Upload (example: `3005550103|3005550104`). Up to 100 numbers are used; any beyond that are ignored. Used only by the `outbound_intelligence` add-on to return `recommended_outbound_numbers`.
+
+**Example:** `3015550110, 3035550191, 3105550126, 3125550174, 3005550189, 3005550122`
 </ParamField>
 
 <ParamField query="source_id" type="string">
@@ -377,6 +390,31 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
         </ResponseField>
       </Expandable>
     </ResponseField>
+    <ResponseField name="outbound_intelligence" type="object">
+      Returned only when `add_ons` includes `outbound_intelligence`, the phone number is a US number, and your API key is enabled for the add-on. If the input phone is suppressed, every field is `null`.
+      <Expandable title="outbound_intelligence Object" defaultOpen>
+        <ResponseField name="carrier" type="string or null">
+          The carrier of the input phone number.
+        </ResponseField>
+        <ResponseField name="recommended_npa" type="array of strings or null">
+          Up to 3 area codes (NPAs) recommended for dialing this lead. `null` when no recommendation is available for the lead's location.
+        </ResponseField>
+        <ResponseField name="nearest_rate_center" type="object or null">
+          The rate center nearest to the lead.
+          <Expandable title="nearest_rate_center" defaultOpen>
+            <ResponseField name="name" type="string">
+              The name of the rate center.
+            </ResponseField>
+            <ResponseField name="state_code" type="string">
+              The two-letter state code of the rate center.
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+        <ResponseField name="recommended_outbound_numbers" type="array of strings or null">
+          Up to 3 numbers from your `dial_from_numbers` that are best suited to call this lead. Present only when `dial_from_numbers` is supplied. Numbers that are invalid or unknown are ignored and a warning is returned.
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
   </Expandable>
 </ResponseField>
 
@@ -421,6 +459,7 @@ GET https://api.trestleiq.com/2.0/real_contact?name=[insert_name]&phone=[insert_
 <Badge>Timeout getting response for IP information. Partial response returned</Badge>
 <Badge>Could not store source_id. 255 character limit exceeded</Badge>
 <Badge>Could not store source_id. Use only letters, numbers, spaces, and . _ - : / | #. The value cannot begin with -.</Badge>
+<Badge>X outbound numbers were invalid or unknown and were ignored.</Badge>
 
 </ResponseField>
 
