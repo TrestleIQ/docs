@@ -3,8 +3,14 @@ info:
   title: Smart CNAM API
   version: "3.1"
   description: >
-    Smart CNAM API validates phone numbers and returns the name or business
-    associated with the phone number. Use when only caller name data is needed.
+    Smart CNAM API validates a phone number and returns the name of the person
+    or business it belongs to. Use when only caller name data is needed. For
+    line type, carrier, or the owner's address and other details, use Caller
+    Identification (`GET /3.1/caller_id`); for every owner linked to a phone,
+    use Reverse Phone (`GET /3.2/phone`). Trestle data is not a consumer
+    report: do not use it as a factor in credit, insurance, employment,
+    housing, or benefits eligibility decisions (FCRA), or for automated
+    decisions with legal or similarly significant effects on individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -22,9 +28,12 @@ paths:
       operationId: getSmartCnam
       summary: Get the name associated with a phone number
       description: >
-        Validates the phone number and returns the top associated name (person
-        or business). Lighter-weight than Caller ID — use when name-only
-        resolution is sufficient.
+        Validates the phone number and returns the top-ranked owner name
+        (person or business). Lighter-weight than Caller ID — use when
+        name-only resolution is sufficient. When several names are linked to
+        the phone, `phone.name_hint` and `phone.postal_code_hint` rank the
+        matching name higher. Check `warnings` and `error`; a 200 can carry
+        partial results.
       parameters:
         - name: phone
           in: query
@@ -38,16 +47,56 @@ paths:
           required: false
           schema:
             type: string
-          description: ISO-3166 alpha-2 country code. Example `US`
+          description: ISO-3166 alpha-2 country code of the phone number. Example `US`
+        - name: phone.name_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Person or business name associated with the phone number. If
+            multiple names are associated with the phone in the Trestle
+            database, this name is ranked higher. Example `Waidong Syrws`
+        - name: phone.postal_code_hint
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Postal code of the subscriber address associated with the phone
+            number. If multiple names or addresses are associated with the phone
+            in the Trestle database, this postal code is used to rank the
+            matching name higher. Example `98264`
+        - name: add_ons
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Comma-separated add-ons to enable. Options: `spam_checks` (spam and
+            scam detection, returned under `add_ons.spam_checks`). Additional
+            charges apply. Example `spam_checks`
       responses:
         "200":
-          description: Successful response
+          description: >
+            Successful response. Check `warnings` and `error` for issues; a 200
+            can carry partial results.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SmartCnamResponse'
               example:
-                status: success
+                id: Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4
+                is_valid: true
+                phone_number: "2069735100"
+                belongs_to:
+                  id: Person.fffdcf06-0929-4b5a-9921-ee49b101ca84
+                  name: Waidong L Syrws
+                  firstname: Waidong
+                  middlename: L
+                  lastname: Syrws
+                error: null
+                warnings: []
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -79,20 +128,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -113,18 +165,44 @@ components:
           type: string
           description: Human-readable description of the error.
 
-    PartialError:
+    GatewayErrorResponse:
       type: object
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    PartialError:
+      type: [object, "null"]
       description: >
         Returned inside a 200 response when partial data could not be retrieved
         due to an upstream timeout or internal issue. The remaining fields in
-        the response are still usable.
+        the response are still usable. Null when the response is complete.
       properties:
         name:
           type: string
+          description: Error type. Incomplete response due to external timeouts.
           example: InternalError
         message:
           type: string
+          description: Human-readable description of the error.
           example: Could not retrieve entire response
 
     SmartCnamResponse:
@@ -132,25 +210,72 @@ components:
       properties:
         id:
           type: [string, "null"]
-          description: Persistent phone ID. Format `Phone.<uuid>`.
+          description: >
+            Persistent ID of the phone number. Format `Phone.<uuid>`. Null when
+            the phone number is invalid or the response is suppressed.
         is_valid:
           type: [boolean, "null"]
+          description: >
+            True if the phone number is valid. Null when validity could not be
+            determined, for example when the response is suppressed.
+        phone_number:
+          type: [string, "null"]
+          description: >
+            The phone number in E.164 or local format. The default country
+            calling code is +1 (USA). Null when the phone number is invalid.
         belongs_to:
           type: [object, "null"]
+          description: >
+            The top-ranked owner of the phone number, a person or a business.
+            Null when the phone number is invalid or no owner name was found.
           properties:
             id:
               type: [string, "null"]
+              description: Persistent ID of the owner. Format `Person.<uuid>`.
             name:
               type: [string, "null"]
+              description: Full name of the person, or the business name.
             firstname:
               type: [string, "null"]
+              description: First name of the person. Null for a business.
             middlename:
               type: [string, "null"]
+              description: Middle name or middle initial of the person. Null for a business.
             lastname:
               type: [string, "null"]
+              description: Last name of the person. Null for a business.
         error:
           $ref: '#/components/schemas/PartialError'
+        add_ons:
+          type: object
+          description: >
+            Results of the add-ons requested in `add_ons`. Present only when an
+            add-on was requested and is enabled for the API key.
+          properties:
+            spam_checks:
+              type: object
+              description: >
+                Present when `add_ons=spam_checks` was requested and the add-on
+                is enabled for the API key.
+              properties:
+                phone.is_spam:
+                  type: [boolean, "null"]
+                  description: >
+                    True if the phone number is identified as a spam, scam, or
+                    fraudulent caller. Null for invalid, suppressed, or non-US
+                    numbers, and when the spam check times out or fails (a
+                    warning is added).
         warnings:
           type: array
           items:
             type: string
+          description: >
+            Warnings about the request or response. Empty when there are none;
+            a 200 with warnings still carries usable data. Known values:
+            `Missing Input` (no phone number sent), `Invalid Input` (the phone
+            number is not valid), `International data unavailable for this
+            product.` (non-US number), `Canadian phone number. Please contact
+            us for full access.` (Canadian number and the API key does not
+            have Canada access), `Timeout getting response for spam check.
+            Partial response returned.`, and `Error retrieving the spam check
+            response. Partial response returned.`

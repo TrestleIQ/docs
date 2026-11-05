@@ -3,10 +3,15 @@ info:
   title: Phone Validation API
   version: "3.0"
   description: >
-    Phone Validation API validates phone numbers and provides phone metadata,
-    including carrier, line type, prepaid status, and a phone activity score
-    to identify disconnected numbers. TCPA litigator check available as an
-    add-on.
+    Phone Validation API validates a phone number and returns its metadata:
+    carrier, line type, prepaid status, country, and a 0-100 phone activity
+    score to identify disconnected numbers. A TCPA litigator check is
+    available as an add-on. It does not return owner names or addresses; for
+    the owner's name use Smart CNAM (`GET /3.1/cnam`) or Caller Identification
+    (`GET /3.1/caller_id`). Trestle data is not a consumer report: do not use
+    it as a factor in credit, insurance, employment, housing, or benefits
+    eligibility decisions (FCRA), or for automated decisions with legal or
+    similarly significant effects on individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -25,8 +30,10 @@ paths:
       summary: Validate a phone number and get metadata
       description: >
         Validates the phone number and returns carrier, line type, prepaid
-        status, country info, and a 0–100 activity score indicating whether
-        the number is active.
+        status, country info, and a 0-100 activity score indicating whether
+        the number is active. Problems with the input are reported in
+        `warnings` on a 200 response, not as a 400. Each response carries a
+        `Response-ID` header.
       parameters:
         - name: phone
           in: query
@@ -40,31 +47,60 @@ paths:
           required: false
           schema:
             type: string
-          description: ISO-3166 alpha-2 country code. Example `US`
+          description: >
+            ISO-3166 alpha-2 country code of the phone number, used to read a
+            number given in local format. Example `US`
         - name: add_ons
           in: query
           required: false
           schema:
             type: string
           description: >
-            Comma-separated add-ons to enable. Options: `litigator_checks`.
-            Additional charges apply.
+            Comma-separated add-ons to enable. Options: `litigator_checks` (TCPA
+            litigator detection, returned under `add_ons.litigator_checks`).
+            Additional charges apply. Example `litigator_checks`
         - name: source_id
           in: query
           required: false
           schema:
             type: string
+            maxLength: 255
           description: >
-            Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
+            Optional identifier used to group queries by source, campaign,
+            channel, or cohort. Maximum length is 255 characters. Use only
+            letters, numbers, spaces, and `. _ - : / | #`; the value cannot
+            begin with `-`. An invalid value does not fail the request: it is
+            dropped and a warning is added.
       responses:
         "200":
-          description: Successful response
+          description: >
+            Successful response. Check `warnings` and `error`; a 200 can carry
+            partial results.
+          headers:
+            Response-ID:
+              description: >
+                Unique ID of this response, in the format `T_<uuid>`. Pass it as
+                `response_id` when sending feedback to the Phone Feedback API.
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PhoneValidationResponse'
               example:
-                status: success
+                id: Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4
+                phone_number: "2069735100"
+                is_valid: true
+                activity_score: 50
+                country_calling_code: "1"
+                country_code: US
+                country_name: United States
+                line_type: NonFixedVOIP
+                carrier: Level 3 Communications, LLC
+                is_prepaid: false
+                add_ons: null
+                error: null
+                warnings: []
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -96,20 +132,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -130,58 +169,155 @@ components:
           type: string
           description: Human-readable description of the error.
 
-    PartialError:
+    GatewayErrorResponse:
       type: object
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    PartialError:
+      type: [object, "null"]
       description: >
         Returned inside a 200 response when partial data could not be retrieved
         due to an upstream timeout or internal issue. The remaining fields in
-        the response are still usable.
+        the response are still usable. Null when the response is complete.
       properties:
         name:
           type: string
+          description: Error type. Incomplete response due to external timeouts.
           example: InternalError
         message:
           type: string
+          description: Human-readable description of the error.
           example: Could not retrieve entire response
+
+    LineType:
+      type: [string, "null"]
+      description: >
+        The line type of the phone number: `Landline` (traditional wired
+        line), `Mobile` (wireless line), `FixedVOIP` (VOIP number connected to
+        a physical address), `NonFixedVOIP` (VOIP number not connected to a
+        fixed physical address), `Premium` (caller pays a premium for the
+        call), `TollFree` (callee pays for the call), `Voicemail`
+        (voicemail-only service), or `Other` (line type is unclear).
+      enum:
+        - Landline
+        - Mobile
+        - FixedVOIP
+        - NonFixedVOIP
+        - Premium
+        - TollFree
+        - Voicemail
+        - Other
+        - null
 
     PhoneValidationResponse:
       type: object
       properties:
         id:
           type: [string, "null"]
-          description: Persistent phone ID. Format `Phone.<uuid>`.
+          description: >
+            Persistent ID of the phone number. Format `Phone.<uuid>`. Null when
+            the phone number is missing or invalid.
         phone_number:
           type: [string, "null"]
+          description: >
+            The phone number in E.164 or local format. The default country
+            calling code is +1 (USA). Null when the phone number is missing or
+            invalid.
         is_valid:
           type: [boolean, "null"]
+          description: >
+            True if the phone number is valid. False when it is missing or
+            invalid. Null when validity could not be determined, for example
+            when the response is suppressed.
         activity_score:
           type: [integer, "null"]
+          minimum: 0
+          maximum: 100
           description: >
-            0–100. 70+ = high confidence connected. 30- = high confidence
-            disconnected/inactive. 50 = insufficient signals.
+            Trestle's phone activity score, from 0 to 100. 100 means consistent
+            activity in the last 12 months; 0 means a disconnected number or no
+            activity seen in the past year. 70 or above: high confidence the
+            phone is connected, assigned to a subscriber, and someone has been
+            taking calls consistently. 30 or below: high confidence the phone
+            is disconnected or no one will answer. 50: not enough signals to
+            predict either way. Recommended use: prioritize scores of 70 or
+            above; weed out scores of 30 or below.
         country_calling_code:
           type: [string, "null"]
+          description: The country calling code of the phone number, for example `1`.
         country_code:
           type: [string, "null"]
+          description: ISO-3166 alpha-2 country code of the phone number.
         country_name:
           type: [string, "null"]
+          description: The name of the country associated with the phone number.
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
           type: [string, "null"]
+          description: >
+            The company that provides voice and/or data services for the phone
+            number.
         is_prepaid:
           type: [boolean, "null"]
+          description: True if the phone is associated with a prepaid account.
         add_ons:
           type: [object, "null"]
+          description: >
+            Results of the add-ons requested in `add_ons`. Present only when an
+            add-on was requested and is enabled for the API key.
           properties:
             litigator_checks:
               type: object
+              description: >
+                Present when `add_ons=litigator_checks` was requested and the
+                add-on is enabled for the API key. US numbers only.
               properties:
                 phone.is_litigator_risk:
                   type: [boolean, "null"]
+                  description: >
+                    True if the phone subscriber is a TCPA litigator. Null when
+                    the check could not be completed (a warning is added).
         error:
           $ref: '#/components/schemas/PartialError'
+        source_id:
+          type: string
+          description: >
+            The `source_id` sent in the request. Only present when a valid
+            `source_id` was sent.
         warnings:
           type: array
           items:
             type: string
+          description: >
+            Warnings about the request or response. Empty when there are none;
+            a 200 with warnings still carries usable data. Known values:
+            `Missing Input` (no phone number sent), `Invalid Input` (the phone
+            number is not valid), `Canadian phone number. Please contact us for
+            full access.` (Canadian number and the API key does not have Canada
+            access), `Could not store source_id. 255 character limit exceeded`,
+            `Could not store source_id. Use only letters, numbers, spaces, and
+            . _ - : / | #. The value cannot begin with -.`, `TimeoutError:
+            Timeout getting response for litigator check. Partial response
+            returned.`, and `InternalError: Error retrieving the litigator check
+            response. Partial response returned.`
