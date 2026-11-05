@@ -3,10 +3,15 @@ info:
   title: Address Validation API
   version: "3.0"
   description: >
-    Reverse Address API validates and normalizes input addresses while
-    providing comprehensive insights into current residents' information,
-    including demographics, historical addresses, relatives, phone numbers,
-    and email addresses.
+    Address Validation API validates and normalizes a US street address to
+    USPS CASS standards and returns the standardized address with ZIP+4 and
+    latitude/longitude. It does not return residents or contact data. Use when
+    you only need to check or clean up an address; to find who lives at an
+    address, use Reverse Address (`GET /3.1/location`). US addresses only.
+    Trestle data is not a consumer report: do not use it as a factor in
+    credit, insurance, employment, housing, or benefits eligibility decisions
+    (FCRA), or for automated decisions with legal or similarly significant
+    effects on individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -22,57 +27,82 @@ paths:
   /3.0/location_intel:
     get:
       operationId: getAddressValidation
-      summary: Look up residents at a street address
+      summary: Validate and normalize a US street address
       description: >
-        Validates and normalizes the input address and returns all current
-        residents linked to the address, including demographics, phones,
-        emails, historical addresses, and associated people.
+        Validates the input address and returns it normalized to USPS CASS
+        standards, with ZIP+4 and coordinates. US addresses only; a non-US
+        address returns a warning and no address data. Problems with the input
+        (missing street line, invalid or undeliverable address) are reported in
+        `warnings` on a 200 response, not as a 400. Each response carries a
+        `Response-ID` header.
       parameters:
         - name: street_line_1
           in: query
-          required: false
+          required: true
           schema:
             type: string
-          description: The first line of the street address. Example `100 Syrws St`
+          description: >
+            The first line of the street part of the address. If it is missing,
+            the response has `is_valid: false` and the `Missing Input` warning.
+            Example `800 Bellevue Way NE`
         - name: street_line_2
           in: query
           required: false
           schema:
             type: string
-          description: The second line of the street address.
+          description: >
+            The second line of the street part of the address, for example an
+            apartment or suite number. Example `Ste 100`
         - name: city
           in: query
           required: false
           schema:
             type: string
-          description: The city name. Example `Seattle`
+          description: The name of the city. Example `Bellevue`
         - name: state_code
           in: query
           required: false
           schema:
             type: string
-          description: Two-letter state code. Example `WA`
+          description: The state code. Example `WA`
         - name: postal_code
           in: query
           required: false
           schema:
             type: string
-          description: The postal code. Example `98101`
-        - name: country_code
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ISO-3166 alpha-2 country code. Example `US`
+          description: The postal code. Example `98004`
       responses:
         "200":
-          description: Successful response
+          description: >
+            Successful response. Check `warnings`; a 200 can describe an invalid
+            or unvalidated address.
+          headers:
+            Response-ID:
+              description: >
+                Unique ID of this response, in the format `T_<uuid>`. Pass it as
+                `response_id` when sending feedback to the Phone Feedback API.
+              schema:
+                type: string
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ReverseAddressResponse'
+                $ref: '#/components/schemas/AddressValidationResponse'
               example:
-                status: success
+                id: Location.6a3b1c11-76fd-4b25-86bc-5cfb588b4f6b
+                is_valid: true
+                street_line_1: 800 Bellevue Way NE
+                street_line_2: null
+                city: Bellevue
+                postal_code: "98004"
+                zip4: "4286"
+                state_code: WA
+                country_code: US
+                lat_long:
+                  latitude: 47.6175
+                  longitude: -122.2017
+                  accuracy: RoofTop
+                error: null
+                warnings: []
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -104,20 +134,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -138,102 +171,116 @@ components:
           type: string
           description: Human-readable description of the error.
 
-    PartialError:
+    GatewayErrorResponse:
       type: object
-      description: >
-        Returned inside a 200 response when partial data could not be retrieved
-        due to an upstream timeout or internal issue. The remaining fields in
-        the response are still usable.
+      description: Error body returned by the API gateway for 403 and 429 responses.
       properties:
-        name:
+        errorCode:
           type: string
-          example: InternalError
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
         message:
           type: string
-          example: Could not retrieve entire response
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
 
-    ReverseAddressResponse:
+    AddressValidationResponse:
       type: object
       properties:
         id:
           type: [string, "null"]
-          description: Persistent location ID. Format `Location.<uuid>`.
+          description: >
+            Persistent ID of the validated address. Format `Location.<uuid>`.
+            Only present when the address is valid; null otherwise.
         is_valid:
           type: [boolean, "null"]
+          description: >
+            True if the address is valid. False if the address is invalid or
+            `street_line_1` is missing. Null when validation could not be
+            completed or the address is outside the US.
         street_line_1:
           type: [string, "null"]
+          description: >
+            The first line of the street part of the address, normalized by
+            USPS CASS standards. Unit information from `street_line_2` is
+            included here. Null when the address is not valid.
         street_line_2:
           type: [string, "null"]
+          description: >
+            Always null for this API — unit information is incorporated into
+            `street_line_1` during normalization.
         city:
           type: [string, "null"]
+          description: The name of the city. Null when the address is not valid.
         postal_code:
           type: [string, "null"]
+          description: The 5-digit postal code. Null when the address is not valid.
         zip4:
           type: [string, "null"]
+          description: >
+            The 4-digit ZIP+4 extension of the address. Null when the address is
+            not valid.
         state_code:
           type: [string, "null"]
+          description: The state code. Null when the address is not valid.
         country_code:
           type: [string, "null"]
+          description: >
+            ISO-3166 alpha-2 country code of the address. Always `US` for a
+            valid address; null otherwise.
         lat_long:
-          $ref: '#/components/schemas/LatLong'
-        is_active:
-          type: [boolean, "null"]
-        is_commercial:
-          type: [boolean, "null"]
-        delivery_point:
-          type: [string, "null"]
-          enum:
-            - SingleUnit
-            - MultiUnit
-            - POBox
-            - PartialAddress
-        current_residents:
-          type: array
-          items:
-            $ref: '#/components/schemas/Resident'
+          type: [object, "null"]
+          description: >
+            Coordinates of the address. Only present when the address is valid
+            and CASS returns coordinates; null otherwise.
+          properties:
+            latitude:
+              type: [number, "null"]
+              format: double
+              description: The latitude coordinate of the location.
+            longitude:
+              type: [number, "null"]
+              format: double
+              description: The longitude coordinate of the location.
+            accuracy:
+              type: [string, "null"]
+              description: >
+                How precisely the coordinates locate the address, based on the
+                most specific address part that was matched: `RoofTop` (street
+                address), `PostalCode`, `CityState`, `State`, or `Country`.
+              enum:
+                - RoofTop
+                - PostalCode
+                - CityState
+                - State
+                - Country
+                - null
         error:
-          $ref: '#/components/schemas/PartialError'
+          type: [string, "null"]
+          description: >
+            An error message if a partial error occurred during processing,
+            otherwise null.
         warnings:
           type: array
           items:
             type: string
-
-    Resident:
-      allOf:
-        - $ref: '#/components/schemas/Person'
-        - type: object
-          properties:
-            link_to_address_start_date:
-              type: [string, "null"]
-            phones:
-              type: array
-              items:
-                $ref: '#/components/schemas/PhoneShort'
-            emails:
-              type: array
-              items:
-                type: string
-            historical_addresses:
-              type: array
-              items:
-                $ref: '#/components/schemas/Address'
-            associated_people:
-              type: array
-              items:
-                $ref: '#/components/schemas/AssociatedPerson'
-
-    AssociatedPerson:
-      type: object
-      properties:
-        id:
-          type: [string, "null"]
-        name:
-          type: [string, "null"]
-        firstname:
-          type: [string, "null"]
-        middlename:
-          type: [string, "null"]
-        lastname:
-          type: [string, "null"]
-        relation:
-          type: [string, "null"]
+          description: >
+            Warnings about the input or the result. Empty when there are none.
+            Known values: `Missing Input` (no `street_line_1`), `Invalid
+            address`, `Invalid house/building number`, `Missing
+            unit/apt/suite number`, `Invalid unit/apt/suite number`, `Non-US
+            country address validation is not supported.`, and `Address
+            validation could not be completed at this time. Please try again
+            later`. The three house/unit warnings can appear on a valid
+            address.

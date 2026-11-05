@@ -3,9 +3,15 @@ info:
   title: Reverse Phone API
   version: "3.2"
   description: >
-    Reverse Phone API offers comprehensive verification and enrichment of phone
-    numbers. Returns phone validity, line type, carrier data, and all owners
-    associated with the phone including demographics and current addresses.
+    Reverse Phone API validates a phone number and returns its metadata (line
+    type, carrier, prepaid status) plus every owner linked to it, each with
+    demographics and current addresses. Use when you need all owners of a
+    phone; for only the top-ranked owner use Caller Identification
+    (`GET /3.1/caller_id`), and for only the owner's name use Smart CNAM
+    (`GET /3.1/cnam`). Trestle data is not a consumer report: do not use it as
+    a factor in credit, insurance, employment, housing, or benefits
+    eligibility decisions (FCRA), or for automated decisions with legal or
+    similarly significant effects on individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -21,11 +27,13 @@ paths:
   /3.2/phone:
     get:
       operationId: getReversePhone
-      summary: Look up all owners of a phone number
+      summary: Find all owners of a phone number
       description: >
-        Validates the phone and returns all potential owners with demographics,
-        current addresses, alternate phone numbers, and email addresses for
-        each owner.
+        Validates the phone number and returns its metadata and the owners
+        linked to it, top-ranked first. `phone.name_hint` and
+        `phone.postal_code_hint` rank matching owners and addresses higher.
+        Problems with the input are reported in `warnings` on a 200 response,
+        not as a 400.
       parameters:
         - name: phone
           in: query
@@ -33,34 +41,82 @@ paths:
           schema:
             type: string
           description: >
-            Phone number in E.164 or local format. Example `2069735100`
+            Phone number in E.164 or local format. The default country calling
+            code is +1 (USA). Example `2069735100`
         - name: phone.country_hint
           in: query
           required: false
           schema:
             type: string
-          description: ISO-3166 alpha-2 country code. Example `US`
+          description: ISO-3166 alpha-2 country code of the phone number. Example `US`
         - name: phone.name_hint
           in: query
           required: false
           schema:
             type: string
-          description: Name hint to rank results when multiple owners are found.
+          description: >
+            Person or business name associated with the phone number. If
+            multiple names are associated with the phone in Trestle's database,
+            this name is ranked higher. Example `John Doe`
         - name: phone.postal_code_hint
           in: query
           required: false
           schema:
             type: string
-          description: Postal code hint to rank name/address results.
+          description: >
+            Postal code of the subscriber address associated with the phone
+            number. If multiple names or addresses are associated with the phone
+            in Trestle's database, this postal code is used to rank the matching
+            name and address higher. Example `98264`
       responses:
         "200":
-          description: Successful response
+          description: >
+            Successful response. Check `warnings` and `error`; a 200 can carry
+            partial results.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReversePhoneResponse'
               example:
-                status: success
+                id: Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4
+                phone_number: "2069735100"
+                is_valid: true
+                country_calling_code: "1"
+                line_type: NonFixedVOIP
+                carrier: Trestle Telco
+                is_prepaid: false
+                is_commercial: true
+                owners:
+                  - id: Person.fffdcf06-0929-4b5a-9921-ee49b101ca84
+                    name: Waidong L Syrws
+                    firstname: Waidong
+                    middlename: L
+                    lastname: Syrws
+                    alternate_names:
+                      - Sryws W L
+                    age_range: 25-29
+                    gender: null
+                    type: Person
+                    link_to_phone_start_date: "2019-03-23"
+                    industry: null
+                    current_addresses:
+                      - id: Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01
+                        location_type: Address
+                        street_line_1: 100 Syrws St
+                        street_line_2: Ste 1
+                        city: Lynden
+                        postal_code: "98264"
+                        zip4: "98264-9999"
+                        state_code: WA
+                        country_code: US
+                        lat_long:
+                          latitude: 0
+                          longitude: 0
+                          accuracy: RoofTop
+                        delivery_point: SingleUnit
+                        link_to_person_start_date: "2011-10-05"
+                error: null
+                warnings: []
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -92,20 +148,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -126,57 +185,272 @@ components:
           type: string
           description: Human-readable description of the error.
 
-    PartialError:
+    GatewayErrorResponse:
       type: object
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    PartialError:
+      type: [object, "null"]
       description: >
         Returned inside a 200 response when partial data could not be retrieved
         due to an upstream timeout or internal issue. The remaining fields in
-        the response are still usable.
+        the response are still usable. Null when the response is complete.
       properties:
         name:
           type: string
+          description: Error type. Incomplete response due to external timeouts.
           example: InternalError
         message:
           type: string
+          description: Human-readable description of the error.
           example: Could not retrieve entire response
+
+    LineType:
+      type: [string, "null"]
+      description: >
+        The line type of the phone number: `Landline` (traditional wired
+        line), `Mobile` (wireless line), `FixedVOIP` (VOIP number connected to
+        a physical address), `NonFixedVOIP` (VOIP number not connected to a
+        fixed physical address), `Premium` (caller pays a premium for the
+        call), `TollFree` (callee pays for the call), `Voicemail`
+        (voicemail-only service), or `Other` (line type is unclear).
+      enum:
+        - Landline
+        - Mobile
+        - FixedVOIP
+        - NonFixedVOIP
+        - Premium
+        - TollFree
+        - Voicemail
+        - Other
+        - null
+
+    LatLong:
+      type: [object, "null"]
+      description: The coordinates of the geographical location of the address.
+      properties:
+        latitude:
+          type: [number, "null"]
+          format: double
+          description: The latitude coordinate of the location.
+        longitude:
+          type: [number, "null"]
+          format: double
+          description: The longitude coordinate of the location.
+        accuracy:
+          type: [string, "null"]
+          description: >
+            How precisely the coordinates locate the address, based on the most
+            specific address part available: `RoofTop` (street address),
+            `PostalCode`, `CityState`, `State`, or `Country`.
+          enum:
+            - RoofTop
+            - PostalCode
+            - CityState
+            - State
+            - Country
+            - null
 
     ReversePhoneResponse:
       type: object
       properties:
         id:
           type: [string, "null"]
-          description: Persistent phone ID. Format `Phone.<uuid>`.
+          description: >
+            Persistent ID of the phone number. Format `Phone.<uuid>`. Null when
+            the phone number is missing or invalid.
         phone_number:
           type: [string, "null"]
+          description: >
+            The phone number in E.164 or local format. The default country
+            calling code is +1 (USA). Null when the phone number is missing or
+            invalid.
         is_valid:
           type: [boolean, "null"]
+          description: >
+            True if the phone number is valid. False when it is missing or
+            invalid. Null when validity could not be determined, for example
+            when the response is suppressed.
         country_calling_code:
           type: [string, "null"]
+          description: The country calling code of the phone number, for example `1`.
         line_type:
           $ref: '#/components/schemas/LineType'
         carrier:
           type: [string, "null"]
+          description: >
+            The company that provides voice and/or data services for the phone
+            number. Carriers are returned at the MVNO level.
         is_prepaid:
           type: [boolean, "null"]
+          description: True if the phone is associated with a prepaid account.
         is_commercial:
           type: [boolean, "null"]
+          description: True if the phone number is registered to a business.
         owners:
           type: array
+          description: >
+            The people and businesses linked to the phone, top-ranked first.
+            Empty when no owner was found or the phone number is invalid.
           items:
-            $ref: '#/components/schemas/PhoneOwner'
+            $ref: '#/components/schemas/Owner'
         error:
           $ref: '#/components/schemas/PartialError'
         warnings:
           type: array
           items:
             type: string
+          description: >
+            Warnings about the request or response. Empty when there are none;
+            a 200 with warnings still carries usable data. Known values:
+            `Missing Input` (no phone number sent), `Invalid Input` (the phone
+            number is not valid), `International phone number. Available only
+            for enterprise users.` (non-US number and the API key does not have
+            international access), `International data unavailable for this
+            product.`, and `Canadian phone number. Please contact us for full
+            access.` (Canadian number and the API key does not have Canada
+            access).
 
-    PhoneOwner:
-      allOf:
-        - $ref: '#/components/schemas/Person'
-        - type: object
-          properties:
-            current_addresses:
-              type: array
-              items:
-                $ref: '#/components/schemas/Address'
+    Owner:
+      type: object
+      description: A person or business linked to the phone number.
+      properties:
+        id:
+          type: [string, "null"]
+          description: Persistent ID of the owner. Format `Person.<uuid>`.
+        name:
+          type: [string, "null"]
+          description: Full name of the person, or the business name.
+        firstname:
+          type: [string, "null"]
+          description: First name of the person. Null for a business.
+        middlename:
+          type: [string, "null"]
+          description: Middle name or middle initial of the person. Null for a business.
+        lastname:
+          type: [string, "null"]
+          description: Last name of the person. Null for a business.
+        alternate_names:
+          type: array
+          items:
+            type: string
+          description: Other names the owner is known by. Empty when there are none.
+        age_range:
+          type: [string, "null"]
+          description: >
+            The age of the person as a 5-year range, for example `25-29`. Null
+            for a business.
+        gender:
+          type: [string, "null"]
+          description: The gender of the person, `M` or `F`. Null when unknown or for a business.
+          enum:
+            - M
+            - F
+            - null
+        type:
+          type: string
+          description: >
+            The type of legal entity: `Person` for a person, `Business` for a
+            company.
+          enum:
+            - Person
+            - Business
+        link_to_phone_start_date:
+          type: [string, "null"]
+          format: date
+          description: >
+            The date the owner was first linked to the phone number, as
+            `YYYY-MM-DD`. Null when unknown.
+        industry:
+          type: [array, "null"]
+          items:
+            type: string
+          description: Industry classification of the business. Null for a person.
+        current_addresses:
+          type: array
+          description: >
+            The owner's current addresses, most relevant first. Empty when none
+            were found.
+          items:
+            $ref: '#/components/schemas/CurrentAddress'
+
+    CurrentAddress:
+      type: object
+      description: A current address of the owner.
+      properties:
+        id:
+          type: [string, "null"]
+          description: Persistent ID of the address. Format `Location.<uuid>`.
+        location_type:
+          type: [string, "null"]
+          description: >
+            The most specific level the address is known to: `Address` (street
+            address), `PostalCode`, `City`, `State`, or `Country`.
+          enum:
+            - Address
+            - PostalCode
+            - City
+            - State
+            - Country
+            - null
+        street_line_1:
+          type: [string, "null"]
+          description: The first line of the street part of the address.
+        street_line_2:
+          type: [string, "null"]
+          description: The second line of the street part of the address.
+        city:
+          type: [string, "null"]
+          description: The name of the city.
+        postal_code:
+          type: [string, "null"]
+          description: The postal code.
+        zip4:
+          type: [string, "null"]
+          description: The ZIP+4 code of the address, in the format `<postal code>-<4 digits>`.
+        state_code:
+          type: [string, "null"]
+          description: The state code.
+        country_code:
+          type: [string, "null"]
+          description: ISO-3166 alpha-2 country code of the address.
+        lat_long:
+          $ref: '#/components/schemas/LatLong'
+        delivery_point:
+          type: [string, "null"]
+          description: >
+            The type of delivery point: `SingleUnit` (single-unit building),
+            `MultiUnit` (building with several units), `POBox`, or
+            `PartialAddress`.
+          enum:
+            - SingleUnit
+            - MultiUnit
+            - POBox
+            - PartialAddress
+            - null
+        link_to_person_start_date:
+          type: [string, "null"]
+          format: date
+          description: >
+            The date the address was first linked to the owner, as
+            `YYYY-MM-DD`. Null when unknown.

@@ -3,10 +3,18 @@ info:
   title: Real Contact API
   version: "2.0"
   description: >
-    Real Contact API verifies and grades phone numbers, emails, and addresses.
-    Returns Phone Activity Score, line type, name matches, and IP-based
-    intelligence signals. Add-ons available for email deliverability, email age,
-    and TCPA litigator checks.
+    Real Contact API verifies and grades a lead's phone number, email, and
+    address. It returns A-F contact grades, the phone activity score, line
+    type, name matches for phone, email, and address, and IP-based trust
+    signals. Add-ons are available for email deliverability, email age, and
+    TCPA litigator checks. Use version 2.0 for new integrations; it adds IP
+    trust signals and `source_id` and returns nested `phone`, `email`,
+    `address`, and `ip_address` objects. Version 1.1 (`GET
+    /1.1/real_contact`) remains available with a flat response. Trestle data
+    is not a consumer report: do not use it as a factor in credit, insurance,
+    employment, housing, or benefits eligibility decisions (FCRA), or for
+    automated decisions with legal or similarly significant effects on
+    individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -24,10 +32,11 @@ paths:
       operationId: getRealContact
       summary: Verify and grade a lead's contact information
       description: >
-        Verifies the contactability and consistency of an identity profile
-        across name, phone, email, address, and IP address. Returns contact
-        grades (A–F), activity scores, name-match indicators, and IP trust
-        signals.
+        Verifies the contactability and consistency of a lead across name,
+        phone, email, address, and IP address. Returns contact grades (A-F),
+        activity scores, name-match indicators, and IP trust signals. Problems
+        with the input are reported in `warnings` on a 200 response, not as a
+        400. Each response carries a `Response-ID` header.
       parameters:
         - name: name
           in: query
@@ -35,82 +44,144 @@ paths:
           schema:
             type: string
           description: The name of the person to search. Example `John Doe`
-        - name: phone
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The phone number provided by the lead. Example `4259853735`
-        - name: email
+        - name: first_name
           in: query
           required: false
           schema:
             type: string
-          description: The email provided by the lead. Example `john.doe@example.com`
-        - name: address.street_line_1
+          description: The first name of the person to search. Example `John`
+        - name: last_name
           in: query
           required: false
           schema:
             type: string
-        - name: address.city
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: address.state_code
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: address.postal_code
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: address.country_code
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ISO-3166 alpha-2 country code. Example `US`
-        - name: ip_address
-          in: query
-          required: false
-          schema:
-            type: string
-          description: >
-            The IP address captured at time of interaction. Example `192.0.0.1`
-        - name: add_ons
-          in: query
-          required: false
-          schema:
-            type: string
-          description: >
-            Comma-separated list of add-ons to enable. Options:
-            `email_checks_deliverability`, `email_checks_age`,
-            `litigator_checks`. Additional charges apply.
+          description: The last name of the person to search. Example `Doe`
         - name: business.name
           in: query
           required: false
           schema:
             type: string
           description: The business name to search. Example `The Golden Company`
-        - name: source_id
+        - name: phone
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The phone number provided by the lead on the web form. Example `4259853735`
+        - name: email
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The email provided by the lead on the web form. Example `john.doe@example.com`
+        - name: address.street_line_1
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The first line of the street part of the address. Example `100 Syrws St`
+        - name: address.street_line_2
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The second line of the street part of the address. Example `Apt 4B`
+        - name: address.city
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The name of the city. Example `Lynden`
+        - name: address.state_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The state code. Example `WA`
+        - name: address.postal_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: The postal code. Example `98229`
+        - name: address.country_code
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ISO-3166 alpha-2 country code of the address. Example `US`
+        - name: ip_address
           in: query
           required: false
           schema:
             type: string
           description: >
-            Optional identifier used to group queries by source, campaign, channel, or cohort. Maximum length is 255 characters.
+            The IPv4 or IPv6 address captured at the time of interaction (web
+            form, sign up, etc.). Example `192.0.0.1`
+        - name: add_ons
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >
+            Comma-separated add-ons to enable. Options:
+            `email_checks_deliverability` (email deliverability),
+            `email_checks_age` (email age score), and `litigator_checks` (TCPA
+            litigator detection). Additional charges apply. Example
+            `litigator_checks,email_checks_deliverability`
+        - name: source_id
+          in: query
+          required: false
+          schema:
+            type: string
+            maxLength: 255
+          description: >
+            Optional identifier used to group queries by source, campaign,
+            channel, or cohort. Maximum length is 255 characters. Use only
+            letters, numbers, spaces, and `. _ - : / | #`; the value cannot
+            begin with `-`. An invalid value does not fail the request: it is
+            dropped and a warning is added.
       responses:
         "200":
-          description: Successful response
+          description: >
+            Successful response. Check `warnings` and `errors`; a 200 can carry
+            partial results.
+          headers:
+            Response-ID:
+              description: >
+                Unique ID of this response, in the format `T_<uuid>`. Pass it as
+                `response_id` when sending feedback to the Phone Feedback API.
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/RealContactResponse'
               example:
-                status: success
+                phone:
+                  contact_grade: A
+                  is_valid: true
+                  activity_score: 95
+                  line_type: Mobile
+                  name_match: true
+                email:
+                  contact_grade: A
+                  is_valid: true
+                  name_match: true
+                address:
+                  is_valid: true
+                  name_match: true
+                ip_address:
+                  trust_score: 92
+                  ip_distance_to_address: 12
+                add_ons:
+                  litigator_checks:
+                    phone_is_litigator_risk: false
+                  email_checks:
+                    email_age_score: 95
+                    email_is_deliverable: true
+                warnings: []
+                errors: null
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -142,20 +213,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -176,26 +250,97 @@ components:
           type: string
           description: Human-readable description of the error.
 
+    GatewayErrorResponse:
+      type: object
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    PartialError:
+      type: [object, "null"]
+      description: >
+        Error details in case of a partial error, or null if no errors
+        occurred. The remaining fields in the response are still usable.
+      properties:
+        name:
+          type: string
+          description: Error type. Incomplete response due to external timeouts.
+          example: InternalError
+        message:
+          type: string
+          description: Human-readable description of the error.
+          example: Could not retrieve entire response
+
+    ContactGrade:
+      type: [string, "null"]
+      description: >
+        An A-F grade of the lead's quality and whether it is contactable. A
+        Grade-A lead is real and contactable and should be prioritized; a
+        Grade-F lead is a bad lead and should be deprioritized. Values: `A`,
+        `B`, `C`, `D`, `F`. See
+        https://trestleiq.com/knowledge-base/explain-real-contact-api-grading/
+      enum:
+        - A
+        - B
+        - C
+        - D
+        - F
+        - null
+
     RealContactResponse:
       type: object
       properties:
         phone:
           type: object
+          description: Phone verification and grading results.
           properties:
             contact_grade:
-              type: [string, "null"]
-              description: >
-                A–F grade for lead contactability via phone. A = high quality,
-                F = bad lead.
+              $ref: '#/components/schemas/ContactGrade'
             is_valid:
               type: [boolean, "null"]
+              description: True if the phone number is valid.
             activity_score:
               type: [integer, "null"]
+              minimum: 0
+              maximum: 100
               description: >
-                0–100 score. 70+ = high confidence connected; 30- = high
-                confidence disconnected/inactive.
+                Trestle's phone activity score, from 0 to 100. 100 means
+                consistent activity in the last 12 months; 0 means a
+                disconnected number or no activity seen in the past year. 70 or
+                above: high confidence the phone is connected, assigned to a
+                subscriber, and someone has been taking calls consistently. 30
+                or below: high confidence the phone is disconnected or no one
+                will answer. 50: not enough signals to predict either way.
+                Recommended use: prioritize scores of 70 or above; weed out
+                scores of 30 or below.
             line_type:
               type: [string, "null"]
+              description: >
+                The line type of the phone number: `Landline` (traditional
+                wired line), `Mobile` (wireless line), `FixedVOIP` (VOIP number
+                connected to a physical address), `NonFixedVOIP` (VOIP number
+                not connected to a fixed physical address), `Premium` (caller
+                pays a premium for the call), `TollFree` (callee pays for the
+                call), `Voicemail` (voicemail-only service), or `Other` (line
+                type is unclear).
               enum:
                 - Landline
                 - Mobile
@@ -205,56 +350,130 @@ components:
                 - TollFree
                 - Voicemail
                 - Other
+                - null
             name_match:
               type: [boolean, "null"]
+              description: >
+                Whether the name provided on the lead form matches the input
+                phone number according to Trestle's database. A match is a
+                positive indicator that the lead is real and is who they say
+                they are.
         email:
           type: object
+          description: Email verification and grading results.
           properties:
             contact_grade:
-              type: [string, "null"]
+              $ref: '#/components/schemas/ContactGrade'
             is_valid:
               type: [boolean, "null"]
+              description: True if the email is valid.
             name_match:
               type: [boolean, "null"]
+              description: >
+                Whether the name provided on the lead form matches the input
+                email address according to Trestle's database.
         address:
           type: object
+          description: Address verification results.
           properties:
             is_valid:
               type: [boolean, "null"]
+              description: True if the address is valid.
             name_match:
               type: [boolean, "null"]
+              description: >
+                Whether the name provided on the lead form matches the input
+                address according to Trestle's database.
         ip_address:
           type: [object, "null"]
+          description: >
+            IP Trust Score and IP distance results. The fields are null when no
+            IP address was sent.
           properties:
             trust_score:
               type: [integer, "null"]
-              description: 0–100 score evaluating interaction legitimacy based on IP.
+              minimum: 0
+              maximum: 100
+              description: >
+                A 0-100 score of how legitimate the interaction appears based on
+                the user's IP address; higher is more trusted. It factors in
+                network type (VPN, proxy, data center vs. residential), IP
+                reuse/sharing patterns, and geographic signals.
             ip_distance_to_address:
               type: [integer, "null"]
-              description: Approximate miles between IP location and provided address.
+              description: >
+                Approximate distance in miles between the user's IP location and
+                the provided address. Null when confidence in the IP location is
+                low.
         add_ons:
           type: [object, "null"]
+          description: >
+            Results of the add-ons requested in `add_ons`. Present only when an
+            add-on was requested.
           properties:
             litigator_checks:
               type: object
+              description: Present when `add_ons=litigator_checks` was requested.
               properties:
                 phone_is_litigator_risk:
                   type: [boolean, "null"]
+                  description: True if the phone subscriber is a TCPA litigator.
             email_checks:
               type: object
+              description: >
+                Present when `email_checks_deliverability` or
+                `email_checks_age` was requested.
               properties:
                 email_is_deliverable:
                   type: [boolean, "null"]
+                  description: >
+                    True if the email is valid and deliverable. Returned for
+                    `email_checks_deliverability`.
                 email_age_score:
                   type: [integer, "null"]
+                  minimum: 0
+                  maximum: 100
+                  description: >
+                    A 0-100 score of the longevity and activity level of the
+                    email address. Returned for `email_checks_age`.
         warnings:
           type: array
           items:
             type: string
+          description: >
+            Warnings about the input or the result. Empty when there are none;
+            a 200 with warnings still carries usable data. Known values:
+            `Missing Input`; phone: `Invalid Phone`, `International data
+            unavailable for this product.`, `Canadian phone number. Please
+            contact us for full access.`; address: `Invalid Address`, `Invalid
+            house/building number`, `Missing unit/apt/suite number`, `Invalid
+            unit/apt/suite number`; email: `Invalid Email`, `Free Email Service
+            Provider`, `Tumbled Email`, `Disposable Email`, `Privacy Email`,
+            `Email is a spam trap`, `Email is a known abuse email address`,
+            `Potential Junk Email`, `Role Based Email`, `Undeliverable Email`,
+            `Domain is a catch all and does not support validation`, `MX
+            forwarding detected. This email may route through a forwarding
+            service.`, `Email deliverability check could not be completed due
+            to email server restrictions`; IP: `Input IP address is invalid.
+            Please provide a valid IPv4 or IPv6 address`, `Timeout getting
+            response for IP information. Partial response returned.`;
+            add-ons: `Lead is a Litigator. Must not be contacted.`,
+            `TimeoutError: Timeout getting response for litigator check.
+            Partial response returned.`, `InternalError: Error retrieving the
+            litigator check response. Partial response returned.`,
+            `TimeoutError: Timeout getting a response from the email server
+            for email deliverability check`, `InternalError: Error retrieving
+            the email deliverability response`, `TimeoutError: Timeout getting
+            response for email age score`, `InternalError: Error retrieving
+            the email age score response`; `source_id`: `Could not store
+            source_id. 255 character limit exceeded`, `Could not store
+            source_id. Use only letters, numbers, spaces, and . _ - : / | #.
+            The value cannot begin with -.`; other: `Partial Error-Could not
+            retrieve entire response`.
         errors:
-          type: [object, "null"]
-          properties:
-            name:
-              type: string
-            message:
-              type: string
+          $ref: '#/components/schemas/PartialError'
+        source_id:
+          type: string
+          description: >
+            The `source_id` sent in the request. Only present when a valid
+            `source_id` was sent.

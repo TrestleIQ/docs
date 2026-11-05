@@ -3,10 +3,16 @@ info:
   title: Phone Feedback API
   version: "1.0"
   description: >
-    Phone Feedback API allows submitting feedback to Trestle about dialed
-    numbers, including connected/disconnected status and right-party contact
-    confirmation. This data improves the accuracy of Trestle's phone activity
-    models.
+    Phone Feedback API lets you report back to Trestle what happened when you
+    dialed a number: whether it was connected or disconnected, and whether the
+    call reached the right party. This data improves the accuracy of Trestle's
+    phone activity models. This is the only Trestle API that writes data: each
+    accepted call stores feedback that changes Trestle's models, so call it
+    only with real call outcomes, and not as a lookup. All other Trestle APIs
+    are read-only. Trestle data is not a consumer report: do not use it as a
+    factor in credit, insurance, employment, housing, or benefits eligibility
+    decisions (FCRA), or for automated decisions with legal or similarly
+    significant effects on individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -24,10 +30,11 @@ paths:
       operationId: submitPhoneFeedback
       summary: Submit live-call feedback for a phone number
       description: >
-        Submit feedback about a dialed phone number: whether it was connected
+        Submits feedback about a dialed phone number: whether it was connected
         or disconnected, and whether the call confirmed the right party was
-        reached. Pair with the `response_id` returned from a prior Trestle
-        API call.
+        reached. Pair it with the `response_id` from a prior Trestle API call.
+        A request the API rejects still returns HTTP 200 with `status: failed`,
+        so always check `status`.
       requestBody:
         required: true
         content:
@@ -42,13 +49,31 @@ paths:
               phone_right_party_contact: true
       responses:
         "200":
-          description: Feedback accepted
+          description: >
+            Request processed. `status` is `success` when the feedback was
+            accepted, or `failed` when it was rejected (see `name` and
+            `message`). A rejected request is not stored.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PhoneFeedbackResponse'
-              example:
-                status: success
+              examples:
+                accepted:
+                  summary: Feedback accepted
+                  value:
+                    status: success
+                rejected:
+                  summary: Feedback rejected (still HTTP 200)
+                  value:
+                    status: failed
+                    name: Invalid Input
+                    message: Invalid phone status in request body
+                missing_phone:
+                  summary: Feedback rejected, phone missing (still HTTP 200)
+                  value:
+                    status: failed
+                    name: Missing Input
+                    message: Missing phone number in request body
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -80,20 +105,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -114,55 +142,108 @@ components:
           type: string
           description: Human-readable description of the error.
 
-    PartialError:
+    GatewayErrorResponse:
       type: object
-      description: >
-        Returned inside a 200 response when partial data could not be retrieved
-        due to an upstream timeout or internal issue. The remaining fields in
-        the response are still usable.
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    PartialError:
+      type: [object, "null"]
+      description: Error details in case of an error, otherwise null.
       properties:
         name:
           type: string
+          description: Error type. Incomplete response due to external timeouts.
           example: InternalError
         message:
           type: string
+          description: Human-readable description of the error.
           example: Could not retrieve entire response
 
     PhoneFeedbackRequest:
       type: object
       required:
-        - response_id
         - phone
-        - phone_status
-        - phone_right_party_contact
       properties:
         response_id:
           type: string
           description: >
-            The response ID returned from a prior Trestle API call.
-            Example `T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f`
+            The value of the `Response-ID` header (format `T_<uuid>`) returned
+            by the prior Trestle API call this feedback is about. Returned by
+            Address Validation, Reverse Address, Phone Validation, Real Contact
+            1.1 and 2.0, and Decision Signals. Smart CNAM, Caller
+            Identification, and Reverse Phone do not return it. Optional, but
+            send it whenever you have it so the feedback is linked to that
+            lookup. Example `T_b5d031b8-e8a3-4eef-8fa8-d87d3b7e386f`
         phone:
           type: string
           description: >
-            Phone number in E.164 or local format. Example `2069735100`
+            The phone number in E.164 or local format. The default country
+            calling code is +1 (USA). Example `2069735100`
         name:
           type: string
-          description: Person or business name associated with the phone.
+          description: >
+            Person or business name associated with the phone number. Optional.
+            Example `Waidong Syrws`
         phone_status:
           type: string
           enum:
             - Connected
             - Disconnected
-          description: Live-call status for the phone number.
+          description: >
+            Live-call status for the phone number: `Connected` or
+            `Disconnected` (case-insensitive). Optional. Any other value is
+            rejected with `status: failed`.
         phone_right_party_contact:
           type: boolean
-          description: Whether the call confirmed the number belongs to the right party.
+          description: >
+            True if the call confirmed the number belongs to the right party.
+            Optional. Any value other than true or false is rejected with
+            `status: failed`.
 
     PhoneFeedbackResponse:
       type: object
       properties:
         status:
           type: string
-          example: success
+          enum:
+            - success
+            - failed
+          description: >
+            `success` if the feedback was received and stored; `failed` if the
+            request was rejected. A rejected request still returns HTTP 200.
+        name:
+          type: string
+          enum:
+            - Missing Input
+            - Invalid Input
+          description: >
+            Present only when `status` is `failed`. `Missing Input` when the
+            body or `phone` is missing; `Invalid Input` when the phone number,
+            `phone_status`, or `phone_right_party_contact` is not valid.
+        message:
+          type: string
+          description: >
+            Present only when `status` is `failed`. Explains what was rejected,
+            for example `Invalid phone status in request body`.
         error:
           $ref: '#/components/schemas/PartialError'

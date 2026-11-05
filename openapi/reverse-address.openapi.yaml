@@ -3,10 +3,15 @@ info:
   title: Reverse Address API
   version: "3.1"
   description: >
-    Reverse Address API validates and normalizes input addresses while
-    providing comprehensive insights into current residents' information,
-    including demographics, historical addresses, relatives, phone numbers,
-    and email addresses.
+    Reverse Address API validates and normalizes a US street address and
+    returns the people and businesses currently living or registered at it,
+    with demographics, historical addresses, and associated people. Use when
+    you need to know who is at an address; to only check or clean up an
+    address, use Address Validation (`GET /3.0/location_intel`). Trestle data
+    is not a consumer report: do not use it as a factor in credit, insurance,
+    employment, housing, or benefits eligibility decisions (FCRA), or for
+    automated decisions with legal or similarly significant effects on
+    individuals.
   contact:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
@@ -24,55 +29,113 @@ paths:
       operationId: getReverseAddress
       summary: Look up residents at a street address
       description: >
-        Validates and normalizes the input address and returns all current
-        residents linked to the address, including demographics,
-        historical addresses, and associated people.
+        Validates the input address and returns all current residents linked
+        to it. Send `street_line_1` plus `postal_code` or `state_code`;
+        without them the response carries the `Missing Input` warning and no
+        data. Problems with the input are reported in `warnings` on a 200
+        response, not as a 400. Each response carries a `Response-ID` header.
       parameters:
         - name: street_line_1
           in: query
           required: false
           schema:
             type: string
-          description: The first line of the street address. Example `100 Syrws St`
+            maxLength: 1000
+          description: >
+            The first line of the street part of the address. Needed, together
+            with `postal_code` or `state_code`, for a lookup. Example
+            `100 Syrws St`
         - name: street_line_2
           in: query
           required: false
           schema:
             type: string
-          description: The second line of the street address.
+            maxLength: 1000
+          description: >
+            The second line of the street part of the address, for example a
+            suite or apartment number. Example `Ste 1`
         - name: city
           in: query
           required: false
           schema:
             type: string
-          description: The city name. Example `Seattle`
+            maxLength: 500
+          description: The name of the city. Example `Seattle`
         - name: state_code
           in: query
           required: false
           schema:
             type: string
-          description: Two-letter state code. Example `WA`
+            maxLength: 100
+          description: >
+            The state code. Either `state_code` or `postal_code` is needed for a
+            lookup. Example `WA`
         - name: postal_code
           in: query
           required: false
           schema:
             type: string
-          description: The postal code. Example `98101`
+            maxLength: 100
+          description: >
+            The postal code. Either `postal_code` or `state_code` is needed for
+            a lookup. Example `98101`
         - name: country_code
           in: query
           required: false
           schema:
             type: string
-          description: ISO-3166 alpha-2 country code. Example `US`
+            maxLength: 100
+          description: ISO-3166 alpha-2 country code of the address. Example `US`
       responses:
         "200":
-          description: Successful response
+          description: >
+            Successful response. Check `warnings` and `error`; a 200 can describe
+            an invalid or unvalidated address, or carry partial results.
+          headers:
+            Response-ID:
+              description: >
+                Unique ID of this response, in the format `T_<uuid>`. Pass it as
+                `response_id` when sending feedback to the Phone Feedback API.
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReverseAddressResponse'
               example:
-                status: success
+                id: Location.d1a40ed5-a70a-46f8-80a9-bb4ac27e3a01
+                is_valid: true
+                street_line_1: 100 Syrws St
+                street_line_2: Ste 1
+                city: Lynden
+                postal_code: "98264"
+                zip4: "98264-9999"
+                state_code: WA
+                country_code: US
+                lat_long:
+                  latitude: 0
+                  longitude: 0
+                  accuracy: RoofTop
+                is_active: true
+                is_commercial: true
+                delivery_point: SingleUnit
+                current_residents:
+                  - id: Person.fffdcf06-0929-4b5a-9921-ee49b101ca84
+                    name: Waidong L Syrws
+                    firstname: Waidong
+                    middlename: L
+                    lastname: Syrws
+                    alternate_names:
+                      - Sryws W L
+                    age_range: 25-29
+                    gender: null
+                    type: Person
+                    industry: null
+                    link_to_address_start_date: "2023-01-02"
+                    historical_addresses: []
+                    associated_people: []
+                error: null
+                warnings: []
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -104,20 +167,23 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     403Forbidden:
       description: >
-        Forbidden. The API key is invalid, expired, disabled, or does not have
-        access to this product/version.
+        Forbidden. The `x-api-key` header is missing or malformed, or the key is
+        invalid, revoked, disabled, expired, or not enabled for this
+        product/version. Returned by the API gateway with `errorCode`
+        `AUTHENTICATION_FAILED`.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     429TooManyRequests:
       description: >
-        Too Many Requests. Either the per-second QPS rate limit or the monthly
-        quota has been exceeded.
+        Too Many Requests. Either the per-second QPS rate limit
+        (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
+        has been exceeded. The request was not processed.
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/GatewayErrorResponse'
     500InternalServerError:
       description: >
         Internal Server Error. An unexpected server-side error occurred. Contact
@@ -138,57 +204,141 @@ components:
           type: string
           description: Human-readable description of the error.
 
-    PartialError:
+    GatewayErrorResponse:
       type: object
+      description: Error body returned by the API gateway for 403 and 429 responses.
+      properties:
+        errorCode:
+          type: string
+          description: >
+            Machine-readable error code. `AUTHENTICATION_FAILED` for 403;
+            `RATE_LIMIT_EXCEEDED` or `QUOTA_EXCEEDED` for 429.
+          enum:
+            - AUTHENTICATION_FAILED
+            - RATE_LIMIT_EXCEEDED
+            - QUOTA_EXCEEDED
+        message:
+          type: string
+          description: Human-readable description of the error.
+        hint:
+          description: Remediation guidance. An array of strings for `403`, a string for `429`.
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    PartialError:
+      type: [object, "null"]
       description: >
         Returned inside a 200 response when partial data could not be retrieved
         due to an upstream timeout or internal issue. The remaining fields in
-        the response are still usable.
+        the response are still usable. Null when the response is complete.
       properties:
         name:
           type: string
+          description: Error type. Incomplete response due to external timeouts.
           example: InternalError
         message:
           type: string
+          description: Human-readable description of the error.
           example: Could not retrieve entire response
+
+    LatLong:
+      type: [object, "null"]
+      description: The coordinates of the geographical location of the address.
+      properties:
+        latitude:
+          type: [number, "null"]
+          format: double
+          description: The latitude coordinate of the location.
+        longitude:
+          type: [number, "null"]
+          format: double
+          description: The longitude coordinate of the location.
+        accuracy:
+          type: [string, "null"]
+          description: >
+            How precisely the coordinates locate the address, based on the most
+            specific address part available: `RoofTop` (street address),
+            `PostalCode`, `CityState`, `State`, or `Country`.
+          enum:
+            - RoofTop
+            - PostalCode
+            - CityState
+            - State
+            - Country
+            - null
 
     ReverseAddressResponse:
       type: object
       properties:
         id:
           type: [string, "null"]
-          description: Persistent location ID. Format `Location.<uuid>`.
+          description: >
+            Persistent ID of the address. Format `Location.<uuid>`. Null when
+            the address is not valid.
         is_valid:
           type: [boolean, "null"]
+          description: >
+            True if the address is valid. False if the address is invalid or
+            the required inputs are missing. Null when validation could not be
+            completed or the address is outside the US.
         street_line_1:
           type: [string, "null"]
+          description: >
+            The first line of the street part of the address, normalized. Null
+            when the address is not valid.
         street_line_2:
           type: [string, "null"]
+          description: The second line of the street part of the address.
         city:
           type: [string, "null"]
+          description: The name of the city. Null when the address is not valid.
         postal_code:
           type: [string, "null"]
+          description: The postal code. Null when the address is not valid.
         zip4:
           type: [string, "null"]
+          description: >
+            The ZIP+4 code of the address, in the format `<postal code>-<4
+            digits>`. Null when the address is not valid.
         state_code:
           type: [string, "null"]
+          description: The state code. Null when the address is not valid.
         country_code:
           type: [string, "null"]
+          description: >
+            ISO-3166 alpha-2 country code of the address. Null when the address
+            is not valid.
         lat_long:
           $ref: '#/components/schemas/LatLong'
         is_active:
           type: [boolean, "null"]
+          description: True if the address is currently receiving mail.
         is_commercial:
           type: [boolean, "null"]
+          description: >
+            True if the address is a business address. Null when validation
+            could not be completed or the address is outside the US.
         delivery_point:
           type: [string, "null"]
+          description: >
+            The type of delivery point: `SingleUnit` (single-unit building),
+            `MultiUnit` (building with several units), `POBox`, or
+            `PartialAddress`. Null when the address is not valid.
           enum:
             - SingleUnit
             - MultiUnit
             - POBox
             - PartialAddress
+            - null
         current_residents:
-          type: array
+          type: [array, "null"]
+          description: >
+            The people and businesses currently linked to the address. Empty
+            when the address is valid but no residents were found. Null when
+            the address is not valid.
           items:
             $ref: '#/components/schemas/Resident'
         error:
@@ -197,35 +347,174 @@ components:
           type: array
           items:
             type: string
+          description: >
+            Warnings about the input or the result. Empty when there are none.
+            Known values: `Missing Input` (no `street_line_1`, or neither
+            `postal_code` nor `state_code`), `Invalid address`, `Invalid
+            house/building number`, `Missing unit/apt/suite number`, `Invalid
+            unit/apt/suite number`, `Non-US country address validation is not
+            supported.`, and `Address validation could not be completed at this
+            time. Please try again later`. The three house/unit warnings can
+            appear on a valid address.
 
     Resident:
-      allOf:
-        - $ref: '#/components/schemas/Person'
-        - type: object
-          properties:
-            link_to_address_start_date:
-              type: [string, "null"]
-            historical_addresses:
-              type: array
-              items:
-                $ref: '#/components/schemas/Address'
-            associated_people:
-              type: array
-              items:
-                $ref: '#/components/schemas/AssociatedPerson'
-
-    AssociatedPerson:
       type: object
+      description: A person or business currently linked to the address.
       properties:
         id:
           type: [string, "null"]
+          description: Persistent ID of the resident. Format `Person.<uuid>`.
         name:
           type: [string, "null"]
+          description: Full name of the person, or the business name.
         firstname:
           type: [string, "null"]
+          description: First name of the person. Null for a business.
         middlename:
           type: [string, "null"]
+          description: Middle name or middle initial of the person. Null for a business.
         lastname:
           type: [string, "null"]
+          description: Last name of the person. Null for a business.
+        alternate_names:
+          type: array
+          items:
+            type: string
+          description: Other names the resident is known by. Empty when there are none.
+        age_range:
+          type: [string, "null"]
+          description: The age of the person as a 5-year range, for example `25-29`.
+        gender:
+          type: [string, "null"]
+          description: The gender of the person, `M` or `F`. Null when unknown or for a business.
+          enum:
+            - M
+            - F
+            - null
+        type:
+          type: string
+          description: >
+            The type of legal entity: `Person` for a person, `Business` for a
+            company.
+          enum:
+            - Person
+            - Business
+        industry:
+          type: [array, "null"]
+          items:
+            type: string
+          description: Industry classification of the business. Null for a person.
+        link_to_address_start_date:
+          type: [string, "null"]
+          format: date
+          description: >
+            The date the resident was first linked to this address, as
+            `YYYY-MM-DD`. Null when unknown.
+        historical_addresses:
+          type: array
+          description: >
+            Past addresses of the resident. Empty unless historical addresses
+            are enabled for the API key.
+          items:
+            $ref: '#/components/schemas/HistoricalAddress'
+        associated_people:
+          type: array
+          description: >
+            People associated with the resident, such as relatives. Empty when
+            none were found.
+          items:
+            $ref: '#/components/schemas/AssociatedPerson'
+
+    HistoricalAddress:
+      type: object
+      description: A past address of the resident.
+      properties:
+        id:
+          type: [string, "null"]
+          description: Persistent ID of the address. Format `Location.<uuid>`.
+        location_type:
+          type: [string, "null"]
+          description: >
+            The most specific level the address is known to: `Address` (street
+            address), `PostalCode`, `City`, `State`, or `Country`.
+          enum:
+            - Address
+            - PostalCode
+            - City
+            - State
+            - Country
+            - null
+        street_line_1:
+          type: [string, "null"]
+          description: The first line of the street part of the address.
+        street_line_2:
+          type: [string, "null"]
+          description: The second line of the street part of the address.
+        city:
+          type: [string, "null"]
+          description: The name of the city.
+        postal_code:
+          type: [string, "null"]
+          description: The postal code.
+        zip4:
+          type: [string, "null"]
+          description: The ZIP+4 code of the address, in the format `<postal code>-<4 digits>`.
+        state_code:
+          type: [string, "null"]
+          description: The state code.
+        country_code:
+          type: [string, "null"]
+          description: ISO-3166 alpha-2 country code of the address.
+        lat_long:
+          $ref: '#/components/schemas/LatLong'
+        is_active:
+          type: [boolean, "null"]
+          description: True if the address is currently receiving mail.
+        delivery_point:
+          type: [string, "null"]
+          description: >
+            The type of delivery point: `SingleUnit`, `MultiUnit`, `POBox`, or
+            `PartialAddress`.
+          enum:
+            - SingleUnit
+            - MultiUnit
+            - POBox
+            - PartialAddress
+            - null
+        link_to_person_start_date:
+          type: [string, "null"]
+          format: date
+          description: >
+            The date the address was first linked to the person, as
+            `YYYY-MM-DD`. Null when unknown.
+        link_to_person_end_date:
+          type: [string, "null"]
+          format: date
+          description: >
+            The date the address was last linked to the person, as
+            `YYYY-MM-DD`. Null when unknown.
+
+    AssociatedPerson:
+      type: object
+      description: A person associated with the resident.
+      properties:
+        id:
+          type: [string, "null"]
+          description: Persistent ID of the person. Format `Person.<uuid>`.
+        name:
+          type: [string, "null"]
+          description: Full name of the associated person.
+        firstname:
+          type: [string, "null"]
+          description: First name of the associated person.
+        middlename:
+          type: [string, "null"]
+          description: Middle name of the associated person.
+        lastname:
+          type: [string, "null"]
+          description: Last name of the associated person.
         relation:
           type: [string, "null"]
+          description: >
+            The relationship between the address owner and the associated
+            person.
