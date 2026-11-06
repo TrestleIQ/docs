@@ -15,6 +15,10 @@ info:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
 
+externalDocs:
+  description: API reference
+  url: https://docs.trestleiq.com/api-reference/smart-cnam-api
+
 servers:
   - url: https://api.trestleiq.com
     description: Production
@@ -42,12 +46,6 @@ paths:
             type: string
           description: >
             Phone number in E.164 or local format. Example `2069735100`
-        - name: phone.country_hint
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ISO-3166 alpha-2 country code of the phone number. Example `US`
         - name: phone.name_hint
           in: query
           required: false
@@ -70,8 +68,13 @@ paths:
         - name: add_ons
           in: query
           required: false
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+              enum: [spam_checks]
           description: >
             Comma-separated add-ons to enable. Options: `spam_checks` (spam and
             scam detection, returned under `add_ons.spam_checks`). Additional
@@ -88,7 +91,7 @@ paths:
               example:
                 id: Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4
                 is_valid: true
-                phone_number: "2069735100"
+                phone_number: "+12069735100"
                 belongs_to:
                   id: Person.fffdcf06-0929-4b5a-9921-ee49b101ca84
                   name: Waidong L Syrws
@@ -140,7 +143,9 @@ components:
       description: >
         Too Many Requests. Either the per-second QPS rate limit
         (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
-        has been exceeded. The request was not processed.
+        has been exceeded. The request was not processed. See
+        [Rate limits](https://docs.trestleiq.com/guides/rate-limits) for retry
+        guidance.
       content:
         application/json:
           schema:
@@ -221,8 +226,8 @@ components:
         phone_number:
           type: [string, "null"]
           description: >
-            The phone number in E.164 or local format. The default country
-            calling code is +1 (USA). Null when the phone number is invalid.
+            The phone number, always in E.164 format, for example
+            `+12069735100`. Null when the phone number is invalid.
         belongs_to:
           type: [object, "null"]
           description: >

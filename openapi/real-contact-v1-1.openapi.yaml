@@ -18,6 +18,10 @@ info:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
 
+externalDocs:
+  description: API reference
+  url: https://docs.trestleiq.com/api-reference/real-contact-api-v1-1
+
 servers:
   - url: https://api.trestleiq.com
     description: Production
@@ -32,8 +36,8 @@ paths:
       summary: Verify and grade a lead's contact information
       description: >
         Verifies the contactability and consistency of a lead across name,
-        phone, email, address, and IP address. Returns contact grades (A-F),
-        activity scores, name-match indicators, and IP trust signals. Problems
+        phone, email, and address. Returns contact grades (A-F), activity
+        scores, and name-match indicators. Problems
         with the input are reported in `warnings` on a 200 response, not as a
         400. Each response carries a `Response-ID` header.
       parameters:
@@ -96,13 +100,18 @@ paths:
           required: false
           schema:
             type: string
-          description: The state code. Example `WA`
+          description: >
+            Two-letter state code, any case, or the full state name (for
+            example `Washington`). Example `WA`
         - name: address.postal_code
           in: query
           required: false
           schema:
             type: string
-          description: The postal code. Example `98229`
+          description: >
+            The postal code: a 5-digit ZIP (`98229`) or a ZIP+4, with or without
+            the dash (`98229-1234` or `982291234`).
+            Example `98229`
         - name: address.country_code
           in: query
           required: false
@@ -121,8 +130,13 @@ paths:
         - name: add_ons
           in: query
           required: false
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+              enum: [email_checks_deliverability, email_checks_age, litigator_checks]
           description: >
             Comma-separated add-ons to enable. Options:
             `email_checks_deliverability` (email deliverability),
@@ -207,7 +221,9 @@ components:
       description: >
         Too Many Requests. Either the per-second QPS rate limit
         (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
-        has been exceeded. The request was not processed.
+        has been exceeded. The request was not processed. See
+        [Rate limits](https://docs.trestleiq.com/guides/rate-limits) for retry
+        guidance.
       content:
         application/json:
           schema:
