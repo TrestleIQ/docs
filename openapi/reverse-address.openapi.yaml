@@ -16,6 +16,10 @@ info:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
 
+externalDocs:
+  description: API reference
+  url: https://docs.trestleiq.com/api-reference/reverse-address-api
+
 servers:
   - url: https://api.trestleiq.com
     description: Production
@@ -68,8 +72,8 @@ paths:
             type: string
             maxLength: 100
           description: >
-            The state code. Either `state_code` or `postal_code` is needed for a
-            lookup. Example `WA`
+            Two-letter state code, any case. Either `state_code` or
+            `postal_code` is needed for a lookup. Example `WA`
         - name: postal_code
           in: query
           required: false
@@ -77,8 +81,12 @@ paths:
             type: string
             maxLength: 100
           description: >
-            The postal code. Either `postal_code` or `state_code` is needed for
-            a lookup. Example `98101`
+            The postal code: a 5-digit ZIP (`98101`) or a ZIP+4, with or without
+            the dash (`98101-1234` or `981011234`).
+            The response always returns the 5-digit ZIP in `postal_code` and the
+            4-digit extension in `zip4`.
+            Either `postal_code` or `state_code` is needed for a lookup.
+            Example `98101`
         - name: country_code
           in: query
           required: false
@@ -109,7 +117,7 @@ paths:
                 street_line_2: Ste 1
                 city: Lynden
                 postal_code: "98264"
-                zip4: "98264-9999"
+                zip4: "9999"
                 state_code: WA
                 country_code: US
                 lat_long:
@@ -135,7 +143,7 @@ paths:
                     historical_addresses: []
                     associated_people: []
                 error: null
-                warnings: []
+                warnings: null
         "400":
           $ref: '#/components/responses/400BadRequest'
         "403":
@@ -179,7 +187,9 @@ components:
       description: >
         Too Many Requests. Either the per-second QPS rate limit
         (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
-        has been exceeded. The request was not processed.
+        has been exceeded. The request was not processed. See
+        [Rate limits](https://docs.trestleiq.com/guides/rate-limits) for retry
+        guidance.
       content:
         application/json:
           schema:
@@ -301,8 +311,8 @@ components:
         zip4:
           type: [string, "null"]
           description: >
-            The ZIP+4 code of the address, in the format `<postal code>-<4
-            digits>`. Null when the address is not valid.
+            The 4-digit ZIP+4 extension of the address, for example `4286`.
+            Null when the address is not valid.
         state_code:
           type: [string, "null"]
           description: The state code. Null when the address is not valid.
@@ -319,8 +329,9 @@ components:
         is_commercial:
           type: [boolean, "null"]
           description: >
-            True if the address is a business address. Null when validation
-            could not be completed or the address is outside the US.
+            `true` when a resident at this address is a business. Not derived
+            from address data. Null when validation could not be completed or
+            the address is outside the US.
         delivery_point:
           type: [string, "null"]
           description: >
@@ -344,11 +355,12 @@ components:
         error:
           $ref: '#/components/schemas/PartialError'
         warnings:
-          type: array
+          type: [array, "null"]
           items:
             type: string
           description: >
-            Warnings about the input or the result. Empty when there are none.
+            Warnings about the input or the result. Null when there are no
+            warnings, and on suppressed responses.
             Known values: `Missing Input` (no `street_line_1`, or neither
             `postal_code` nor `state_code`), `Invalid address`, `Invalid
             house/building number`, `Missing unit/apt/suite number`, `Invalid
@@ -458,7 +470,7 @@ components:
           description: The postal code.
         zip4:
           type: [string, "null"]
-          description: The ZIP+4 code of the address, in the format `<postal code>-<4 digits>`.
+          description: The 4-digit ZIP+4 extension of the address, for example `4286`.
         state_code:
           type: [string, "null"]
           description: The state code.

@@ -17,6 +17,10 @@ info:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
 
+externalDocs:
+  description: API reference
+  url: https://docs.trestleiq.com/api-reference/caller-identification-api
+
 servers:
   - url: https://api.trestleiq.com
     description: Production
@@ -50,7 +54,7 @@ paths:
           required: false
           schema:
             type: string
-          description: ISO-3166 alpha-2 country code of the phone number. Example `US`
+          description: ISO-3166 alpha-2 country code of the phone number, any case. Example `US`
         - name: phone.name_hint
           in: query
           required: false
@@ -73,8 +77,13 @@ paths:
         - name: add_ons
           in: query
           required: false
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+              enum: [litigator_checks, spam_checks]
           description: >
             Comma-separated add-ons to enable. Options: `litigator_checks` (TCPA
             litigator detection, returned under `add_ons.litigator_checks`) and
@@ -104,7 +113,7 @@ paths:
                 $ref: '#/components/schemas/CallerIdResponse'
               example:
                 id: Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4
-                phone_number: "2069735100"
+                phone_number: "+12069735100"
                 is_valid: true
                 country_calling_code: "1"
                 line_type: NonFixedVOIP
@@ -131,7 +140,7 @@ paths:
                   street_line_2: Ste 1
                   city: Lynden
                   postal_code: "98264"
-                  zip4: "98264-9999"
+                  zip4: "9999"
                   state_code: WA
                   country_code: US
                   lat_long:
@@ -186,7 +195,9 @@ components:
       description: >
         Too Many Requests. Either the per-second QPS rate limit
         (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
-        has been exceeded. The request was not processed.
+        has been exceeded. The request was not processed. See
+        [Rate limits](https://docs.trestleiq.com/guides/rate-limits) for retry
+        guidance.
       content:
         application/json:
           schema:
@@ -309,8 +320,8 @@ components:
         phone_number:
           type: [string, "null"]
           description: >
-            The phone number in E.164 or local format. The default country
-            calling code is +1 (USA). Null when the phone number is missing or
+            The phone number, always in E.164 format, for example
+            `+12069735100`. Null when the phone number is missing or
             invalid.
         is_valid:
           type: [boolean, "null"]
@@ -348,7 +359,8 @@ components:
               type: object
               description: >
                 Present when `add_ons=litigator_checks` was requested and the
-                add-on is enabled for the API key.
+                add-on is enabled for the API key. Omitted for non-US numbers,
+                invalid numbers and suppressed results.
               properties:
                 phone.is_litigator_risk:
                   type: [boolean, "null"]
@@ -489,7 +501,7 @@ components:
           description: The postal code.
         zip4:
           type: [string, "null"]
-          description: The ZIP+4 code of the address, in the format `<postal code>-<4 digits>`.
+          description: The 4-digit ZIP+4 extension of the address, for example `4286`.
         state_code:
           type: [string, "null"]
           description: The state code.

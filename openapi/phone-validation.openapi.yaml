@@ -16,6 +16,10 @@ info:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
 
+externalDocs:
+  description: API reference
+  url: https://docs.trestleiq.com/api-reference/phone-validation-api
+
 servers:
   - url: https://api.trestleiq.com
     description: Production
@@ -48,13 +52,18 @@ paths:
           schema:
             type: string
           description: >
-            ISO-3166 alpha-2 country code of the phone number, used to read a
-            number given in local format. Example `US`
+            ISO-3166 alpha-2 country code of the phone number, any case, used
+            to read a number given in local format. Example `US`
         - name: add_ons
           in: query
           required: false
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+              enum: [litigator_checks]
           description: >
             Comma-separated add-ons to enable. Options: `litigator_checks` (TCPA
             litigator detection, returned under `add_ons.litigator_checks`).
@@ -89,7 +98,7 @@ paths:
                 $ref: '#/components/schemas/PhoneValidationResponse'
               example:
                 id: Phone.3dbb6fef-a2df-4b08-cfe3-bc7128b6f5b4
-                phone_number: "2069735100"
+                phone_number: "+12069735100"
                 is_valid: true
                 activity_score: 50
                 country_calling_code: "1"
@@ -144,7 +153,9 @@ components:
       description: >
         Too Many Requests. Either the per-second QPS rate limit
         (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
-        has been exceeded. The request was not processed.
+        has been exceeded. The request was not processed. See
+        [Rate limits](https://docs.trestleiq.com/guides/rate-limits) for retry
+        guidance.
       content:
         application/json:
           schema:
@@ -240,8 +251,8 @@ components:
         phone_number:
           type: [string, "null"]
           description: >
-            The phone number in E.164 or local format. The default country
-            calling code is +1 (USA). Null when the phone number is missing or
+            The phone number, always in E.164 format, for example
+            `+12069735100`. Null when the phone number is missing or
             invalid.
         is_valid:
           type: [boolean, "null"]
@@ -284,8 +295,11 @@ components:
         add_ons:
           type: [object, "null"]
           description: >
-            Results of the add-ons requested in `add_ons`. Present only when an
-            add-on was requested and is enabled for the API key.
+            Results of the add-ons requested in `add_ons`. `litigator_checks`
+            runs only for US numbers, and only when it is enabled on the API
+            key. Otherwise `add_ons` is not included in the response. One
+            exception: `add_ons` is `{}` when `add_ons` was sent without
+            `litigator_checks` for a +1 number on a key with litigator enabled.
           properties:
             litigator_checks:
               type: object

@@ -19,6 +19,10 @@ info:
     email: support@trestleiq.com
     url: https://trestleiq.com/contact/
 
+externalDocs:
+  description: API reference
+  url: https://docs.trestleiq.com/api-reference/real-contact-api
+
 servers:
   - url: https://api.trestleiq.com
     description: Production
@@ -97,13 +101,18 @@ paths:
           required: false
           schema:
             type: string
-          description: The state code. Example `WA`
+          description: >
+            Two-letter state code, any case, or the full state name (for
+            example `Washington`). Example `WA`
         - name: address.postal_code
           in: query
           required: false
           schema:
             type: string
-          description: The postal code. Example `98229`
+          description: >
+            The postal code: a 5-digit ZIP (`98229`) or a ZIP+4, with or without
+            the dash (`98229-1234` or `982291234`).
+            Example `98229`
         - name: address.country_code
           in: query
           required: false
@@ -121,8 +130,13 @@ paths:
         - name: add_ons
           in: query
           required: false
+          style: form
+          explode: false
           schema:
-            type: string
+            type: array
+            items:
+              type: string
+              enum: [email_checks_deliverability, email_checks_age, litigator_checks]
           description: >
             Comma-separated add-ons to enable. Options:
             `email_checks_deliverability` (email deliverability),
@@ -225,7 +239,9 @@ components:
       description: >
         Too Many Requests. Either the per-second QPS rate limit
         (`RATE_LIMIT_EXCEEDED`) or the billing-period quota (`QUOTA_EXCEEDED`)
-        has been exceeded. The request was not processed.
+        has been exceeded. The request was not processed. See
+        [Rate limits](https://docs.trestleiq.com/guides/rate-limits) for retry
+        guidance.
       content:
         application/json:
           schema:
@@ -408,8 +424,9 @@ components:
         add_ons:
           type: [object, "null"]
           description: >
-            Results of the add-ons requested in `add_ons`. Present only when an
-            add-on was requested.
+            Results of the add-ons requested in `add_ons`. Null when no add-on
+            applies; `{}` when add-ons were requested but none returned a
+            result. Litigator results are returned only for a valid phone.
           properties:
             litigator_checks:
               type: object
@@ -417,7 +434,11 @@ components:
               properties:
                 phone_is_litigator_risk:
                   type: [boolean, "null"]
-                  description: True if the phone subscriber is a TCPA litigator.
+                  description: >
+                    True if the phone subscriber is a TCPA litigator. Named
+                    `phone.is_litigator_risk` in Caller ID, Phone Validation and Real
+                    Contact 1.1. 2.0 keeps this name because renaming it would break
+                    existing clients.
             email_checks:
               type: object
               description: >
