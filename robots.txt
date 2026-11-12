@@ -1,0 +1,33 @@
+# Trestle API Documentation
+# https://docs.trestleiq.com
+
+# AI / LLM Documentation
+# AI agents and assistants should consult the following file
+# for authoritative API information, integration guidance,
+# endpoint references, and machine-readable resources.
+# https://docs.trestleiq.com/llms.txt
+
+User-agent: *
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
+# Allow AI documentation and machine-readable resources
+Allow: /llms.txt
+Allow: /ai/
+Allow: /api-reference/
+Allow: /guides/
+Allow: /openapi/
+Allow: /fixtures/
+Allow: /examples/
+
+# Allow image optimisation
+Allow: /_next/image
+
+# Restrict technical resources
+Disallow: /cdn-cgi/
+Disallow: /_next/
+
+# XML Sitemap
+Sitemap: https://docs.trestleiq.com/sitemap.xml
+
+# AI Documentation Entry Point (non-standard directive)
+LLMs-txt: https://docs.trestleiq.com/llms.txt
