@@ -12,13 +12,13 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 <RequestExample>
     ```bash cURL
     curl --request GET \
-      --url "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101" \
+      --url "https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US" \
       --header "x-api-key: YOUR_API_KEY"
     ```
 
     ```javascript JavaScript
     const response = await fetch(
-      "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101",
+      "https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -32,7 +32,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     import axios from "axios";
 
     const { data } = await axios.get(
-      "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101",
+      "https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US",
       {
         headers: {
           "x-api-key": "YOUR_API_KEY",
@@ -47,10 +47,12 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     headers = {"x-api-key": "YOUR_API_KEY"}
     params = {
-        "address.street_line_1": "100 Main St",
-        "address.city": "Seattle",
-        "address.state_code": "WA",
-        "address.postal_code": "98101",
+        "street_line_1": "100 Syrws St",
+        "street_line_2": "Ste 1",
+        "city": "Lynden",
+        "state_code": "WA",
+        "postal_code": "98264",
+        "country_code": "US",
     }
 
     response = requests.get(
@@ -67,7 +69,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     using var client = new HttpClient();
     client.DefaultRequestHeaders.Add("x-api-key", "YOUR_API_KEY");
 
-    var response = await client.GetAsync("https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101");
+    var response = await client.GetAsync("https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US");
     var body = await response.Content.ReadAsStringAsync();
     Console.WriteLine(body);
     ```
@@ -82,7 +84,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
     )
 
     func main() {
-    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101", nil)
+    	req, _ := http.NewRequest("GET", "https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US", nil)
     	req.Header.Set("x-api-key", "YOUR_API_KEY")
 
     	resp, err := http.DefaultClient.Do(req)
@@ -98,7 +100,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
 
     ```php PHP
     <?php
-    $curl = curl_init("https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101");
+    $curl = curl_init("https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US");
     curl_setopt($curl, CURLOPT_HTTPHEADER, ["x-api-key: YOUR_API_KEY"]);
     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
@@ -120,7 +122,7 @@ import ErrorResponses from '/snippets/error-responses.mdx';
             HttpRequest.newBuilder()
                 .uri(
                     URI.create(
-                        "https://api.trestleiq.com/3.1/location?address.street_line_1=100%20Main%20St&address.city=Seattle&address.state_code=WA&address.postal_code=98101"))
+                        "https://api.trestleiq.com/3.1/location?street_line_1=100%20Syrws%20St&street_line_2=Ste%201&city=Lynden&state_code=WA&postal_code=98264&country_code=US"))
                 .header("x-api-key", "YOUR_API_KEY")
                 .GET()
                 .build();
